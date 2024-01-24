@@ -1,0 +1,39 @@
+﻿using brokenHeart.Entities.RoundReminders;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
+
+namespace brokenHeart.Entities.Counters
+{
+    public class CounterTemplate
+    {
+        [JsonConstructor]
+        public CounterTemplate() { }
+        public CounterTemplate(string name, int max, string description, bool roundBased = true, RoundReminderTemplate? reminderTemplate = null)
+        {
+            Name = name;
+            Max = max;
+            RoundBased = roundBased;
+            Description = description;
+            RoundReminderTemplate = reminderTemplate;
+        }
+
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string Description { get; set; }
+        public int Max { get; set; }
+        public bool RoundBased { get; set; }
+
+        public int? RoundReminderTemplateId { get; set; }
+        public virtual RoundReminderTemplate? RoundReminderTemplate { get; set; }
+
+        [NotMapped]
+        public ICollection<int> ModifierTemplatesIds { get; set; } = new List<int>();
+        public virtual ICollection<ModifierTemplate> ModifierTemplates { get; set; } = new List<ModifierTemplate>();
+
+        public Counter Instantiate()
+        {
+            RoundReminder? reminder = RoundReminderTemplate != null ? RoundReminderTemplate.Instantiate() : null;
+            return new Counter(Name, Max, Description, RoundBased, reminder);
+        }
+    }
+}
