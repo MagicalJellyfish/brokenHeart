@@ -1,4 +1,4 @@
-﻿using Dice;
+﻿using brokenHeart.Auxiliary;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,9 +12,9 @@ namespace brokenHeart.Controllers
 
         [HttpGet]
         [Route("roll")]
-        public async Task<List<string>> Roll(string rollString)
+        public async Task<RollResult> Roll(string rollString)
         {
-            return Roller.Roll(rollString).ToString().Split("=>").Select(x => x.Trim()).ToList();
+            return RollAuxiliary.RollString(rollString);
         }
     }
 }
