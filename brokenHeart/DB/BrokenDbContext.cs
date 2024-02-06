@@ -9,6 +9,7 @@ using brokenHeart.Controllers;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using brokenHeart.Entities.RoundReminders;
 using brokenHeart.Entities.Stats;
+using brokenHeart.Entities.Combat;
 
 namespace brokenHeart.DB
 {
@@ -39,6 +40,9 @@ namespace brokenHeart.DB
 
         public DbSet<Stat> Stats { get; set; }
         public DbSet<StatValue> StatValues { get; set; }
+
+        public DbSet<Combat> Combats { get; set; }
+        public DbSet<CombatEntry> CombatEntries { get; set; }
 
         public string DbPath { get; }
 

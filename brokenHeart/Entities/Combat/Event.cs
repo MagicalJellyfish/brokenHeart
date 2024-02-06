@@ -19,5 +19,7 @@ namespace brokenHeart.Entities.Combat
         public int Round { get; set; }
         public int Init { get; set; }
         public bool Secret { get; set; }
+
+        public virtual CombatEntry? CombatEntry { get; set; }
     }
 }
