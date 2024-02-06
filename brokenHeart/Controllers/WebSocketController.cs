@@ -22,7 +22,7 @@ namespace brokenHeart.Controllers
             ccObservable = observable;
         }
 
-        [Route("PlayerCharacters/ws")]
+        [Route("Characters/ws")]
         [ApiExplorerSettings(IgnoreApi = true)]
         public async Task Get()
         {

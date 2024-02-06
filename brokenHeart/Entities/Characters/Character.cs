@@ -7,6 +7,7 @@ using System.Text.Json.Serialization;
 using System.ComponentModel.DataAnnotations.Schema;
 using brokenHeart.Entities.RoundReminders;
 using brokenHeart.Entities.Stats;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace brokenHeart.Entities
 {
@@ -14,14 +15,19 @@ namespace brokenHeart.Entities
     {
         [JsonConstructor]
         public Character() { }
-        public Character(string name, string description = "", decimal height = 0, int weight = 0, decimal money = 0, 
+        public Character(string name, UserSimplified owner, int age, string? defaultShortcut = null, string description = "", decimal height = 0, int weight = 0, decimal money = 0, string notes = "", string experience = "",
             List<Item>? inventory = null, List<Trait>? traits = null)
         {
             Name = name;
+            DefaultShortcut = defaultShortcut;
             Description = description;
             Height = height;
             Weight = weight;
             Money = money;
+            Owner = owner;
+            Age = age;
+            Notes = notes;
+            Experience = experience;
             Items = inventory ?? new List<Item>();
             Traits = traits ?? new List<Trait>();
 
@@ -39,6 +45,7 @@ namespace brokenHeart.Entities
 
         public int Id { get; set; }
         public string Name { get; set; }
+        public string? DefaultShortcut { get; set; }
         public string Description { get; set; }
         
         //in m
@@ -59,6 +66,10 @@ namespace brokenHeart.Entities
 
         public int Armor { get; private set; }
         public int Evasion { get; private set; }
+
+        public int Age { get; set; }
+        public string Notes { get; set; }
+        public string Experience { get; set; }
 
         public virtual ICollection<StatValue> Stats { get; private set; } = new List<StatValue>();
         public virtual ICollection<BodypartCondition> BodypartConditions { get; private set; } = new List<BodypartCondition>();
@@ -83,6 +94,11 @@ namespace brokenHeart.Entities
         [NotMapped]
         public ICollection<int>? RoundRemindersIds { get; set; } = new List<int>();
         public virtual ICollection<RoundReminder> RoundReminders { get; set; } = new List<RoundReminder>();
+
+        public byte[]? Image { get; set; }
+
+        public bool IsPlayerCharacter { get; set; }
+        public virtual UserSimplified? Owner { get; set; }
 
 
         //Update any stat-derived changes

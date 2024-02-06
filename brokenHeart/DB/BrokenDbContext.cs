@@ -19,7 +19,6 @@ namespace brokenHeart.DB
         public DbSet<Character> Characters { get; set; }
         public DbSet<Bodypart> Bodyparts { get; set; }
         public DbSet<BodypartCondition> BodypartConditions { get; set; }
-        public DbSet<PlayerCharacter> PlayerCharacters { get; set; }
 
         public DbSet<RoundReminder> RoundReminders { get; set; }
         public DbSet<RoundReminderTemplate> RoundReminderTemplates { get; set; }
@@ -90,13 +89,13 @@ namespace brokenHeart.DB
                 {
                     try
                     {
-                        PlayerCharacter pc = PlayerCharacters
+                        Character c = Characters
                             .Include(x => x.Items).ThenInclude(x => x.StatIncreases).ThenInclude(x => x.Stat)
                             .Include(x => x.Traits).ThenInclude(x => x.StatIncreases).ThenInclude(x => x.Stat)
                             .Include(x => x.Effects).ThenInclude(x => x.StatIncreases).ThenInclude(x => x.Stat)
                             .Single(x => x.Id == changedChar);
 
-                        pc.Update();
+                        c.Update();
                         saveChanges += base.SaveChanges();
 
                         ccObservable.Trigger(changedChar);
@@ -115,15 +114,7 @@ namespace brokenHeart.DB
 
         private int RecursiveSearch(dynamic entry)
         {
-            var tEntry = entry;
-            var tEntity = tEntry.Entity;
-            var tType = tEntity.GetType();
-
-            var ePcs = PlayerCharacters;
-            var eType = ePcs.GetType();
-            var eGeneric = eType.GetGenericArguments()[0];
-
-            if (entry.Entity.GetType() == PlayerCharacters.GetType().GetGenericArguments()[0])
+            if (entry.Entity.GetType() == Characters.GetType().GetGenericArguments()[0])
             {
                 return entry.Entity.Id;
             }
@@ -231,7 +222,7 @@ namespace brokenHeart.DB
                     .OnDelete(DeleteBehavior.Cascade);
             });
 
-            modelBuilder.Entity<PlayerCharacter>().
+            modelBuilder.Entity<Character>().
                 HasOne("brokenHeart.Entities.UserSimplified", "Owner")
                 .WithMany("Characters")
                 .HasForeignKey("OwnerId")

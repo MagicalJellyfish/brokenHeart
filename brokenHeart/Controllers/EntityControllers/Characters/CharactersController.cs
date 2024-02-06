@@ -7,82 +7,83 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch.Operations;
 using brokenHeart.Entities.Stats;
 using Microsoft.EntityFrameworkCore;
+using brokenHeart.Entities;
 
 namespace brokenHeart.Controllers.EntityControllers.Characters
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class PlayerCharactersController : ControllerBase
+    public class CharactersController : ControllerBase
     {
         private readonly BrokenDbContext _context;
 
-        public PlayerCharactersController(BrokenDbContext context)
+        public CharactersController(BrokenDbContext context)
         {
             _context = context;
         }
 
-        // GET: api/PlayerCharacters
+        // GET: api/Characters
         [HttpGet]
         [Authorize]
-        public async Task<ActionResult<IEnumerable<PlayerCharacter>>> GetPlayerCharacters()
+        public async Task<ActionResult<IEnumerable<Character>>> GetCharacters()
         {
-            if (_context.PlayerCharacters == null || _context.PlayerCharacters.Count() == 0)
+            if (_context.Characters == null || _context.Characters.Count() == 0)
             {
                 return NotFound();
             }
 
-            IEnumerable<PlayerCharacter> playerCharacters = _context.PlayerCharacters.Select(x => ApiAuxiliary.GetEntityPrepare(x) as PlayerCharacter).ToList();
+            IEnumerable<Character> characters = _context.Characters.Select(x => ApiAuxiliary.GetEntityPrepare(x) as Character).ToList();
 
-            return Ok(playerCharacters);
+            return Ok(characters);
         }
 
-        // GET: api/PlayerCharacters/User/
+        // GET: api/Characters/User/
         [HttpGet("User/{username}")]
         [Authorize]
-        public async Task<ActionResult<IEnumerable<PlayerCharacter>>> GetUsersPlayerCharacters(string username)
+        public async Task<ActionResult<IEnumerable<Character>>> GetUsersCharacters(string username)
         {
-            if (_context.PlayerCharacters == null || _context.PlayerCharacters.Count() == 0)
+            if (_context.Characters == null || _context.Characters.Count() == 0)
             {
                 return NotFound();
             }
 
-            IEnumerable<PlayerCharacter> playerCharacters = _context.PlayerCharacters.Where(x => x.Owner.Username == username).Select(x => ApiAuxiliary.GetEntityPrepare(x) as PlayerCharacter).ToList();
+            IEnumerable<Character> characters = _context.Characters.Where(x => x.Owner.Username == username).Select(x => ApiAuxiliary.GetEntityPrepare(x) as Character).ToList();
 
-            return Ok(playerCharacters);
+            return Ok(characters);
         }
 
-        // GET: api/PlayerCharacters/5
+        // GET: api/Characters/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<PlayerCharacter>> GetPlayerCharacter(int id)
+        public async Task<ActionResult<Character>> GetCharacters(int id)
         {
-            if (_context.PlayerCharacters == null || _context.PlayerCharacters.Count() == 0)
+            if (_context.Characters == null || _context.Characters.Count() == 0)
             {
                 return NotFound();
             }
 
-            PlayerCharacter playerCharacter = ApiAuxiliary.GetEntityPrepare(await FullPlayerCharacters().FirstOrDefaultAsync(x => x.Id == id));
+            Character character = ApiAuxiliary.GetEntityPrepare(await FullCharacters().FirstOrDefaultAsync(x => x.Id == id));
 
-            if (playerCharacter == null)
+            if (character == null)
             {
                 return NotFound();
             }
 
-            return playerCharacter;
+            return character;
         }
 
-        // PATCH: api/PlayerCharacters/5
+        // PATCH: api/Characters/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPatch("{id}")]
-        public async Task<IActionResult> PatchPlayerCharacter(int id, JsonPatchDocument<PlayerCharacter> patchDocument)
+        public async Task<IActionResult> PatchCharacters(int id, JsonPatchDocument<Character> patchDocument)
         {
             if (patchDocument == null)
             {
                 return BadRequest();
             }
 
-            PlayerCharacter playerCharacter = FullPlayerCharacters().Single(x => x.Id == id);
+            Character character = FullCharacters().Single(x => x.Id == id);
 
-            if(playerCharacter == null)
+            if(character == null)
             {
                 return BadRequest();
             }
@@ -95,7 +96,7 @@ namespace brokenHeart.Controllers.EntityControllers.Characters
 
             try
             {
-                ApiAuxiliary.PatchEntity(_context, typeof(PlayerCharacter), playerCharacter, operations);
+                ApiAuxiliary.PatchEntity(_context, typeof(Character), character, operations);
             }
             catch (Exception)
             {
@@ -107,57 +108,57 @@ namespace brokenHeart.Controllers.EntityControllers.Characters
             return NoContent();
         }
 
-        // POST: api/PlayerCharacters
+        // POST: api/Characters
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         [Authorize]
-        public async Task<ActionResult<PlayerCharacter>> PostPlayerCharacter(PlayerCharacter playerCharacter)
+        public async Task<ActionResult<Character>> PostCharacter(Character character)
         {
             foreach(Stat stat in _context.Stats)
             {
-                playerCharacter.Stats.Add(new StatValue(stat, 0));
+                character.Stats.Add(new StatValue(stat, 0));
             }
             foreach (Bodypart bp in _context.Bodyparts)
             {
-                playerCharacter.BodypartConditions.Add(new BodypartCondition(bp));
+                character.BodypartConditions.Add(new BodypartCondition(bp));
             }
-            playerCharacter.Counters.Add(Constants.Dying.Instantiate());
-            playerCharacter.Owner = _context.UserSimplified.Single(x => x.Username == User.Identity.Name);
+            character.Counters.Add(Constants.Dying.Instantiate());
+            character.Owner = _context.UserSimplified.Single(x => x.Username == User.Identity.Name);
 
-            if (_context.PlayerCharacters == null)
+            if (_context.Characters == null)
             {
-              return Problem("Entity set 'BrokenDbContext.PlayerCharacters'  is null.");
+              return Problem("Entity set 'BrokenDbContext.Characters'  is null.");
             }
-            playerCharacter.Update();
+            character.Update();
 
-            PlayerCharacter returnPlayerCharacter = ApiAuxiliary.PostEntity(_context, typeof(PlayerCharacter), playerCharacter);
+            Character returnCharacter = ApiAuxiliary.PostEntity(_context, typeof(Character), character);
 
-            return CreatedAtAction("GetPlayerCharacter", new { id = returnPlayerCharacter.Id }, returnPlayerCharacter);
+            return CreatedAtAction("GetCharacters", new { id = returnCharacter.Id }, returnCharacter);
         }
 
-        // DELETE: api/PlayerCharacters/5
+        // DELETE: api/Characters/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeletePlayerCharacter(int id)
+        public async Task<IActionResult> DeleteCharacter(int id)
         {
-            if (_context.PlayerCharacters == null)
+            if (_context.Characters == null)
             {
                 return NotFound();
             }
-            var playerCharacter = await _context.PlayerCharacters.FindAsync(id);
-            if (playerCharacter == null)
+            var character = await _context.Characters.FindAsync(id);
+            if (character == null)
             {
                 return NotFound();
             }
 
-            _context.PlayerCharacters.Remove(playerCharacter);
+            _context.Characters.Remove(character);
             _context.SaveChanges();
 
             return NoContent();
         }
 
-        private IQueryable<PlayerCharacter> FullPlayerCharacters()
+        private IQueryable<Character> FullCharacters()
         {
-            return _context.PlayerCharacters
+            return _context.Characters
                 .Include(x => x.Stats).ThenInclude(x => x.Stat)
                 .Include(x => x.RoundReminders)
                 .Include(x => x.Counters).ThenInclude(x => x.RoundReminder)
