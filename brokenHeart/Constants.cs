@@ -160,7 +160,7 @@ namespace brokenHeart
             {
                 if (!(_dbContext.UserSimplified.Where(x => x.Username == user.UserName).Count() > 0))
                 {
-                    _dbContext.UserSimplified.Add(new Entities.UserSimplified(user.UserName));
+                    _dbContext.UserSimplified.Add(new Entities.UserSimplified(user.UserName, user.DiscordId));
                 }
             }
 

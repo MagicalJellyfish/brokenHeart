@@ -9,6 +9,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using System.Xml.Linq;
 
 namespace brokenHeart.Controllers
 {
@@ -43,7 +44,8 @@ namespace brokenHeart.Controllers
             ApplicationUser user = new()
             {
                 SecurityStamp = Guid.NewGuid().ToString(),
-                UserName = registerModel.Username
+                UserName = registerModel.Username,
+                DiscordId = (ulong)registerModel.DiscordId
             };
 
             var createUserResult = await _userManager.CreateAsync(user, registerModel.Password);
@@ -60,7 +62,7 @@ namespace brokenHeart.Controllers
                 await _userManager.AddToRoleAsync(user, role);
             }
 
-            _brokenDbContext.UserSimplified.Add(new Entities.UserSimplified(registerModel.Username));
+            _brokenDbContext.UserSimplified.Add(new Entities.UserSimplified(registerModel.Username, (ulong)registerModel.DiscordId));
             _brokenDbContext.SaveChanges();
 
             return Ok();
@@ -164,6 +166,24 @@ namespace brokenHeart.Controllers
                 RefreshToken = newRefreshToken,
                 RefreshTokenExpiration = ((DateTimeOffset)user.RefreshTokenExpiryTime).ToUnixTimeMilliseconds()
             });
+        }
+
+        [HttpPatch]
+        [Route("discord/{discordId}")]
+        [Authorize(Roles = UserRoles.User)]
+        public async Task<ActionResult> ChangeId(ulong discordId)
+        {
+            var user = await _userManager.FindByNameAsync(User.Identity.Name);
+
+            if (user == null)
+            {
+                return NotFound("User not found!");
+            }
+
+            user.DiscordId = discordId;
+            await _userManager.UpdateAsync(user);
+
+            return NoContent();
         }
 
         [HttpPatch]

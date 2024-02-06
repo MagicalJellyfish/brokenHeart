@@ -7,14 +7,16 @@ namespace brokenHeart.Entities
     {
         [JsonConstructor]
         public UserSimplified() { }
-        public UserSimplified(string username)
+        public UserSimplified(string username, ulong discordId)
         {
             Username = username;
+            DiscordId = discordId;
         }
 
         public int Id { get; set; }
         public string Username { get; set; }
+        public ulong DiscordId { get; set; }
 
-        public virtual ICollection<PlayerCharacter> Characters { get; set; } = new List<PlayerCharacter>();
+        public virtual ICollection<Character> Characters { get; set; } = new List<Character>();
     }
 }
