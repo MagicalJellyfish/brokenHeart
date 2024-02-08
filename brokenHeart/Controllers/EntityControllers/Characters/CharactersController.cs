@@ -156,6 +156,28 @@ namespace brokenHeart.Controllers.EntityControllers.Characters
             return NoContent();
         }
 
+        [HttpPatch("activate")]
+        public async Task<ActionResult<string>> ActivateCharacter(ulong discordId, int charId)
+        {
+            UserSimplified user = _context.UserSimplified.Include(x => x.Characters).Include(x => x.ActiveCharacter).SingleOrDefault(x => x.DiscordId == discordId);
+
+            if(user == null)
+            {
+                return NotFound();
+            }
+
+            Character character = user.Characters.SingleOrDefault(x => x.Id == charId);
+
+            if(character == null)
+            {
+                return NotFound();
+            }
+
+            user.ActiveCharacter = character;
+            _context.SaveChanges();
+            return character.Name;
+        }
+
         private IQueryable<Character> FullCharacters()
         {
             return _context.Characters

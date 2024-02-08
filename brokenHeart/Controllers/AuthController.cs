@@ -1,5 +1,6 @@
 ﻿using brokenHeart.Auth;
 using brokenHeart.DB;
+using brokenHeart.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -197,6 +198,10 @@ namespace brokenHeart.Controllers
 
             user.DiscordId = discordId;
             await _userManager.UpdateAsync(user);
+
+            UserSimplified userSimple = _brokenDbContext.UserSimplified.Single(x => x.Username == user.UserName);
+            userSimple.DiscordId = discordId;
+            _brokenDbContext.SaveChanges();
 
             return NoContent();
         }

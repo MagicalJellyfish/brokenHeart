@@ -17,6 +17,7 @@ namespace brokenHeart.Entities
         public string Username { get; set; }
         public ulong DiscordId { get; set; }
 
+        public virtual Character? ActiveCharacter { get; set; }
         public virtual ICollection<Character> Characters { get; set; } = new List<Character>();
     }
 }

@@ -163,7 +163,7 @@ namespace brokenHeart.Controllers
         }
 
         [HttpPatch]
-        [Route("nextTurn")]
+        [Route("next-turn")]
         public async Task<ActionResult<List<Message>>> NextTurn()
         {
             List<Message> returnMessages = new List<Message>();
