@@ -168,6 +168,21 @@ namespace brokenHeart.Controllers
             });
         }
 
+        [HttpGet]
+        [Route("discord")]
+        [Authorize(Roles = UserRoles.User)]
+        public async Task<ActionResult<object>> GetId()
+        {
+            var user = await _userManager.FindByNameAsync(User.Identity.Name);
+
+            if (user == null)
+            {
+                return NotFound("User not found!");
+            }
+
+            return new { discordId = user.DiscordId.ToString() };
+        }
+
         [HttpPatch]
         [Route("discord/{discordId}")]
         [Authorize(Roles = UserRoles.User)]
