@@ -8,7 +8,7 @@ namespace brokenHeart.Entities.Combat
         public Combat()
         {
             Round = 1;
-            CurrentTurn = 0;
+            CurrentTurn = -1;
             Active = true;
         }
 

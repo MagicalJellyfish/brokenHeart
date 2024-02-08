@@ -3,6 +3,7 @@ using brokenHeart.DB;
 using brokenHeart.Entities;
 using brokenHeart.Entities.Characters;
 using brokenHeart.Entities.Combat;
+using brokenHeart.Entities.RoundReminders;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -137,7 +138,6 @@ namespace brokenHeart.Controllers
 
             CombatEntry ce = new CombatEntry(character, (int)initRoll, shortcut);
             activeCombat.Entries.Add(ce);
-            activeCombat.Entries = activeCombat.Entries.OrderByDescending(x => x.InitRoll).ToList();
 
             _context.SaveChanges();
 
@@ -164,60 +164,131 @@ namespace brokenHeart.Controllers
 
         [HttpPatch]
         [Route("nextTurn")]
-        public async Task<ActionResult<string>> NextTurn()
+        public async Task<ActionResult<List<Message>>> NextTurn()
         {
-            string returnMessage = "";
+            List<Message> returnMessages = new List<Message>();
             Combat? combat = ActiveCombat();
             if (combat == null)
             {
                 return NotFound();
             }
 
-            if(combat.CurrentTurn == combat.Entries.Count - 1)
+            combat.Entries = combat.Entries.OrderByDescending(x => x.InitRoll).ToList();
+
+            if (combat.CurrentTurn == combat.Entries.Count - 1)
             {
-                returnMessage += "Next Round!\n";
                 combat.CurrentTurn = -1;
                 combat.Round += 1;
 
-                returnMessage += "Current round is " + combat.Round + "!";
+                returnMessages.Add(new Message("New Round!", "Current round is " + combat.Round + "!"));
             }
             else
             {
-                combat.CurrentTurn += 1;
-
-                returnMessage += "Round: " + combat.Round + "\n";
-
-                if (combat.Entries.ElementAt(combat.CurrentTurn).Event != null)
-                {
-                    Event @event = combat.Entries.ElementAt(combat.CurrentTurn).Event;
-
-                    if (@event.Round == combat.Round)
-                    {
-                        returnMessage += "Event " + @event.Name + " is happening! \n";
-                    }
-                    else
-                    {
-                        if (!@event.Secret && @event.Round > combat.Round)
-                        {
-                            returnMessage += "Event " + @event.Name + " is advancing! It triggers in " + (@event.Round - combat.Round).ToString() + " rounds! \n";
-                        }
-                        //TODO: extract everything after advanding turn to separate function, call it again here since an event, if it doesn't trigger, should just add "triggering in x rounds" to beginning of next turn
-                    }
-                }
-
-                if (combat.Entries.ElementAt(combat.CurrentTurn).Character != null)
-                {
-                    Character character = combat.Entries.ElementAt(combat.CurrentTurn).Character;
-                    returnMessage += "It is " + character.Name + "'s turn! \n";
-
-
-                    //TODO: Get all reminders
-                }
+                returnMessages = BuildTurnMessage(combat);
             }
 
             _context.SaveChanges();
 
-            return Ok(returnMessage);
+            return Ok(returnMessages);
+        }
+
+        private List<Message> BuildTurnMessage(Combat combat)
+        {
+            List<Message> turnMessages = new List<Message>();
+            if (combat.CurrentTurn != combat.Entries.Count - 1)
+            {
+                combat.CurrentTurn += 1;
+            }
+            else
+            {
+                combat.CurrentTurn = -1;
+                combat.Round += 1;
+
+                turnMessages.Add(new Message("New Round!", "Current round is " + combat.Round + "!"));
+                return turnMessages;
+            }
+
+            if (combat.Entries.ElementAt(combat.CurrentTurn).Event != null)
+            {
+                Event @event = combat.Entries.ElementAt(combat.CurrentTurn).Event;
+
+                if (@event.Round == combat.Round)
+                {
+                    turnMessages.Add(new Message("Event " + @event.Name + " is happening!", "Round: " + combat.Round));
+                }
+                else
+                {
+                    if (!@event.Secret && @event.Round > combat.Round)
+                    {
+                        turnMessages.Add(new Message("Event " + @event.Name + " is advancing! It triggers in " + (@event.Round - combat.Round).ToString() + " rounds!", "Round: " + combat.Round));
+                    }
+                    turnMessages.AddRange(BuildTurnMessage(combat));
+                }
+
+                return turnMessages;
+            }
+
+            if (combat.Entries.ElementAt(combat.CurrentTurn).Character != null)
+            {
+                string round = "Round: " + combat.Round + "\n";
+                string reminders = "Reminders: \n";
+
+                Character character = _context.Characters
+                    .Include(x => x.RoundReminders)
+                    .Include(x => x.Counters).ThenInclude(x => x.RoundReminder)
+
+                    .Include(x => x.Items).ThenInclude(x => x.RoundReminder)
+                    .Include(x => x.Items).ThenInclude(x => x.Counters).ThenInclude(x => x.RoundReminder)
+
+
+                    .Include(x => x.Effects).ThenInclude(x => x.RoundReminder)
+                    .Include(x => x.Effects).ThenInclude(x => x.Counters).ThenInclude(x => x.RoundReminder)
+                    .Include(x => x.Effects).ThenInclude(x => x.EffectCounter).ThenInclude(x => x.RoundReminder)
+
+                    .Include(x => x.Traits).ThenInclude(x => x.RoundReminder)
+                    .Include(x => x.Traits).ThenInclude(x => x.Counters).ThenInclude(x => x.RoundReminder)
+
+                    .SingleOrDefault(x => x.Id == combat.Entries.ElementAt(combat.CurrentTurn).Character.Id)!;
+
+                string title = "It is " + character.Name + "'s turn! \n";
+
+                List<RoundReminder?> reminderList = new List<RoundReminder?>();
+
+                reminderList.AddRange(character.RoundReminders);
+                reminderList.AddRange(character.Counters.Select(x => x.RoundReminder));
+
+                reminderList.AddRange(character.Items.Select(x => x.RoundReminder));
+                reminderList.AddRange(character.Items.SelectMany(x => x.Counters.Select(x => x.RoundReminder)));
+
+                reminderList.AddRange(character.Effects.Select(x => x.RoundReminder));
+                reminderList.AddRange(character.Effects.SelectMany(x => x.Counters.Select(x => x.RoundReminder)));
+                reminderList.AddRange(character.Effects.Select(x => x.EffectCounter.RoundReminder));
+
+                reminderList.AddRange(character.Traits.Select(x => x.RoundReminder));
+                reminderList.AddRange(character.Traits.SelectMany(x => x.Counters.Select(x => x.RoundReminder)));
+
+                if(reminderList.Count == 0 || reminderList.All(x => x == null))
+                {
+                    turnMessages.Add(new Message(title, round));
+                    return turnMessages;
+                }
+
+                foreach(var reminder in reminderList)
+                {
+                    if(reminder != null)
+                    {
+                        if (reminder.Reminding)
+                        {
+                            reminders += reminder.Reminder + "\n";
+                        }
+                    }
+                }
+
+                turnMessages.Add(new Message(title, round + reminders));
+                return turnMessages;
+            }
+
+            return turnMessages;
         }
 
         [HttpDelete]
