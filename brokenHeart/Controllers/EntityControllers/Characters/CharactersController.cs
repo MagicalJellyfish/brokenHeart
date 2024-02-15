@@ -159,14 +159,14 @@ namespace brokenHeart.Controllers.EntityControllers.Characters
         [HttpPatch("activate")]
         public async Task<ActionResult<string>> ActivateCharacter(ulong discordId, int charId)
         {
-            UserSimplified user = _context.UserSimplified.Include(x => x.Characters).Include(x => x.ActiveCharacter).SingleOrDefault(x => x.DiscordId == discordId);
+            UserSimplified user = _context.UserSimplified.Include(x => x.ActiveCharacter).SingleOrDefault(x => x.DiscordId == discordId);
 
             if(user == null)
             {
                 return NotFound();
             }
 
-            Character character = user.Characters.SingleOrDefault(x => x.Id == charId);
+            Character character = _context.Characters.SingleOrDefault(x => x.Id == charId);
 
             if(character == null)
             {
