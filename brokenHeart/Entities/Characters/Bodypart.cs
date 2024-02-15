@@ -6,8 +6,9 @@ namespace brokenHeart.Entities.Characters
     {
         [JsonConstructor]
         public Bodypart() { }
-        public Bodypart(string name)
+        public Bodypart(int id, string name)
         {
+            Id = id;
             Name = name;
         }
 

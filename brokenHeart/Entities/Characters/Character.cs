@@ -7,7 +7,6 @@ using System.Text.Json.Serialization;
 using System.ComponentModel.DataAnnotations.Schema;
 using brokenHeart.Entities.RoundReminders;
 using brokenHeart.Entities.Stats;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace brokenHeart.Entities
 {
@@ -15,8 +14,8 @@ namespace brokenHeart.Entities
     {
         [JsonConstructor]
         public Character() { }
-        public Character(string name, UserSimplified owner, int age, string? defaultShortcut = null, string description = "", decimal height = 0, int weight = 0, decimal money = 0, string notes = "", string experience = "",
-            List<Item>? inventory = null, List<Trait>? traits = null)
+        public Character(string name, UserSimplified owner, int? age = null, string? defaultShortcut = null, string description = "", decimal? height = null, int? weight = null, decimal money = 0, string notes = "", string experience = "",
+            List<Item>? inventory = null, List<Trait>? traits = null, List<Effect>? effects = null, int? hp = null)
         {
             Name = name;
             DefaultShortcut = defaultShortcut;
@@ -30,6 +29,7 @@ namespace brokenHeart.Entities
             Experience = experience;
             Items = inventory ?? new List<Item>();
             Traits = traits ?? new List<Trait>();
+            Effects = effects ?? new List<Effect>();
 
             BodypartConditions = new List<BodypartCondition>();
             foreach (Bodypart bp in Constants.Bodyparts.BaseBodyparts)
@@ -41,6 +41,13 @@ namespace brokenHeart.Entities
             {
                 Stats.Add(new StatValue(stat, 0));
             }
+
+            Update();
+
+            if(hp != null)
+            {
+                Hp = (int)hp;
+            }
         }
 
         public int Id { get; set; }
@@ -49,9 +56,9 @@ namespace brokenHeart.Entities
         public string Description { get; set; }
         
         //in m
-        public decimal Height { get; set; }
+        public decimal? Height { get; set; }
         //in kg
-        public int Weight { get; set; }
+        public int? Weight { get; set; }
         //in €
         public decimal Money { get; set; }
 
@@ -67,12 +74,12 @@ namespace brokenHeart.Entities
         public int Armor { get; private set; }
         public int Evasion { get; private set; }
 
-        public int Age { get; set; }
+        public int? Age { get; set; }
         public string Notes { get; set; }
         public string Experience { get; set; }
 
         public virtual ICollection<StatValue> Stats { get; private set; } = new List<StatValue>();
-        public virtual ICollection<BodypartCondition> BodypartConditions { get; private set; } = new List<BodypartCondition>();
+        public virtual ICollection<BodypartCondition> BodypartConditions { get; set; } = new List<BodypartCondition>();
 
         [NotMapped]
         public ICollection<int>? ItemsIds { get; set; } = new List<int>();
@@ -120,6 +127,8 @@ namespace brokenHeart.Entities
             {
                 statValue.Value = 0;
             }
+
+            //TODO: BodypartConditions stuff
 
             //Add item modifiers
             foreach (var item in Items)

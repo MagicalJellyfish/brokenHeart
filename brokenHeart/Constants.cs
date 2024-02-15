@@ -26,12 +26,12 @@ namespace brokenHeart
 
         public static class Bodyparts
         {
-            public static readonly Bodypart Head = new Bodypart("Head");
-            public static readonly Bodypart Torso = new Bodypart("Torso");
-            public static readonly Bodypart ArmR = new Bodypart("Right Arm");
-            public static readonly Bodypart ArmL = new Bodypart("Left Arm");
-            public static readonly Bodypart LegR = new Bodypart("Right Leg");
-            public static readonly Bodypart LegL = new Bodypart("Left Leg");
+            public static readonly Bodypart Head = new Bodypart(1, "Head");
+            public static readonly Bodypart Torso = new Bodypart(2, "Torso");
+            public static readonly Bodypart ArmR = new Bodypart(3, "Right Arm");
+            public static readonly Bodypart ArmL = new Bodypart(4, "Left Arm");
+            public static readonly Bodypart LegR = new Bodypart(5, "Right Leg");
+            public static readonly Bodypart LegL = new Bodypart(6, "Left Leg");
             public static readonly List<Bodypart> BaseBodyparts = new List<Bodypart>() { Head, Torso, ArmR, ArmL, LegR, LegL };
 
             //Injuries
