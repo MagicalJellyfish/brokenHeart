@@ -104,7 +104,7 @@ namespace brokenHeart.Entities
 
         public byte[]? Image { get; set; }
 
-        public bool IsPlayerCharacter { get; set; }
+        public bool IsNPC { get; set; }
         public virtual UserSimplified? Owner { get; set; }
 
 

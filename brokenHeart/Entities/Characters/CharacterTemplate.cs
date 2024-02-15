@@ -69,7 +69,7 @@ namespace brokenHeart.Entities.Characters
 
         public byte[]? Image { get; set; }
 
-        public bool IsPlayerCharacter { get; set; }
+        public bool IsNPC { get; set; }
 
         public Character Instantiate(UserSimplified owner)
         {
