@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.JsonPatch.Operations;
 using brokenHeart.Entities.Stats;
 using Microsoft.EntityFrameworkCore;
 using brokenHeart.Entities;
+using brokenHeart.Entities.Effects;
+using brokenHeart.Entities.Effects.Injuries;
 
 namespace brokenHeart.Controllers.EntityControllers.Characters
 {
@@ -122,6 +124,12 @@ namespace brokenHeart.Controllers.EntityControllers.Characters
             {
                 character.BodypartConditions.Add(new BodypartCondition(bp));
             }
+            foreach(InjuryEffectTemplate injuryEffectTemplate in Constants.Bodyparts.InjuryEffects)
+            {
+                injuryEffectTemplate.Bodypart = _context.Bodyparts.Single(x => x.Id == injuryEffectTemplate.BodypartId);
+                character.InjuryEffects.Add(injuryEffectTemplate.Instantiate());
+            }
+
             character.Counters.Add(Constants.Dying.Instantiate());
             character.Owner = _context.UserSimplified.Single(x => x.Username == User.Identity.Name);
 
@@ -151,6 +159,48 @@ namespace brokenHeart.Controllers.EntityControllers.Characters
             }
 
             _context.Characters.Remove(character);
+            _context.SaveChanges();
+
+            return NoContent();
+        }
+
+        // PATCH: api/Characters/Bodyparts/0
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [HttpPatch("Bodyparts/{id}")]
+        public async Task<IActionResult> PatchBodyparts(int id, JsonPatchDocument<Character> patchDocument)
+        {
+            if (patchDocument == null)
+            {
+                return BadRequest();
+            }
+
+            Character character = FullCharacters().Single(x => x.Id == id);
+
+            if (character == null)
+            {
+                return BadRequest();
+            }
+
+            List<Effect> effects = character.Effects.ToList();
+            effects.RemoveAll(x => character.InjuryEffects.Contains(x));
+            character.Effects = effects;
+
+            foreach (var operation in patchDocument.Operations)
+            {
+                BodypartCondition bpCon = character.BodypartConditions.SingleOrDefault(x => x.BodypartId == int.Parse(operation.path[1..]));
+                InjuryLevel injury = (InjuryLevel)(long)operation.value;
+
+                foreach(InjuryEffect injuryEffect in character.InjuryEffects)
+                {
+                    if(injuryEffect.BodypartId == bpCon.BodypartId && injuryEffect.InjuryLevel <= injury)
+                    {
+                        character.Effects.Add(injuryEffect);
+                    }
+                }
+
+                bpCon.InjuryLevel = injury;
+            }
+
             _context.SaveChanges();
 
             return NoContent();
@@ -190,6 +240,11 @@ namespace brokenHeart.Controllers.EntityControllers.Characters
                 .Include(x => x.Effects).ThenInclude(x => x.EffectCounter).ThenInclude(x => x.RoundReminder)
                 .Include(x => x.Effects).ThenInclude(x => x.RoundReminder)
                 .Include(x => x.Effects).ThenInclude(x => x.StatIncreases).ThenInclude(x => x.Stat)
+
+                .Include(x => x.InjuryEffects).ThenInclude(x => x.Counters).ThenInclude(x => x.RoundReminder)
+                .Include(x => x.InjuryEffects).ThenInclude(x => x.EffectCounter).ThenInclude(x => x.RoundReminder)
+                .Include(x => x.InjuryEffects).ThenInclude(x => x.RoundReminder)
+                .Include(x => x.InjuryEffects).ThenInclude(x => x.StatIncreases).ThenInclude(x => x.Stat)
 
                 .Include(x => x.Items).ThenInclude(x => x.Counters).ThenInclude(x => x.RoundReminder)
                 .Include(x => x.Items).ThenInclude(x => x.RoundReminder)

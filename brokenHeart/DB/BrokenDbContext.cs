@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore.ChangeTracking;
 using brokenHeart.Entities.RoundReminders;
 using brokenHeart.Entities.Stats;
 using brokenHeart.Entities.Combat;
+using brokenHeart.Entities.Effects.Injuries;
 
 namespace brokenHeart.DB
 {
@@ -34,6 +35,9 @@ namespace brokenHeart.DB
 
         public DbSet<Effect> Effects { get; set; }
         public DbSet<EffectTemplate> EffectTemplates { get; set; }
+
+        public DbSet<InjuryEffect> InjuryEffects { get; set; }
+        public DbSet<InjuryEffectTemplate> InjuryEffectTemplates { get; set; }
 
         public DbSet<Trait> Traits { get; set; }
         public DbSet<TraitTemplate> TraitTemplates { get; set; }

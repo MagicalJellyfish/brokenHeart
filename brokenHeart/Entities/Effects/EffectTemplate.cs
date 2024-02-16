@@ -1,6 +1,4 @@
 ﻿using brokenHeart.Entities.Counters;
-using brokenHeart.Entities.Abilities.Abilities;
-using brokenHeart.Auxiliary;
 using System.Text.Json.Serialization;
 using brokenHeart.Entities.RoundReminders;
 using brokenHeart.Entities.Stats;
@@ -12,7 +10,7 @@ namespace brokenHeart.Entities.Effects
         [JsonConstructor]
         public EffectTemplate() { }
         public EffectTemplate(string name, string @abstract, string duration, string description = "", int maxHp = 0, int movementSpeed = 0, int armor = 0, int evasion = 0, string hp = "", int maxTempHp = 0,
-            List<StatValue>? statIncreases = null, List<AbilityTemplate>? abilityTemplates = null, List<CounterTemplate>? counterTemplates = null, 
+            List<StatValue>? statIncreases = null, List<CounterTemplate>? counterTemplates = null, 
             EffectCounterTemplate? effectCounterTemplate = null, RoundReminderTemplate? reminderTemplate = null)
             : base(name, @abstract, description, maxHp, movementSpeed, armor, evasion,
                   statIncreases, counterTemplates, reminderTemplate)

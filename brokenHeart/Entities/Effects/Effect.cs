@@ -1,8 +1,8 @@
 ﻿using brokenHeart.Entities.Counters;
 using brokenHeart.Entities.Stats;
 using System.Text.Json.Serialization;
-using System.ComponentModel.DataAnnotations.Schema;
 using brokenHeart.Entities.RoundReminders;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace brokenHeart.Entities.Effects
 {
@@ -28,6 +28,7 @@ namespace brokenHeart.Entities.Effects
         public string Duration { get; set; }
 
         public virtual EffectCounter? EffectCounter { get; set; }
+
         public int? CharacterId { get; set; }
         public virtual Character? Character { get; set; }
     }

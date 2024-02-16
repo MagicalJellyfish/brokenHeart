@@ -7,6 +7,7 @@ using System.Text.Json.Serialization;
 using System.ComponentModel.DataAnnotations.Schema;
 using brokenHeart.Entities.RoundReminders;
 using brokenHeart.Entities.Stats;
+using brokenHeart.Entities.Effects.Injuries;
 
 namespace brokenHeart.Entities
 {
@@ -95,6 +96,10 @@ namespace brokenHeart.Entities
         public virtual ICollection<Effect> Effects { get; set; } = new List<Effect>();
 
         [NotMapped]
+        public ICollection<int>? InjuryEffectsIds { get; set; } = new List<int>();
+        public virtual ICollection<InjuryEffect> InjuryEffects { get; set; } = new List<InjuryEffect>();
+
+        [NotMapped]
         public ICollection<int>? CountersIds { get; set; } = new List<int>();
         public virtual ICollection<Counter> Counters { get; set; } = new List<Counter>();
 
@@ -148,8 +153,9 @@ namespace brokenHeart.Entities
                 }
             }
 
+            List<Effect> allEffects = Effects/*.Concat(InjuryEffects)*/.ToList();
             //Add effect modifiers
-            foreach (var effect in Effects)
+            foreach (var effect in allEffects)
             {
                 UpdateModified(effect);
                 MaxTempHp += effect.MaxTempHp;

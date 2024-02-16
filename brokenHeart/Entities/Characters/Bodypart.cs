@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using brokenHeart.Entities.Effects.Injuries;
+using System.Text.Json.Serialization;
 
 namespace brokenHeart.Entities.Characters
 {
@@ -16,5 +17,7 @@ namespace brokenHeart.Entities.Characters
         public string Name { get; set; }
 
         public virtual ICollection<BodypartCondition> BodypartConditions { get; set; } = new List<BodypartCondition>();
+        public virtual ICollection<InjuryEffect> InjuryEffects { get; set;} = new List<InjuryEffect>();
+        public virtual ICollection<InjuryEffectTemplate> InjuryEffectsTemplate { get; set; } = new List<InjuryEffectTemplate>();
     }
 }

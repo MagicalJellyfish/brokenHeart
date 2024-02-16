@@ -1,7 +1,9 @@
 ﻿using brokenHeart.Auxiliary;
 using brokenHeart.DB;
+using brokenHeart.Entities;
 using brokenHeart.Entities.Characters;
 using brokenHeart.Entities.Stats;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
 namespace brokenHeart.Controllers.EntityControllers

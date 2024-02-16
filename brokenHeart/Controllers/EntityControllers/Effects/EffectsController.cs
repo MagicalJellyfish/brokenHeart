@@ -120,6 +120,11 @@ namespace brokenHeart.Controllers.EntityControllers.Effects
                 return NotFound();
             }
 
+            if(_context.InjuryEffects.Any(x => x.Id == effect.Id))
+            {
+                return BadRequest("Cannot delete InjuryEffect");
+            }
+
             _context.Effects.Remove(effect);
             _context.SaveChanges();
 
