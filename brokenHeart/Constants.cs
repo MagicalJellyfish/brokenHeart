@@ -184,12 +184,12 @@ namespace brokenHeart
             }
 
             //Validate premade Injuries
-            List<EffectTemplate> dbEffectTemplates = await _dbContext.EffectTemplates.ToListAsync();
-            foreach (EffectTemplate effectTemplate in Bodyparts.InjuryEffects)
+            List<InjuryEffectTemplate> dbInjuryEffectTemplate = await _dbContext.InjuryEffectTemplates.ToListAsync();
+            foreach (InjuryEffectTemplate injuryEffectTemplate in Bodyparts.InjuryEffects)
             {
-                if (!dbEffectTemplates.Select(x => x.Name).Contains(effectTemplate.Name))
+                if (!dbInjuryEffectTemplate.Select(x => x.Name).Contains(injuryEffectTemplate.Name))
                 {
-                    _dbContext.EffectTemplates.Add(effectTemplate);
+                    _dbContext.EffectTemplates.Add(injuryEffectTemplate);
                 }
             }
 
