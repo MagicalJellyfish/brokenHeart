@@ -8,6 +8,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 using brokenHeart.Entities.RoundReminders;
 using brokenHeart.Entities.Stats;
 using brokenHeart.Entities.Effects.Injuries;
+using Microsoft.EntityFrameworkCore;
+using brokenHeart.DB;
 
 namespace brokenHeart.Entities
 {
@@ -31,24 +33,6 @@ namespace brokenHeart.Entities
             Items = inventory ?? new List<Item>();
             Traits = traits ?? new List<Trait>();
             Effects = effects ?? new List<Effect>();
-
-            BodypartConditions = new List<BodypartCondition>();
-            foreach (Bodypart bp in Constants.Bodyparts.BaseBodyparts)
-            {
-                BodypartConditions.Add(new BodypartCondition(bp));
-            }
-            Stats = new List<StatValue>();
-            foreach(Stat stat in Constants.Stats.stats)
-            {
-                Stats.Add(new StatValue(stat, 0));
-            }
-
-            Update();
-
-            if(hp != null)
-            {
-                Hp = (int)hp;
-            }
         }
 
         public int Id { get; set; }
@@ -110,6 +94,8 @@ namespace brokenHeart.Entities
         public byte[]? Image { get; set; }
 
         public bool IsNPC { get; set; }
+
+        public int OwnerId { get; set; }
         public virtual UserSimplified? Owner { get; set; }
 
 
@@ -133,8 +119,6 @@ namespace brokenHeart.Entities
                 statValue.Value = 0;
             }
 
-            //TODO: BodypartConditions stuff
-
             //Add item modifiers
             foreach (var item in Items)
             {
@@ -153,9 +137,8 @@ namespace brokenHeart.Entities
                 }
             }
 
-            List<Effect> allEffects = Effects/*.Concat(InjuryEffects)*/.ToList();
             //Add effect modifiers
-            foreach (var effect in allEffects)
+            foreach (var effect in Effects)
             {
                 UpdateModified(effect);
                 MaxTempHp += effect.MaxTempHp;

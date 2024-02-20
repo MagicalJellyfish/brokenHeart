@@ -4,6 +4,7 @@ using System.Text.Json.Serialization;
 using brokenHeart.Entities.Characters;
 using brokenHeart.Entities.RoundReminders;
 using brokenHeart.Entities.Stats;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace brokenHeart.Entities.Traits
 {
@@ -18,6 +19,9 @@ namespace brokenHeart.Entities.Traits
                   armor, evasion, statIncreases, counterTemplates, reminderTemplate)
         { }
 
+        [NotMapped]
+        public ICollection<int>? CharacterTemplatesIds { get; set; } = new List<int>();
+        public virtual ICollection<CharacterTemplate> CharacterTemplates { get; set; } = new List<CharacterTemplate>();
 
         public Trait Instantiate()
         {

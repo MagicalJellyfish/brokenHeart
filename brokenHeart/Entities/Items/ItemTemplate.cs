@@ -2,6 +2,8 @@
 using System.Text.Json.Serialization;
 using brokenHeart.Entities.RoundReminders;
 using brokenHeart.Entities.Stats;
+using System.ComponentModel.DataAnnotations.Schema;
+using brokenHeart.Entities.Characters;
 
 namespace brokenHeart.Entities.Items
 {
@@ -15,6 +17,9 @@ namespace brokenHeart.Entities.Items
             : base(name, @abstract, description, maxHp, movementSpeed, armor, evasion, statIncreases, counterTemplates, reminderTemplate)
         { }
 
+        [NotMapped]
+        public ICollection<int>? CharacterTemplatesIds { get; set; } = new List<int>();
+        public virtual ICollection<CharacterTemplate> CharacterTemplates { get; set; } = new List<CharacterTemplate>();
 
         public Item Instantiate()
         {

@@ -154,7 +154,9 @@ namespace brokenHeart.Controllers.EntityControllers.RoundReminderTemplates
 
         private IQueryable<RoundReminderTemplate> FullRoundReminderTemplates()
         {
-            return _context.RoundReminderTemplates;
+            return _context.RoundReminderTemplates
+                .Include(x => x.CharacterTemplates)
+                .Include(x => x.ModifierTemplates);
         }
     }
 }

@@ -156,6 +156,7 @@ namespace brokenHeart.Controllers.EntityControllers.CounterTemplates
         private IQueryable<CounterTemplate> FullCounterTemplates()
         {
             return _context.CounterTemplates
+                .Include(x => x.CharacterTemplates)
                 .Include(x => x.RoundReminderTemplate);
         }
     }

@@ -150,6 +150,7 @@ namespace brokenHeart.Controllers.EntityControllers.TraitTemplates
         private IQueryable<TraitTemplate> FullTraitTemplates()
         {
             return _context.TraitTemplates
+                .Include(x => x.CharacterTemplates)
                 .Include(x => x.CounterTemplates)
                 .Include(x => x.RoundReminderTemplate)
                 .Include(x => x.StatIncreases).ThenInclude(x => x.Stat);

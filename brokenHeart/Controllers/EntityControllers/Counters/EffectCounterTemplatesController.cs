@@ -150,6 +150,7 @@ namespace brokenHeart.Controllers.EntityControllers.EffectCounterTemplates
         private IQueryable<EffectCounterTemplate> FullEffectCounterTemplates()
         {
             return _context.EffectCounterTemplates
+                .Include(x => x.CharacterTemplates)
                 .Include(x => x.RoundReminderTemplate);
         }
     }

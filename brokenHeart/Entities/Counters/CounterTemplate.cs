@@ -1,4 +1,5 @@
-﻿using brokenHeart.Entities.RoundReminders;
+﻿using brokenHeart.Entities.Characters;
+using brokenHeart.Entities.RoundReminders;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
@@ -29,6 +30,10 @@ namespace brokenHeart.Entities.Counters
         [NotMapped]
         public ICollection<int> ModifierTemplatesIds { get; set; } = new List<int>();
         public virtual ICollection<ModifierTemplate> ModifierTemplates { get; set; } = new List<ModifierTemplate>();
+
+        [NotMapped]
+        public ICollection<int>? CharacterTemplatesIds { get; set; } = new List<int>();
+        public virtual ICollection<CharacterTemplate> CharacterTemplates { get; set; } = new List<CharacterTemplate>();
 
         public Counter Instantiate()
         {

@@ -1,8 +1,8 @@
-﻿using brokenHeart.Entities.Counters;
+﻿using brokenHeart.DB;
+using brokenHeart.Entities.Counters;
 using brokenHeart.Entities.Effects;
 using brokenHeart.Entities.Items;
 using brokenHeart.Entities.RoundReminders;
-using brokenHeart.Entities.Stats;
 using brokenHeart.Entities.Traits;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
@@ -13,7 +13,7 @@ namespace brokenHeart.Entities.Characters
     {
         [JsonConstructor]
         public CharacterTemplate() { }
-        public CharacterTemplate(string name, UserSimplified owner, int age, string description = "", decimal height = 0, int weight = 0, decimal money = 0, string notes = "", string experience = "",
+        public CharacterTemplate(string name, int age, string description = "", decimal height = 0, int weight = 0, decimal money = 0, string notes = "", string experience = "",
             List<ItemTemplate>? inventory = null, List<TraitTemplate>? traits = null)
         {
             Name = name;
@@ -38,8 +38,6 @@ namespace brokenHeart.Entities.Characters
         public int? Weight { get; set; }
         //in €
         public decimal Money { get; set; }
-
-        public int Hp { get; set; }
 
         public int? Age { get; set; }
         public string Notes { get; set; }
@@ -74,7 +72,7 @@ namespace brokenHeart.Entities.Characters
         public Character Instantiate(UserSimplified owner)
         {
             return new Character(Name, owner, Age, null, Description, Height, Weight, Money, Notes, Experience, 
-                ItemTemplates.Select(x => x.Instantiate()).ToList(), TraitTemplates.Select(x => x.Instantiate()).ToList(), EffectTemplates.Select(x => x.Instantiate()).ToList(), Hp);
+                ItemTemplates.Select(x => x.Instantiate()).ToList(), TraitTemplates.Select(x => x.Instantiate()).ToList(), EffectTemplates.Select(x => x.Instantiate()).ToList());
         }
     }
 }

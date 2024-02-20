@@ -120,9 +120,9 @@ namespace brokenHeart.Controllers.EntityControllers.EffectTemplates
                 return NotFound();
             }
 
-            if (effectTemplate.Id <= 15)
+            if (_context.InjuryEffectTemplates.Any(x => x.Id == effectTemplate.Id))
             {
-                return BadRequest("Integral Effect-Templates can't be deleted");
+                return BadRequest("Cannot delete InjuryEffectTemplates");
             }
 
             _context.EffectTemplates.Remove(effectTemplate);
@@ -155,6 +155,7 @@ namespace brokenHeart.Controllers.EntityControllers.EffectTemplates
         private IQueryable<EffectTemplate> FullEffectTemplates()
         {
             return _context.EffectTemplates
+                .Include(x => x.CharacterTemplates)
                 .Include(x => x.CounterTemplates)
                 .Include(x => x.EffectCounterTemplate)
                 .Include(x => x.RoundReminderTemplate)

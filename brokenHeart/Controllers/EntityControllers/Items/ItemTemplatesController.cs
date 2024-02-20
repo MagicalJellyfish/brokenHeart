@@ -150,6 +150,7 @@ namespace brokenHeart.Controllers.EntityControllers.ItemTemplates
         private IQueryable<ItemTemplate> FullItemTemplates()
         {
             return _context.ItemTemplates
+                .Include(x => x.CharacterTemplates)
                 .Include(x => x.CounterTemplates)
                 .Include(x => x.RoundReminderTemplate)
                 .Include(x => x.StatIncreases).ThenInclude(x => x.Stat);

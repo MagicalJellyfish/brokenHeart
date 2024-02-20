@@ -19,6 +19,7 @@ namespace brokenHeart.DB
         public DbSet<UserSimplified> UserSimplified { get; set; }
 
         public DbSet<Character> Characters { get; set; }
+        public DbSet<CharacterTemplate> CharacterTemplates { get; set; }
         public DbSet<Bodypart> Bodyparts { get; set; }
         public DbSet<BodypartCondition> BodypartConditions { get; set; }
 
@@ -198,7 +199,6 @@ namespace brokenHeart.DB
                     .OnDelete(DeleteBehavior.Cascade);
             });
 
-
             modelBuilder.Entity<Counter>(x =>
             {
                 x.HasOne("brokenHeart.Entities.Character", "Character")
@@ -227,6 +227,32 @@ namespace brokenHeart.DB
                 x.HasOne("brokenHeart.Entities.Modifier", "Modifier")
                     .WithOne("RoundReminder")
                     .HasForeignKey("brokenHeart.Entities.RoundReminders.RoundReminder", "ModifierId")
+                    .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            modelBuilder.Entity<CombatEntry>(x =>
+            {
+                x.HasOne("brokenHeart.Entities.Character", "Character")
+                    .WithMany()
+                    .HasForeignKey("CharacterId")
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                x.HasOne("brokenHeart.Entities.Combat.Combat", null)
+                    .WithMany("Entries")
+                    .HasForeignKey("CombatId")
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                x.HasOne("brokenHeart.Entities.Combat.Event", "Event")
+                    .WithOne("CombatEntry")
+                    .HasForeignKey("brokenHeart.Entities.Combat.CombatEntry", "EventId")
+                    .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            modelBuilder.Entity<InjuryEffect>(x =>
+            {
+                x.HasOne("brokenHeart.Entities.Character", "CharacterInjury")
+                    .WithMany("InjuryEffects")
+                    .HasForeignKey("CharacterInjuryId")
                     .OnDelete(DeleteBehavior.Cascade);
             });
 
