@@ -24,6 +24,7 @@ namespace brokenHeart.Controllers.EntityControllers.Items
 
 	    // GET: api/Items
 	    [HttpGet]
+        [Authorize]
         public async Task<ActionResult<IEnumerable<Item>>> GetItems()
         {
             if (_context.Items == null || _context.Items.Count() == 0)
@@ -38,6 +39,7 @@ namespace brokenHeart.Controllers.EntityControllers.Items
 
         // GET: api/Items/5
         [HttpGet("{id}")]
+        [Authorize]
         public async Task<ActionResult<Item>> GetItem(int id)
         {
             if (_context.Items == null || _context.Items.Count() == 0)
@@ -58,6 +60,7 @@ namespace brokenHeart.Controllers.EntityControllers.Items
         // PATCH: api/Items/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPatch("{id}")]
+        [Authorize]
         public async Task<IActionResult> PatchItem(int id, JsonPatchDocument<Item> patchDocument)
         {
             if (patchDocument == null)
@@ -95,6 +98,7 @@ namespace brokenHeart.Controllers.EntityControllers.Items
         // POST: api/Items
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
+        [Authorize]
         public async Task<ActionResult<Item>> PostItem(Item item)
         {
             if (_context.Items == null)
@@ -109,6 +113,7 @@ namespace brokenHeart.Controllers.EntityControllers.Items
 
         // DELETE: api/Items/5
         [HttpDelete("{id}")]
+        [Authorize]
         public async Task<IActionResult> DeleteItem(int id)
         {
             if (_context.Items == null)

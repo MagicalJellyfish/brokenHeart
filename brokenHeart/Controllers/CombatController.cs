@@ -4,6 +4,7 @@ using brokenHeart.Entities;
 using brokenHeart.Entities.Characters;
 using brokenHeart.Entities.Combat;
 using brokenHeart.Entities.RoundReminders;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -33,8 +34,7 @@ namespace brokenHeart.Controllers
             return FullCombats().ToList();
         }
 
-        [HttpGet]
-        [Route("active")]
+        [HttpGet("active")]
         public async Task<ActionResult<Combat>> GetActiveCombat()
         {
             Combat activeCombat = ActiveCombat();
@@ -76,8 +76,7 @@ namespace brokenHeart.Controllers
             return NoContent();
         }
 
-        [HttpPatch]
-        [Route("activate/{id}")]
+        [HttpPatch("activate/{id}")]
         public async Task<IActionResult> ActivateCombat(int id)
         {
             foreach (Combat combat in _context.Combats)
@@ -97,8 +96,7 @@ namespace brokenHeart.Controllers
             return NoContent();
         }
 
-        [HttpPost]
-        [Route("add-participant")]
+        [HttpPost("add-participant")]
         public async Task<ActionResult<object>> AddParticipant(int id, string? shortcut = null, int? initRoll = null)
         {
             Character? character = _context.Characters.Include(x => x.Stats).ThenInclude(x => x.Stat).SingleOrDefault(x => x.Id == id);
@@ -144,8 +142,7 @@ namespace brokenHeart.Controllers
             return new { character.Name, ce.Shortcut, ce.InitRoll };
         }
 
-        [HttpPost]
-        [Route("add-event")]
+        [HttpPost("add-event")]
         public async Task<IActionResult> AddEvent(Event @event)
         {
             Combat? activeCombat = ActiveCombat();
@@ -162,8 +159,7 @@ namespace brokenHeart.Controllers
             return NoContent();
         }
 
-        [HttpPatch]
-        [Route("next-turn")]
+        [HttpPatch("next-turn")]
         public async Task<ActionResult<List<Message>>> NextTurn()
         {
             List<Message> returnMessages = new List<Message>();
@@ -291,8 +287,7 @@ namespace brokenHeart.Controllers
             return turnMessages;
         }
 
-        [HttpDelete]
-        [Route("remove-participant")]
+        [HttpDelete("remove-participant")]
         public async Task<IActionResult> RemoveParticipant(string shortcut)
         {
             Combat? activeCombat = ActiveCombat();

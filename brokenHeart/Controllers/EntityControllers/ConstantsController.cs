@@ -3,6 +3,7 @@ using brokenHeart.DB;
 using brokenHeart.Entities;
 using brokenHeart.Entities.Characters;
 using brokenHeart.Entities.Stats;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
@@ -20,8 +21,8 @@ namespace brokenHeart.Controllers.EntityControllers
         }
 
         // GET: api/Constants/Stats
-        [Route("Stats")]
-        [HttpGet]
+        [HttpGet("Stats")]
+        [Authorize]
         public async Task<ActionResult<IEnumerable<Stat>>> GetStats()
         {
             if (_context.Stats == null || _context.Stats.Count() == 0)
@@ -35,8 +36,8 @@ namespace brokenHeart.Controllers.EntityControllers
         }
 
         // GET: api/Constants/Bodyparts
-        [Route("Bodyparts")]
-        [HttpGet]
+        [HttpGet("Bodyparts")]
+        [Authorize]
         public async Task<ActionResult<IEnumerable<Bodypart>>> GetBodyparts()
         {
             if (_context.Bodyparts == null || _context.Bodyparts.Count() == 0)

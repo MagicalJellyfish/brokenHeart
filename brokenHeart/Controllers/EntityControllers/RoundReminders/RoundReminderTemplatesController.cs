@@ -23,6 +23,7 @@ namespace brokenHeart.Controllers.EntityControllers.RoundReminderTemplates
 
 	    // GET: api/RoundReminderTemplates
 	    [HttpGet]
+        [Authorize]
         public async Task<ActionResult<IEnumerable<RoundReminderTemplate>>> GetRoundReminderTemplates()
         {
             if (_context.RoundReminderTemplates == null || _context.RoundReminderTemplates.Count() == 0)
@@ -37,6 +38,7 @@ namespace brokenHeart.Controllers.EntityControllers.RoundReminderTemplates
 
         // GET: api/RoundReminderTemplates/5
         [HttpGet("{id}")]
+        [Authorize]
         public async Task<ActionResult<RoundReminderTemplate>> GetRoundReminderTemplate(int id)
         {
             if (_context.RoundReminderTemplates == null || _context.RoundReminderTemplates.Count() == 0)
@@ -57,6 +59,7 @@ namespace brokenHeart.Controllers.EntityControllers.RoundReminderTemplates
         // PATCH: api/RoundReminderTemplates/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPatch("{id}")]
+        [Authorize]
         public async Task<IActionResult> PatchRoundReminderTemplate(int id, JsonPatchDocument<RoundReminderTemplate> patchDocument)
         {
             if (patchDocument == null)
@@ -94,6 +97,7 @@ namespace brokenHeart.Controllers.EntityControllers.RoundReminderTemplates
         // POST: api/RoundReminderTemplates
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
+        [Authorize]
         public async Task<ActionResult<RoundReminderTemplate>> PostRoundReminderTemplate(RoundReminderTemplate roundReminderTemplate)
         {
             if (_context.RoundReminderTemplates == null)
@@ -108,6 +112,7 @@ namespace brokenHeart.Controllers.EntityControllers.RoundReminderTemplates
 
         // DELETE: api/RoundReminderTemplates/5
         [HttpDelete("{id}")]
+        [Authorize]
         public async Task<IActionResult> DeleteRoundReminderTemplate(int id)
         {
             if (_context.RoundReminderTemplates == null)
@@ -133,6 +138,7 @@ namespace brokenHeart.Controllers.EntityControllers.RoundReminderTemplates
 
         // GET: api/RoundReminderTemplates/Instantiate/5
         [HttpGet("Instantiate/{id}")]
+        [Authorize]
         public async Task<ActionResult<RoundReminder>> InstantiateRoundReminderTemplate(int id)
         {
             if (_context.RoundReminderTemplates == null || _context.RoundReminderTemplates.Count() == 0)

@@ -24,6 +24,7 @@ namespace brokenHeart.Controllers.EntityControllers.CounterTemplates
 
 	    // GET: api/CounterTemplates
 	    [HttpGet]
+        [Authorize]
         public async Task<ActionResult<IEnumerable<CounterTemplate>>> GetCounterTemplates()
         {
             if (_context.CounterTemplates == null || _context.CounterTemplates.Count() == 0)
@@ -38,6 +39,7 @@ namespace brokenHeart.Controllers.EntityControllers.CounterTemplates
 
         // GET: api/CounterTemplates/5
         [HttpGet("{id}")]
+        [Authorize]
         public async Task<ActionResult<CounterTemplate>> GetCounterTemplate(int id)
         {
             if (_context.CounterTemplates == null || _context.CounterTemplates.Count() == 0)
@@ -58,6 +60,7 @@ namespace brokenHeart.Controllers.EntityControllers.CounterTemplates
         // PATCH: api/CounterTemplates/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPatch("{id}")]
+        [Authorize]
         public async Task<IActionResult> PatchCounterTemplate(int id, JsonPatchDocument<CounterTemplate> patchDocument)
         {
             if (patchDocument == null)
@@ -95,6 +98,7 @@ namespace brokenHeart.Controllers.EntityControllers.CounterTemplates
         // POST: api/CounterTemplates
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
+        [Authorize]
         public async Task<ActionResult<CounterTemplate>> PostCounterTemplate(CounterTemplate counterTemplate)
         {
             if (_context.CounterTemplates == null)
@@ -109,6 +113,7 @@ namespace brokenHeart.Controllers.EntityControllers.CounterTemplates
 
         // DELETE: api/CounterTemplates/5
         [HttpDelete("{id}")]
+        [Authorize]
         public async Task<IActionResult> DeleteCounterTemplate(int id)
         {
             if (_context.CounterTemplates == null)
@@ -134,6 +139,7 @@ namespace brokenHeart.Controllers.EntityControllers.CounterTemplates
 
         // GET: api/CounterTemplates/Instantiate/5
         [HttpGet("Instantiate/{id}")]
+        [Authorize]
         public async Task<ActionResult<Counter>> InstantiateCounterTemplate(int id)
         {
             if (_context.CounterTemplates == null || _context.CounterTemplates.Count() == 0)

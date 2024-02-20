@@ -5,6 +5,7 @@ using brokenHeart.Entities.Counters;
 using brokenHeart.Auxiliary;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.JsonPatch.Operations;
+using Microsoft.AspNetCore.Authorization;
 
 namespace brokenHeart.Controllers.EntityControllers.Counters
 {
@@ -21,6 +22,7 @@ namespace brokenHeart.Controllers.EntityControllers.Counters
 
         // GET: api/Counters
         [HttpGet]
+        [Authorize]
         public async Task<ActionResult<IEnumerable<Counter>>> GetCounters()
         {
           if (_context.Counters == null || _context.Counters.Count() == 0)
@@ -35,6 +37,7 @@ namespace brokenHeart.Controllers.EntityControllers.Counters
 
         // GET: api/Counters/5
         [HttpGet("{id}")]
+        [Authorize]
         public async Task<ActionResult<Counter>> GetCounter(int id)
         {
           if (_context.Counters == null || _context.Counters.Count() == 0)
@@ -54,6 +57,7 @@ namespace brokenHeart.Controllers.EntityControllers.Counters
         // PATCH: api/Counters/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPatch("{id}")]
+        [Authorize]
         public async Task<IActionResult> PatchCounter(int id, JsonPatchDocument<Counter> patchDocument)
         {
             if (patchDocument == null)
@@ -91,6 +95,7 @@ namespace brokenHeart.Controllers.EntityControllers.Counters
         // POST: api/Counters
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
+        [Authorize]
         public async Task<ActionResult<Counter>> PostCounter(Counter counter)
         {
             if (_context.Counters == null)
@@ -105,6 +110,7 @@ namespace brokenHeart.Controllers.EntityControllers.Counters
 
         // DELETE: api/Counters/5
         [HttpDelete("{id}")]
+        [Authorize]
         public async Task<IActionResult> DeleteCounter(int id)
         {
             if (_context.Counters == null)

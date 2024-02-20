@@ -23,6 +23,7 @@ namespace brokenHeart.Controllers.EntityControllers.Effects
 
 	    // GET: api/Effects
 	    [HttpGet]
+        [Authorize]
         public async Task<ActionResult<IEnumerable<Effect>>> GetEffects()
         {
             if (_context.Effects == null || _context.Effects.Count() == 0)
@@ -37,6 +38,7 @@ namespace brokenHeart.Controllers.EntityControllers.Effects
 
         // GET: api/Effects/5
         [HttpGet("{id}")]
+        [Authorize]
         public async Task<ActionResult<Effect>> GetEffect(int id)
         {
             if (_context.Effects == null || _context.Effects.Count() == 0)
@@ -57,6 +59,7 @@ namespace brokenHeart.Controllers.EntityControllers.Effects
         // PATCH: api/Effects/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPatch("{id}")]
+        [Authorize]
         public async Task<IActionResult> PatchEffect(int id, JsonPatchDocument<Effect> patchDocument)
         {
             if (patchDocument == null)
@@ -94,6 +97,7 @@ namespace brokenHeart.Controllers.EntityControllers.Effects
         // POST: api/Effects
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
+        [Authorize]
         public async Task<ActionResult<Effect>> PostEffect(Effect effect)
         {
             if (_context.Effects == null)
@@ -108,6 +112,7 @@ namespace brokenHeart.Controllers.EntityControllers.Effects
 
         // DELETE: api/Effects/5
         [HttpDelete("{id}")]
+        [Authorize]
         public async Task<IActionResult> DeleteEffect(int id)
         {
             if (_context.Effects == null)

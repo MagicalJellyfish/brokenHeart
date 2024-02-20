@@ -31,8 +31,7 @@ namespace brokenHeart.Controllers
             _brokenDbContext = brokenDbContext;
         }
 
-        [HttpPost]
-        [Route("register")]
+        [HttpPost("register")]
         public async Task<ActionResult> Register(RegistrationModel registerModel)
         {
             var userExists = await _userManager.FindByNameAsync(registerModel.Username);
@@ -56,7 +55,7 @@ namespace brokenHeart.Controllers
                 return StatusCode(500, "User creation failed! " + createUserResult.Errors.First().Description);
             }
 
-            string role = UserRoles.Unverified;
+            string role = UserRoles.User;
             await _userManager.AddToRoleAsync(user, role);
 
             _brokenDbContext.UserSimplified.Add(new UserSimplified(registerModel.Username, (ulong)registerModel.DiscordId));
@@ -65,8 +64,7 @@ namespace brokenHeart.Controllers
             return Ok();
         }
 
-        [HttpPost]
-        [Route("login")]
+        [HttpPost("login")]
         public async Task<ActionResult> Login(LoginModel loginModel)
         {
             var user = await _userManager.FindByNameAsync(loginModel.Username);
@@ -114,8 +112,8 @@ namespace brokenHeart.Controllers
             });
         }
 
-        [HttpGet]
-        [Route("logout")]
+        [HttpGet("logout")]
+        [Authorize]
         public async Task<ActionResult> Logout()
         {
             var user = await _userManager.FindByNameAsync(User.Identity.Name);
@@ -125,8 +123,7 @@ namespace brokenHeart.Controllers
             return Ok();
         }
 
-        [HttpPost]
-        [Route("refresh-token")]
+        [HttpPost("refresh-token")]
         public async Task<IActionResult> RefreshToken(TokenModel tokenModel)
         {
             if (tokenModel is null)
@@ -176,9 +173,8 @@ namespace brokenHeart.Controllers
             });
         }
 
-        [HttpGet]
-        [Route("discord")]
-        [Authorize(Roles = UserRoles.User)]
+        [HttpGet("discord")]
+        [Authorize]
         public async Task<ActionResult<object>> GetId()
         {
             var user = await _userManager.FindByNameAsync(User.Identity.Name);
@@ -191,9 +187,8 @@ namespace brokenHeart.Controllers
             return new { discordId = user.DiscordId.ToString() };
         }
 
-        [HttpPatch]
-        [Route("discord/{discordId}")]
-        [Authorize(Roles = UserRoles.User)]
+        [HttpPatch("discord/{discordId}")]
+        [Authorize]
         public async Task<ActionResult> ChangeId(ulong discordId)
         {
             var user = await _userManager.FindByNameAsync(User.Identity.Name);
@@ -213,8 +208,7 @@ namespace brokenHeart.Controllers
             return NoContent();
         }
 
-        [HttpPatch]
-        [Route("roles/{name}")]
+        [HttpPatch("roles/{name}")]
         [Authorize(Roles = UserRoles.Admin)]
         public async Task<ActionResult> EditRoles(string name, IEnumerable<string> roles)
         {
@@ -253,8 +247,7 @@ namespace brokenHeart.Controllers
             return Ok();
         }
 
-        [HttpGet]
-        [Route("users")]
+        [HttpGet("users")]
         [Authorize(Roles = UserRoles.Admin)]
         public async Task<ActionResult> GetUsers()
         {
@@ -275,8 +268,7 @@ namespace brokenHeart.Controllers
             }
         }
 
-        [HttpGet]
-        [Route("roles/{name}")]
+        [HttpGet("roles/{name}")]
         [Authorize(Roles = UserRoles.Admin)]
         public async Task<ActionResult> GetRoles(string name)
         {
@@ -291,7 +283,7 @@ namespace brokenHeart.Controllers
 
                 return Ok(await _userManager.GetRolesAsync(user));
             }
-            catch (Exception ex)
+            catch (Exception _)
             {
                 return StatusCode(500);
             }

@@ -1,4 +1,5 @@
 ﻿using brokenHeart.Auxiliary;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace brokenHeart.Controllers
@@ -9,8 +10,7 @@ namespace brokenHeart.Controllers
     {
         public ActionsController() { }
 
-        [HttpGet]
-        [Route("roll")]
+        [HttpGet("roll")]
         public async Task<RollResult> Roll(string rollString)
         {
             return RollAuxiliary.RollString(rollString);

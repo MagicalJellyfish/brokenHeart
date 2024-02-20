@@ -23,6 +23,7 @@ namespace brokenHeart.Controllers.EntityControllers.StatValues
 
 	    // GET: api/StatValues
 	    [HttpGet]
+        [Authorize]
         public async Task<ActionResult<IEnumerable<StatValue>>> GetStatValues()
         {
             if (_context.StatValues == null || _context.StatValues.Count() == 0)
@@ -37,6 +38,7 @@ namespace brokenHeart.Controllers.EntityControllers.StatValues
 
         // GET: api/StatValues/5
         [HttpGet("{id}")]
+        [Authorize]
         public async Task<ActionResult<StatValue>> GetStatValue(int id)
         {
             if (_context.StatValues == null || _context.StatValues.Count() == 0)
@@ -57,6 +59,7 @@ namespace brokenHeart.Controllers.EntityControllers.StatValues
         // PATCH: api/StatValues/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPatch("{id}")]
+        [Authorize]
         public async Task<IActionResult> PatchStatValue(int id, JsonPatchDocument<StatValue> patchDocument)
         {
             if (patchDocument == null)
@@ -94,6 +97,7 @@ namespace brokenHeart.Controllers.EntityControllers.StatValues
         // POST: api/StatValues
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
+        [Authorize]
         public async Task<ActionResult<StatValue>> PostStatValue(StatValue statValue)
         {
             if (_context.StatValues == null)
@@ -108,6 +112,7 @@ namespace brokenHeart.Controllers.EntityControllers.StatValues
 
         // DELETE: api/StatValues/5
         [HttpDelete("{id}")]
+        [Authorize]
         public async Task<IActionResult> DeleteStatValue(int id)
         {
             if (_context.StatValues == null)

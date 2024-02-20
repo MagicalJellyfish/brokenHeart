@@ -23,6 +23,7 @@ namespace brokenHeart.Controllers.EntityControllers.EffectTemplates
 
 	    // GET: api/EffectTemplates
 	    [HttpGet]
+        [Authorize]
         public async Task<ActionResult<IEnumerable<EffectTemplate>>> GetEffectTemplates()
         {
             if (_context.EffectTemplates == null || _context.EffectTemplates.Count() == 0)
@@ -37,6 +38,7 @@ namespace brokenHeart.Controllers.EntityControllers.EffectTemplates
 
         // GET: api/EffectTemplates/5
         [HttpGet("{id}")]
+        [Authorize]
         public async Task<ActionResult<EffectTemplate>> GetEffectTemplate(int id)
         {
             if (_context.EffectTemplates == null || _context.EffectTemplates.Count() == 0)
@@ -57,6 +59,7 @@ namespace brokenHeart.Controllers.EntityControllers.EffectTemplates
         // PATCH: api/EffectTemplates/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPatch("{id}")]
+        [Authorize]
         public async Task<IActionResult> PatchEffectTemplate(int id, JsonPatchDocument<EffectTemplate> patchDocument)
         {
             if (patchDocument == null)
@@ -94,6 +97,7 @@ namespace brokenHeart.Controllers.EntityControllers.EffectTemplates
         // POST: api/EffectTemplates
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
+        [Authorize]
         public async Task<ActionResult<EffectTemplate>> PostEffectTemplate(EffectTemplate effectTemplate)
         {
             if (_context.EffectTemplates == null)
@@ -108,6 +112,7 @@ namespace brokenHeart.Controllers.EntityControllers.EffectTemplates
 
         // DELETE: api/EffectTemplates/5
         [HttpDelete("{id}")]
+        [Authorize]
         public async Task<IActionResult> DeleteEffectTemplate(int id)
         {
             if (_context.EffectTemplates == null)
@@ -133,6 +138,7 @@ namespace brokenHeart.Controllers.EntityControllers.EffectTemplates
 
         // GET: api/EffectTemplates/Instantiate/5
         [HttpGet("Instantiate/{id}")]
+        [Authorize]
         public async Task<ActionResult<Effect>> InstantiateEffectTemplate(int id)
         {
             if (_context.EffectTemplates == null || _context.EffectTemplates.Count() == 0)

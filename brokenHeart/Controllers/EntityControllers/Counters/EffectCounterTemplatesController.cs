@@ -23,6 +23,7 @@ namespace brokenHeart.Controllers.EntityControllers.EffectCounterTemplates
 
 	    // GET: api/EffectCounterTemplates
 	    [HttpGet]
+        [Authorize]
         public async Task<ActionResult<IEnumerable<EffectCounterTemplate>>> GetEffectCounterTemplates()
         {
             if (_context.EffectCounterTemplates == null || _context.EffectCounterTemplates.Count() == 0)
@@ -37,6 +38,7 @@ namespace brokenHeart.Controllers.EntityControllers.EffectCounterTemplates
 
         // GET: api/EffectCounterTemplates/5
         [HttpGet("{id}")]
+        [Authorize]
         public async Task<ActionResult<EffectCounterTemplate>> GetEffectCounterTemplate(int id)
         {
             if (_context.EffectCounterTemplates == null || _context.EffectCounterTemplates.Count() == 0)
@@ -57,6 +59,7 @@ namespace brokenHeart.Controllers.EntityControllers.EffectCounterTemplates
         // PATCH: api/EffectCounterTemplates/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPatch("{id}")]
+        [Authorize]
         public async Task<IActionResult> PatchEffectCounterTemplate(int id, JsonPatchDocument<EffectCounterTemplate> patchDocument)
         {
             if (patchDocument == null)
@@ -94,6 +97,7 @@ namespace brokenHeart.Controllers.EntityControllers.EffectCounterTemplates
         // POST: api/EffectCounterTemplates
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
+        [Authorize]
         public async Task<ActionResult<EffectCounterTemplate>> PostEffectCounterTemplate(EffectCounterTemplate effectCounterTemplate)
         {
             if (_context.EffectCounterTemplates == null)
@@ -108,6 +112,7 @@ namespace brokenHeart.Controllers.EntityControllers.EffectCounterTemplates
 
         // DELETE: api/EffectCounterTemplates/5
         [HttpDelete("{id}")]
+        [Authorize]
         public async Task<IActionResult> DeleteEffectCounterTemplate(int id)
         {
             if (_context.EffectCounterTemplates == null)
@@ -128,6 +133,7 @@ namespace brokenHeart.Controllers.EntityControllers.EffectCounterTemplates
 
         // GET: api/EffectCounterTemplates/Instantiate/5
         [HttpGet("Instantiate/{id}")]
+        [Authorize]
         public async Task<ActionResult<EffectCounter>> InstantiateEffectCounterTemplate(int id)
         {
             if (_context.EffectCounterTemplates == null || _context.EffectCounterTemplates.Count() == 0)

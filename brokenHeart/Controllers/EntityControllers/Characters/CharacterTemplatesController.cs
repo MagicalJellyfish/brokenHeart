@@ -38,6 +38,7 @@ namespace brokenHeart.Controllers.EntityControllers.Characters
 
         // GET: api/CharacterTemplates/5
         [HttpGet("{id}")]
+        [Authorize]
         public async Task<ActionResult<CharacterTemplate>> GetCharacterTemplate(int id)
         {
             if (_context.CharacterTemplates == null || _context.CharacterTemplates.Count() == 0)
@@ -58,6 +59,7 @@ namespace brokenHeart.Controllers.EntityControllers.Characters
         // PATCH: api/CharacterTemplates/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPatch("{id}")]
+        [Authorize]
         public async Task<IActionResult> PatchCharacterTemplates(int id, JsonPatchDocument<CharacterTemplate> patchDocument)
         {
             if (patchDocument == null)
@@ -110,6 +112,7 @@ namespace brokenHeart.Controllers.EntityControllers.Characters
 
         // DELETE: api/CharacterTemplates/5
         [HttpDelete("{id}")]
+        [Authorize]
         public async Task<IActionResult> DeleteCharacter(int id)
         {
             if (_context.CharacterTemplates == null)
@@ -130,6 +133,7 @@ namespace brokenHeart.Controllers.EntityControllers.Characters
 
         // GET: api/CharacterTemplates/Instantiate/5
         [HttpGet("Instantiate/{id}")]
+        [Authorize]
         public async Task<ActionResult<Character>> InstantiateCharacterTemplate(int id)
         {
             if (_context.CharacterTemplates == null || _context.CharacterTemplates.Count() == 0)
@@ -144,7 +148,6 @@ namespace brokenHeart.Controllers.EntityControllers.Characters
                 return NotFound();
             }
 
-            //TODO: doesn't actually put trait on new character
             Character character = characterTemplate.Instantiate(_context.UserSimplified.Single(x => x.Username == User.Identity.Name));
 
             return character;

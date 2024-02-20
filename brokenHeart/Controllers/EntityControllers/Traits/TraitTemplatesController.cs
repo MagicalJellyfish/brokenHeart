@@ -23,6 +23,7 @@ namespace brokenHeart.Controllers.EntityControllers.TraitTemplates
 
 	    // GET: api/TraitTemplates
 	    [HttpGet]
+        [Authorize]
         public async Task<ActionResult<IEnumerable<TraitTemplate>>> GetTraitTemplates()
         {
             if (_context.TraitTemplates == null || _context.TraitTemplates.Count() == 0)
@@ -37,6 +38,7 @@ namespace brokenHeart.Controllers.EntityControllers.TraitTemplates
 
         // GET: api/TraitTemplates/5
         [HttpGet("{id}")]
+        [Authorize]
         public async Task<ActionResult<TraitTemplate>> GetTraitTemplate(int id)
         {
             if (_context.TraitTemplates == null || _context.TraitTemplates.Count() == 0)
@@ -57,6 +59,7 @@ namespace brokenHeart.Controllers.EntityControllers.TraitTemplates
         // PATCH: api/TraitTemplates/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPatch("{id}")]
+        [Authorize]
         public async Task<IActionResult> PatchTraitTemplate(int id, JsonPatchDocument<TraitTemplate> patchDocument)
         {
             if (patchDocument == null)
@@ -94,6 +97,7 @@ namespace brokenHeart.Controllers.EntityControllers.TraitTemplates
         // POST: api/TraitTemplates
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
+        [Authorize]
         public async Task<ActionResult<TraitTemplate>> PostTraitTemplate(TraitTemplate traitTemplate)
         {
             if (_context.TraitTemplates == null)
@@ -108,6 +112,7 @@ namespace brokenHeart.Controllers.EntityControllers.TraitTemplates
 
         // DELETE: api/TraitTemplates/5
         [HttpDelete("{id}")]
+        [Authorize]
         public async Task<IActionResult> DeleteTraitTemplate(int id)
         {
             if (_context.TraitTemplates == null)
@@ -128,6 +133,7 @@ namespace brokenHeart.Controllers.EntityControllers.TraitTemplates
 
         // GET: api/TraitTemplates/Instantiate/5
         [HttpGet("Instantiate/{id}")]
+        [Authorize]
         public async Task<ActionResult<Trait>> InstantiateTraitTemplate(int id)
         {
             if (_context.TraitTemplates == null || _context.TraitTemplates.Count() == 0)

@@ -23,6 +23,7 @@ namespace brokenHeart.Controllers.EntityControllers.RoundReminders
 
 	    // GET: api/RoundReminders
 	    [HttpGet]
+        [Authorize]
         public async Task<ActionResult<IEnumerable<RoundReminder>>> GetRoundReminders()
         {
             if (_context.RoundReminders == null || _context.RoundReminders.Count() == 0)
@@ -37,6 +38,7 @@ namespace brokenHeart.Controllers.EntityControllers.RoundReminders
 
         // GET: api/RoundReminders/5
         [HttpGet("{id}")]
+        [Authorize]
         public async Task<ActionResult<RoundReminder>> GetRoundReminder(int id)
         {
             if (_context.RoundReminders == null || _context.RoundReminders.Count() == 0)
@@ -57,6 +59,7 @@ namespace brokenHeart.Controllers.EntityControllers.RoundReminders
         // PATCH: api/RoundReminders/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPatch("{id}")]
+        [Authorize]
         public async Task<IActionResult> PatchRoundReminder(int id, JsonPatchDocument<RoundReminder> patchDocument)
         {
             if (patchDocument == null)
@@ -94,6 +97,7 @@ namespace brokenHeart.Controllers.EntityControllers.RoundReminders
         // POST: api/RoundReminders
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
+        [Authorize]
         public async Task<ActionResult<RoundReminder>> PostRoundReminder(RoundReminder roundReminder)
         {
             if (_context.RoundReminders == null)
@@ -108,6 +112,7 @@ namespace brokenHeart.Controllers.EntityControllers.RoundReminders
 
         // DELETE: api/RoundReminders/5
         [HttpDelete("{id}")]
+        [Authorize]
         public async Task<IActionResult> DeleteRoundReminder(int id)
         {
             if (_context.RoundReminders == null)

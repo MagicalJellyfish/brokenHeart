@@ -23,6 +23,7 @@ namespace brokenHeart.Controllers.EntityControllers.ItemTemplates
 
 	    // GET: api/ItemTemplates
 	    [HttpGet]
+        [Authorize]
         public async Task<ActionResult<IEnumerable<ItemTemplate>>> GetItemTemplates()
         {
             if (_context.ItemTemplates == null || _context.ItemTemplates.Count() == 0)
@@ -37,6 +38,7 @@ namespace brokenHeart.Controllers.EntityControllers.ItemTemplates
 
         // GET: api/ItemTemplates/5
         [HttpGet("{id}")]
+        [Authorize]
         public async Task<ActionResult<ItemTemplate>> GetItemTemplate(int id)
         {
             if (_context.ItemTemplates == null || _context.ItemTemplates.Count() == 0)
@@ -57,6 +59,7 @@ namespace brokenHeart.Controllers.EntityControllers.ItemTemplates
         // PATCH: api/ItemTemplates/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPatch("{id}")]
+        [Authorize]
         public async Task<IActionResult> PatchItemTemplate(int id, JsonPatchDocument<ItemTemplate> patchDocument)
         {
             if (patchDocument == null)
@@ -94,6 +97,7 @@ namespace brokenHeart.Controllers.EntityControllers.ItemTemplates
         // POST: api/ItemTemplates
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
+        [Authorize]
         public async Task<ActionResult<ItemTemplate>> PostItemTemplate(ItemTemplate itemTemplate)
         {
             if (_context.ItemTemplates == null)
@@ -108,6 +112,7 @@ namespace brokenHeart.Controllers.EntityControllers.ItemTemplates
 
         // DELETE: api/ItemTemplates/5
         [HttpDelete("{id}")]
+        [Authorize]
         public async Task<IActionResult> DeleteItemTemplate(int id)
         {
             if (_context.ItemTemplates == null)
@@ -128,6 +133,7 @@ namespace brokenHeart.Controllers.EntityControllers.ItemTemplates
 
         // GET: api/ItemTemplates/Instantiate/5
         [HttpGet("Instantiate/{id}")]
+        [Authorize]
         public async Task<ActionResult<Item>> InstantiateItemTemplate(int id)
         {
             if (_context.ItemTemplates == null || _context.ItemTemplates.Count() == 0)

@@ -23,6 +23,7 @@ namespace brokenHeart.Controllers.EntityControllers.Traits
 
 	    // GET: api/Traits
 	    [HttpGet]
+        [Authorize]
         public async Task<ActionResult<IEnumerable<Trait>>> GetTraits()
         {
             if (_context.Traits == null || _context.Traits.Count() == 0)
@@ -37,6 +38,7 @@ namespace brokenHeart.Controllers.EntityControllers.Traits
 
         // GET: api/Traits/5
         [HttpGet("{id}")]
+        [Authorize]
         public async Task<ActionResult<Trait>> GetTrait(int id)
         {
             if (_context.Traits == null || _context.Traits.Count() == 0)
@@ -57,6 +59,7 @@ namespace brokenHeart.Controllers.EntityControllers.Traits
         // PATCH: api/Traits/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPatch("{id}")]
+        [Authorize]
         public async Task<IActionResult> PatchTrait(int id, JsonPatchDocument<Trait> patchDocument)
         {
             if (patchDocument == null)
@@ -94,6 +97,7 @@ namespace brokenHeart.Controllers.EntityControllers.Traits
         // POST: api/Traits
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
+        [Authorize]
         public async Task<ActionResult<Trait>> PostTrait(Trait trait)
         {
             if (_context.Traits == null)
@@ -108,6 +112,7 @@ namespace brokenHeart.Controllers.EntityControllers.Traits
 
         // DELETE: api/Traits/5
         [HttpDelete("{id}")]
+        [Authorize]
         public async Task<IActionResult> DeleteTrait(int id)
         {
             if (_context.Traits == null)

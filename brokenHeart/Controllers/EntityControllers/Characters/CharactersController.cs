@@ -71,6 +71,7 @@ namespace brokenHeart.Controllers.EntityControllers.Characters
 
         // GET: api/Characters/5
         [HttpGet("{id}")]
+        [Authorize]
         public async Task<ActionResult<Character>> GetCharacter(int id)
         {
             if (_context.Characters == null || _context.Characters.Count() == 0)
@@ -91,6 +92,7 @@ namespace brokenHeart.Controllers.EntityControllers.Characters
         // PATCH: api/Characters/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPatch("{id}")]
+        [Authorize]
         public async Task<IActionResult> PatchCharacters(int id, JsonPatchDocument<Character> patchDocument)
         {
             if (patchDocument == null)
@@ -161,6 +163,7 @@ namespace brokenHeart.Controllers.EntityControllers.Characters
 
         // DELETE: api/Characters/5
         [HttpDelete("{id}")]
+        [Authorize]
         public async Task<IActionResult> DeleteCharacter(int id)
         {
             if (_context.Characters == null)
@@ -182,6 +185,7 @@ namespace brokenHeart.Controllers.EntityControllers.Characters
         // PATCH: api/Characters/Bodyparts/0
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPatch("Bodyparts/{id}")]
+        [Authorize]
         public async Task<IActionResult> PatchBodyparts(int id, JsonPatchDocument<Character> patchDocument)
         {
             if (patchDocument == null)
@@ -222,6 +226,7 @@ namespace brokenHeart.Controllers.EntityControllers.Characters
         }
 
         [HttpPatch("activate")]
+        [Authorize]
         public async Task<ActionResult<string>> ActivateCharacter(ulong discordId, int charId)
         {
             UserSimplified user = _context.UserSimplified.Include(x => x.ActiveCharacter).SingleOrDefault(x => x.DiscordId == discordId);
