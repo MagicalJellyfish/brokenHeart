@@ -24,17 +24,32 @@ namespace brokenHeart.Controllers.EntityControllers.Characters
             _context = context;
         }
 
-        // GET: api/Characters
-        [HttpGet]
+        // GET: api/Characters/Players
+        [HttpGet("Players")]
         [Authorize]
-        public async Task<ActionResult<IEnumerable<Character>>> GetCharacters()
+        public async Task<ActionResult<IEnumerable<Character>>> GetPlayerCharacters()
         {
             if (_context.Characters == null || _context.Characters.Count() == 0)
             {
                 return NotFound();
             }
 
-            IEnumerable<Character> characters = _context.Characters.Select(x => ApiAuxiliary.GetEntityPrepare(x) as Character).ToList();
+            IEnumerable<Character> characters = _context.Characters.Where(x => !x.IsNPC).Select(x => ApiAuxiliary.GetEntityPrepare(x) as Character).ToList();
+
+            return Ok(characters);
+        }
+
+        // GET: api/Characters/NPC
+        [HttpGet("NPC")]
+        [Authorize]
+        public async Task<ActionResult<IEnumerable<Character>>> GetNPCharacters()
+        {
+            if (_context.Characters == null || _context.Characters.Count() == 0)
+            {
+                return NotFound();
+            }
+
+            IEnumerable<Character> characters = _context.Characters.Where(x => x.IsNPC).Select(x => ApiAuxiliary.GetEntityPrepare(x) as Character).ToList();
 
             return Ok(characters);
         }
@@ -56,7 +71,7 @@ namespace brokenHeart.Controllers.EntityControllers.Characters
 
         // GET: api/Characters/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Character>> GetCharacters(int id)
+        public async Task<ActionResult<Character>> GetCharacter(int id)
         {
             if (_context.Characters == null || _context.Characters.Count() == 0)
             {
@@ -141,7 +156,7 @@ namespace brokenHeart.Controllers.EntityControllers.Characters
 
             Character returnCharacter = ApiAuxiliary.PostEntity(_context, typeof(Character), character);
 
-            return CreatedAtAction("GetCharacters", new { id = returnCharacter.Id }, returnCharacter);
+            return CreatedAtAction("GetCharacter", new { id = returnCharacter.Id }, returnCharacter);
         }
 
         // DELETE: api/Characters/5
