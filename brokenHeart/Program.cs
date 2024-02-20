@@ -105,6 +105,9 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-await Constants.ValidateAsync(app.Services.CreateScope().ServiceProvider.GetRequiredService<BrokenDbContext>(), app.Services.CreateScope().ServiceProvider.GetRequiredService<AuthDbContext>());
+await Constants.ValidateAsync(
+    app.Services.CreateScope().ServiceProvider.GetRequiredService<BrokenDbContext>(), 
+    app.Services.CreateScope().ServiceProvider.GetRequiredService<AuthDbContext>(), 
+    app.Services.CreateScope().ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>());
 
 app.Run();

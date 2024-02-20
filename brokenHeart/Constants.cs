@@ -8,6 +8,7 @@ using brokenHeart.Entities.Stats;
 using brokenHeart.Auth.DB;
 using brokenHeart.Auth;
 using brokenHeart.Entities.Effects.Injuries;
+using Microsoft.AspNetCore.Identity;
 
 namespace brokenHeart
 {
@@ -161,7 +162,7 @@ namespace brokenHeart
         public static readonly CounterTemplate Dying = new CounterTemplate("Dying", 3,
             "This counter indicates the number of rounds you are away from dying.", true);
 
-        public static async Task ValidateAsync(BrokenDbContext _dbContext, AuthDbContext _authContext)
+        public static async Task ValidateAsync(BrokenDbContext _dbContext, AuthDbContext _authContext, RoleManager<IdentityRole> roleManager)
         {
             //Validate Stats
             List<Stat> dbMainStats = await _dbContext.Stats.ToListAsync();
@@ -204,6 +205,15 @@ namespace brokenHeart
                 if (!(_dbContext.UserSimplified.Where(x => x.Username == user.UserName).Count() > 0))
                 {
                     _dbContext.UserSimplified.Add(new Entities.UserSimplified(user.UserName, user.DiscordId));
+                }
+            }
+
+            List<string> roles = new List<string>() { UserRoles.Unverified, UserRoles.User, UserRoles.Admin };
+            foreach(string role in roles)
+            {
+                if (!await roleManager.RoleExistsAsync(role))
+                {
+                    await roleManager.CreateAsync(new IdentityRole(role));
                 }
             }
 

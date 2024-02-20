@@ -57,13 +57,9 @@ namespace brokenHeart.Controllers
             }
 
             string role = UserRoles.Unverified;
-            if (!await _roleManager.RoleExistsAsync(role))
-            {
-                await _roleManager.CreateAsync(new IdentityRole(role));
-                await _userManager.AddToRoleAsync(user, role);
-            }
+            await _userManager.AddToRoleAsync(user, role);
 
-            _brokenDbContext.UserSimplified.Add(new Entities.UserSimplified(registerModel.Username, (ulong)registerModel.DiscordId));
+            _brokenDbContext.UserSimplified.Add(new UserSimplified(registerModel.Username, (ulong)registerModel.DiscordId));
             _brokenDbContext.SaveChanges();
 
             return Ok();
@@ -116,6 +112,17 @@ namespace brokenHeart.Controllers
                 RefreshToken = refreshToken,
                 RefreshTokenExpiration = ((DateTimeOffset)user.RefreshTokenExpiryTime).ToUnixTimeMilliseconds()
             });
+        }
+
+        [HttpGet]
+        [Route("logout")]
+        public async Task<ActionResult> Logout()
+        {
+            var user = await _userManager.FindByNameAsync(User.Identity.Name);
+
+            user.RefreshToken = null;
+
+            return Ok();
         }
 
         [HttpPost]
