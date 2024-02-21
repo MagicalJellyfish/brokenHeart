@@ -10,6 +10,7 @@ using brokenHeart.Entities.Stats;
 using brokenHeart.Entities.Effects.Injuries;
 using Microsoft.EntityFrameworkCore;
 using brokenHeart.DB;
+using brokenHeart.Entities.Abilities.Abilities;
 
 namespace brokenHeart.Entities
 {
@@ -65,6 +66,10 @@ namespace brokenHeart.Entities
 
         public virtual ICollection<StatValue> Stats { get; private set; } = new List<StatValue>();
         public virtual ICollection<BodypartCondition> BodypartConditions { get; set; } = new List<BodypartCondition>();
+
+        [NotMapped]
+        public ICollection<int>? AbilitiesIds { get; set; } = new List<int>();
+        public virtual ICollection<Ability> Abilities { get; set; } = new List<Ability>();
 
         [NotMapped]
         public ICollection<int>? ItemsIds { get; set; } = new List<int>();

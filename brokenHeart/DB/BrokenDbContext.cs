@@ -11,6 +11,8 @@ using brokenHeart.Entities.RoundReminders;
 using brokenHeart.Entities.Stats;
 using brokenHeart.Entities.Combat;
 using brokenHeart.Entities.Effects.Injuries;
+using brokenHeart.Entities.Abilities.Abilities;
+using brokenHeart.Entities.Abilities;
 
 namespace brokenHeart.DB
 {
@@ -48,6 +50,10 @@ namespace brokenHeart.DB
 
         public DbSet<Combat> Combats { get; set; }
         public DbSet<CombatEntry> CombatEntries { get; set; }
+
+        public DbSet<Roll> Rolls { get; set; }
+        public DbSet<Ability> Abilities { get; set; }
+        public DbSet<AbilityTemplate> AbilityTemplates { get; set; }
 
         public string DbPath { get; }
 

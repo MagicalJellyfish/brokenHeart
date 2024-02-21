@@ -1,5 +1,5 @@
-﻿using brokenHeart.Entities.Counters;
-using brokenHeart.Entities.RoundReminders;
+﻿using brokenHeart.Entities.Characters;
+using brokenHeart.Entities.Effects;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
@@ -9,29 +9,46 @@ namespace brokenHeart.Entities.Abilities.Abilities
     {
         [JsonConstructor]
         public AbilityTemplate() { }
-        public AbilityTemplate(string name, string description = "", List<CounterTemplate>? counterTemplates = null, RoundReminderTemplate? roundReminderTemplate = null)
+
+        public AbilityTemplate(string name, string description, bool canInjure = false, TargetType? targetType = null, string? self = null, string? target = null, string? damage = null, ICollection<Roll>? rolls = null, ICollection<EffectTemplate>? effectTemplates = null)
         {
-            Name = name;
+            Name = name; 
             Description = description;
-            CounterTemplates = counterTemplates ?? new List<CounterTemplate>();
-            ReminderTemplate = roundReminderTemplate;
+            CanInjure = canInjure;
+            TargetType = targetType;
+            Self = self;
+            Target = target;
+            Damage = damage;
+            Rolls = rolls;
+            EffectTemplates = effectTemplates;
         }
 
         public int Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
 
-        [NotMapped]
-        public ICollection<int>? CounterTemplatesIds { get; set; } = new List<int>();
-        public virtual ICollection<CounterTemplate> CounterTemplates { get; set; }
+        public TargetType? TargetType { get; set; }
 
-        public int? ReminderTemplateId { get; set; }
-        public virtual RoundReminderTemplate? ReminderTemplate { get; set; }
+        public bool CanInjure { get; set; }
+        public string? Self { get; set; }
+        public string? Target { get; set; }
+        public string? Damage { get; set; }
+
+        [NotMapped]
+        public ICollection<int>? RollsIds { get; set; }
+        public ICollection<Roll>? Rolls { get; set; }
+
+        [NotMapped]
+        public ICollection<int>? EffectTemplatesIds { get; set; }
+        public virtual ICollection<EffectTemplate>? EffectTemplates { get; set; }
+
+        [NotMapped]
+        public ICollection<int> CharacterTemplatesIds { get; set; }
+        public virtual ICollection<CharacterTemplate> CharacterTemplates { get; set; }
 
         public Ability Instantiate()
         {
-            RoundReminder? roundReminder = ReminderTemplate?.Instantiate();
-            return new Ability(Name, Description, roundReminder, CounterTemplates.Select(x => x.Instantiate()).ToList());
+            return new Ability(Name, Description, CanInjure, TargetType, Self, Target, Damage, Rolls.Select(x => x.Instantiate()).ToList(), EffectTemplates);
         }
     }
 }

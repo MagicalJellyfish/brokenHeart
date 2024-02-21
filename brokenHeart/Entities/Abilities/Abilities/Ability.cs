@@ -1,5 +1,4 @@
-﻿using brokenHeart.Entities.Counters;
-using brokenHeart.Entities.RoundReminders;
+﻿using brokenHeart.Entities.Effects;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
@@ -9,27 +8,39 @@ namespace brokenHeart.Entities.Abilities.Abilities
     {
         [JsonConstructor]
         public Ability() { }
-        public Ability(string name, string description, RoundReminder? roundReminder, List<Counter>? counters = null)
+
+        public Ability(string name, string description, bool canInjure = false, TargetType? targetType = null, string? self = null, string? target = null, string? damage = null, ICollection<Roll>? rolls = null, ICollection<EffectTemplate>? effectTemplates = null)
         {
             Name = name;
             Description = description;
-            RoundReminder = roundReminder;
-            Counters = counters ?? new List<Counter>();
-
-            ViewPosition = 0;
+            CanInjure = canInjure;
+            TargetType = targetType;
+            Self = self;
+            Target = target;
+            Damage = damage;
+            Rolls = rolls;
+            EffectTemplates = effectTemplates;
         }
 
         public int Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
 
+        public TargetType? TargetType { get; set; }
+
+        public bool CanInjure { get; set; }
+        public string? Self { get; set; }
+        public string? Target { get; set; }
+        public string? Damage { get; set; }
+
         [NotMapped]
-        public ICollection<int>? CountersIds { get; set; } = new List<int>();
-        public virtual ICollection<Counter> Counters { get; set; }
+        public ICollection<int>? RollsIds { get; set; }
+        public virtual ICollection<Roll>? Rolls { get; set; }
 
-        public int? RoundReminderId { get; set; }
-        public virtual RoundReminder? RoundReminder { get; set; }
+        public ICollection<int>? EffectTemplatesIds { get; set; }
+        public virtual ICollection<EffectTemplate>? EffectTemplates { get; set; }
 
-        public int ViewPosition { get; set; }
+        public int CharacterId { get; set; }
+        public Character Character { get; set; }
     }
 }

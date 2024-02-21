@@ -1,4 +1,5 @@
 ﻿using brokenHeart.DB;
+using brokenHeart.Entities.Abilities.Abilities;
 using brokenHeart.Entities.Counters;
 using brokenHeart.Entities.Effects;
 using brokenHeart.Entities.Items;
@@ -43,6 +44,9 @@ namespace brokenHeart.Entities.Characters
         public string Notes { get; set; }
         public string Experience { get; set; }
 
+        [NotMapped]
+        public ICollection<int>? AbilityTemplatesIds { get; set; } = new List<int>();
+        public virtual ICollection<AbilityTemplate> AbilityTemplates { get; set; } = new List<AbilityTemplate>();
 
         [NotMapped]
         public ICollection<int>? ItemTemplatesIds { get; set; } = new List<int>();

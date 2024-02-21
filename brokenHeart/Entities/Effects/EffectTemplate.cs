@@ -4,6 +4,7 @@ using brokenHeart.Entities.RoundReminders;
 using brokenHeart.Entities.Stats;
 using brokenHeart.Entities.Characters;
 using System.ComponentModel.DataAnnotations.Schema;
+using brokenHeart.Entities.Abilities.Abilities;
 
 namespace brokenHeart.Entities.Effects
 {
@@ -35,6 +36,14 @@ namespace brokenHeart.Entities.Effects
         [NotMapped]
         public ICollection<int>? CharacterTemplatesIds { get; set; } = new List<int>();
         public virtual ICollection<CharacterTemplate> CharacterTemplates { get; set; } = new List<CharacterTemplate>();
+
+        [NotMapped]
+        public ICollection<int>? AbilitiesIds { get; set; } = new List<int>();
+        public virtual ICollection<Ability> Abilities { get; set; } = new List<Ability>();
+
+        [NotMapped]
+        public ICollection<int>? AbilityTemplatesIds { get; set; } = new List<int>();
+        public virtual ICollection<AbilityTemplate> AbilityTemplates { get; set; } = new List<AbilityTemplate>();
 
         public Effect Instantiate()
         {
