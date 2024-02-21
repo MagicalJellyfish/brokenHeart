@@ -208,7 +208,7 @@ namespace brokenHeart
                 }
             }
 
-            List<string> roles = new List<string>() { UserRoles.Unverified, UserRoles.User, UserRoles.Admin };
+            List<string> roles = new List<string>() { UserRoles.User, UserRoles.Admin };
             foreach(string role in roles)
             {
                 if (!await roleManager.RoleExistsAsync(role))

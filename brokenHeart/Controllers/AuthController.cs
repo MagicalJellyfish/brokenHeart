@@ -334,13 +334,5 @@ namespace brokenHeart.Controllers
 
             return principal;
         }
-
-        [HttpGet]
-        [Route("test")]
-        [Authorize(Roles = UserRoles.Unverified)]
-        public async Task<ActionResult> Test()
-        {
-            return Ok(User.Identity.Name);
-        }
     }
 }
