@@ -2,7 +2,6 @@
 using brokenHeart.Entities.Stats;
 using System.Text.Json.Serialization;
 using brokenHeart.Entities.RoundReminders;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace brokenHeart.Entities.Effects
 {

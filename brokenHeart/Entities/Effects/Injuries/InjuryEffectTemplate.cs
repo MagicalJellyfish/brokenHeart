@@ -23,7 +23,7 @@ namespace brokenHeart.Entities.Effects.Injuries
         public int BodypartId { get; set; }
         public Bodypart Bodypart { get; set; }
 
-        public InjuryEffect Instantiate()
+        public new InjuryEffect Instantiate()
         {
             return new InjuryEffect(Name, Abstract, Duration, Bodypart, InjuryLevel, Description, MaxHp, MovementSpeed, Armor, Evasion, Hp, MaxTempHp, StatIncreases.ToList(),
                     CounterTemplates.Select(x => x.Instantiate()).ToList(), RoundReminderTemplate?.Instantiate(), EffectCounterTemplate?.Instantiate());
