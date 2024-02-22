@@ -21,10 +21,9 @@ namespace brokenHeart.Entities.Abilities
 
         public int? AbilityId { get; set; }
         public Ability? Ability { get; set; }
-
-        [NotMapped]
-        public ICollection<int>? AbilityTemplatesIds { get; set; }
-        public virtual ICollection<AbilityTemplate> AbilityTemplates { get; set; }
+        
+        public int? AbilityTemplateId { get; set; }
+        public AbilityTemplate? AbilityTemplate { get; set; }
 
         public Roll Instantiate()
         {

@@ -9,15 +9,26 @@ namespace brokenHeart.Entities.Abilities.Abilities
         [JsonConstructor]
         public Ability() { }
 
-        public Ability(string name, string description, bool canInjure = false, TargetType? targetType = null, string? self = null, string? target = null, string? damage = null, ICollection<Roll>? rolls = null, ICollection<EffectTemplate>? effectTemplates = null)
+        public Ability(string name, string description, string? shortcut = null, bool canInjure = false, TargetType? targetType = null, string? self = null, string? target = null, string? damage = null, string? range = null, ICollection<Roll>? rolls = null, ICollection<EffectTemplate>? effectTemplates = null)
         {
             Name = name;
             Description = description;
+
+            if(shortcut != null)
+            {
+                Shortcut = shortcut;
+            }
+            else
+            {
+                Shortcut = name;
+            }
+
             CanInjure = canInjure;
             TargetType = targetType;
             Self = self;
             Target = target;
             Damage = damage;
+            Range = range;
             Rolls = rolls;
             EffectTemplates = effectTemplates;
         }
@@ -26,6 +37,7 @@ namespace brokenHeart.Entities.Abilities.Abilities
         public string Name { get; set; }
         public string Description { get; set; }
 
+        public string Shortcut { get; set; }
         public TargetType? TargetType { get; set; }
 
         public bool CanInjure { get; set; }
@@ -33,14 +45,17 @@ namespace brokenHeart.Entities.Abilities.Abilities
         public string? Target { get; set; }
         public string? Damage { get; set; }
 
+        public string? Range { get; set; }
+
         [NotMapped]
-        public ICollection<int>? RollsIds { get; set; }
-        public virtual ICollection<Roll>? Rolls { get; set; }
+        public ICollection<int>? RollsIds { get; set; } = new List<int>();
+        public virtual ICollection<Roll>? Rolls { get; set; } = new List<Roll>();
 
-        public ICollection<int>? EffectTemplatesIds { get; set; }
-        public virtual ICollection<EffectTemplate>? EffectTemplates { get; set; }
+        [NotMapped]
+        public ICollection<int>? EffectTemplatesIds { get; set; } = new List<int>();
+        public virtual ICollection<EffectTemplate>? EffectTemplates { get; set; } = new List<EffectTemplate>();
 
-        public int CharacterId { get; set; }
-        public Character Character { get; set; }
+        public int? CharacterId { get; set; }
+        public Character? Character { get; set; }
     }
 }

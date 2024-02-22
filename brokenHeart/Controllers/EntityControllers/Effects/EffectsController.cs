@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch.Operations;
 using brokenHeart.Entities.Effects;
-using brokenHeart.Entities.Counters;
 using Microsoft.EntityFrameworkCore;
 
 namespace brokenHeart.Controllers.EntityControllers.Effects

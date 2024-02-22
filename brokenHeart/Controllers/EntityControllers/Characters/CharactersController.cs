@@ -251,6 +251,9 @@ namespace brokenHeart.Controllers.EntityControllers.Characters
         private IQueryable<Character> FullCharacters()
         {
             return _context.Characters
+                .Include(x => x.Abilities).ThenInclude(x => x.EffectTemplates)
+                .Include(x => x.Abilities).ThenInclude(x => x.Rolls)
+
                 .Include(x => x.Stats).ThenInclude(x => x.Stat)
                 .Include(x => x.RoundReminders)
                 .Include(x => x.Counters).ThenInclude(x => x.RoundReminder)

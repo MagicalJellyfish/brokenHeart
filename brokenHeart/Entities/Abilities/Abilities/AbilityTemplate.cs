@@ -10,7 +10,7 @@ namespace brokenHeart.Entities.Abilities.Abilities
         [JsonConstructor]
         public AbilityTemplate() { }
 
-        public AbilityTemplate(string name, string description, bool canInjure = false, TargetType? targetType = null, string? self = null, string? target = null, string? damage = null, ICollection<Roll>? rolls = null, ICollection<EffectTemplate>? effectTemplates = null)
+        public AbilityTemplate(string name, string description, bool canInjure = false, TargetType? targetType = null, string? self = null, string? target = null, string? damage = null, string? range = null, ICollection<Roll>? rolls = null, ICollection<EffectTemplate>? effectTemplates = null)
         {
             Name = name; 
             Description = description;
@@ -19,6 +19,7 @@ namespace brokenHeart.Entities.Abilities.Abilities
             Self = self;
             Target = target;
             Damage = damage;
+            Range = range;
             Rolls = rolls;
             EffectTemplates = effectTemplates;
         }
@@ -34,6 +35,8 @@ namespace brokenHeart.Entities.Abilities.Abilities
         public string? Target { get; set; }
         public string? Damage { get; set; }
 
+        public string? Range { get; set; }
+
         [NotMapped]
         public ICollection<int>? RollsIds { get; set; }
         public ICollection<Roll>? Rolls { get; set; }
@@ -48,7 +51,7 @@ namespace brokenHeart.Entities.Abilities.Abilities
 
         public Ability Instantiate()
         {
-            return new Ability(Name, Description, CanInjure, TargetType, Self, Target, Damage, Rolls.Select(x => x.Instantiate()).ToList(), EffectTemplates);
+            return new Ability(Name, Description, null, CanInjure, TargetType, Self, Target, Damage, Range, Rolls.Select(x => x.Instantiate()).ToList(), EffectTemplates);
         }
     }
 }
