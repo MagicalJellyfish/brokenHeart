@@ -1,4 +1,7 @@
-﻿using NuGet.Protocol;
+﻿using brokenHeart.Entities;
+using brokenHeart.Entities.Counters;
+using brokenHeart.Entities.Stats;
+using NuGet.Protocol;
 
 namespace brokenHeart.Auxiliary
 {
@@ -11,6 +14,72 @@ namespace brokenHeart.Auxiliary
             Highest,
             Lowest,
             None
+        }
+
+        public static RollResult CharRollString(string input, Character c)
+        {
+            string output = "";
+            for (int i = 0; i < input.Length; i++)
+            {
+                if (input[i] != '[')
+                {
+                    output += input[i];
+                }
+                else
+                {
+                    string value = input[(i + 1)..].Split(']').First();
+
+                    StatValue? statValue = c.Stats.SingleOrDefault(x => x.Stat.Name.ToLower().StartsWith(value.ToLower()));
+                    if(statValue != null)
+                    {
+                        output += statValue.Value;
+                        i += 4;
+                    }
+                    else if(value.StartsWith("c:"))
+                    {
+                        string counterName = value.Substring(2);
+                        Counter? counter = c.Counters.SingleOrDefault(x => x.Name.ToLower().Equals(counterName.ToLower()));
+                        if(counter != null)
+                        {
+                            output += counter.Value;
+                            i += (2 + counterName.Length);
+                        }
+                        else
+                        {
+                            throw new Exception($"No counter found with name \"{counterName}\"");
+                        }
+                    }
+                    else {
+                        switch(value.ToLower())
+                        {
+                            case "hp":
+                                output += c.Hp;
+                                i += 3;
+                                break;
+                            case "arm":
+                                output += c.Armor;
+                                i += 4;
+                                break;
+                            case "eva":
+                                output += c.Evasion;
+                                i += 4;
+                                break;
+                            case "def":
+                                output += (c.Armor + c.Evasion);
+                                i += 4;
+                                break;
+                            case "mov":
+                                output += c.MovementSpeed;
+                                i += 4;
+                                break;
+                            default:
+                                throw new Exception($"No evaluation found for \"{value}\"");
+                        }
+                    }
+                }
+            }
+
+            return RollString(output);
         }
 
         public static RollResult RollString(string input)
