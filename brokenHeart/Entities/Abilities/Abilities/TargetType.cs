@@ -2,6 +2,7 @@
 {
     public enum TargetType
     {
+        None,
         Self,
         Target
     }

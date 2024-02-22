@@ -111,7 +111,14 @@ namespace brokenHeart.Auxiliary
                                         }
                                         else
                                         {
-                                            value = Convert.ChangeType(operation.value, property.PropertyType);
+                                            if(property.PropertyType.IsEnum)
+                                            {
+                                                value = Enum.ToObject(property.PropertyType, operation.value);
+                                            }
+                                            else
+                                            {
+                                                value = Convert.ChangeType(operation.value, property.PropertyType);
+                                            }
                                         }
                                         property.SetValue(requestEntity, value);
                                     }

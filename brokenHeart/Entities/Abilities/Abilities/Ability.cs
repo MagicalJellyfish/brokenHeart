@@ -9,7 +9,7 @@ namespace brokenHeart.Entities.Abilities.Abilities
         [JsonConstructor]
         public Ability() { }
 
-        public Ability(string name, string description, string? shortcut = null, bool canInjure = false, TargetType? targetType = null, string? self = null, string? target = null, string? damage = null, string? range = null, ICollection<Roll>? rolls = null, ICollection<EffectTemplate>? effectTemplates = null)
+        public Ability(string name, string description, string? shortcut = null, bool canInjure = false, TargetType targetType = TargetType.None, string? self = null, string? target = null, string? damage = null, string? range = null, ICollection<Roll>? rolls = null, ICollection<EffectTemplate>? effectTemplates = null)
         {
             Name = name;
             Description = description;
@@ -38,7 +38,7 @@ namespace brokenHeart.Entities.Abilities.Abilities
         public string Description { get; set; }
 
         public string Shortcut { get; set; }
-        public TargetType? TargetType { get; set; }
+        public TargetType TargetType { get; set; }
 
         public bool CanInjure { get; set; }
         public string? Self { get; set; }
