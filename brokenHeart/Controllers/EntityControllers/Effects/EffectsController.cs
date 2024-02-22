@@ -45,7 +45,7 @@ namespace brokenHeart.Controllers.EntityControllers.Effects
                 return NotFound();
             }
 
-            Effect effect = ApiAuxiliary.GetEntityPrepare(await _context.Effects.FindAsync(id));
+            Effect effect = ApiAuxiliary.GetEntityPrepare(await FullEffects().FirstOrDefaultAsync(x => x.Id == id));
 
             if (effect == null)
             {
@@ -66,7 +66,7 @@ namespace brokenHeart.Controllers.EntityControllers.Effects
                 return BadRequest();
             }
 
-            Effect effect = _context.Effects.Single(x => x.Id == id);
+            Effect effect = FullEffects().Single(x => x.Id == id);
 
             if(effect == null)
             {

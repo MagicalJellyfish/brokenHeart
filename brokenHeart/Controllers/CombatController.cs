@@ -2,6 +2,7 @@
 using brokenHeart.DB;
 using brokenHeart.Entities;
 using brokenHeart.Entities.Combat;
+using brokenHeart.Entities.Counters;
 using brokenHeart.Entities.Effects;
 using brokenHeart.Entities.RoundReminders;
 using Microsoft.AspNetCore.Mvc;
@@ -246,15 +247,49 @@ namespace brokenHeart.Controllers
 
                 string title = "It is " + character.Name + "'s turn! \n";
 
+                List<Counter?> counterList = new List<Counter?>();
+
+                counterList.AddRange(character.Counters);
+
+                counterList.AddRange(character.Items.SelectMany(x => x.Counters));
+
+                counterList.AddRange(character.Effects.SelectMany(x => x.Counters));
+                counterList.AddRange(character.Effects.Select(x => x.EffectCounter));
+
+                counterList.AddRange(character.Traits.SelectMany(x => x.Counters));
+
+                string counters = "";
+                foreach(var counter in counterList)
+                {
+                    if(counter != null)
+                    {
+                        if(counter.RoundBased)
+                        {
+                            counter.Value += 1;
+                            if(counter.Value == counter.Max)
+                            {
+                                counters += $"Your counter \"{counter.Name}\" has reached the maximum!\n";
+                            }
+                        }
+                    }
+                }
+
                 string effects = "";
                 foreach (Effect effect in character.Effects)
                 {
                     if(!effect.Hp.IsNullOrEmpty())
                     {
-                        //TODO: char-specific rolling
-                        RollResult result = RollAuxiliary.RollString(effect.Hp);
-                        effects += $"Your HP is changed by ({result.Detail}) {result.Result} from Effect \"{effect.Name}\"!";
+                        RollResult result = RollAuxiliary.CharRollString(effect.Hp, character);
+                        effects += $"Your HP is changed by ({result.Detail}) {result.Result} from Effect \"{effect.Name}\"!\n";
                         character.Hp += result.Result;
+                    }
+
+                    if (effect.EffectCounter != null)
+                    {
+                        if(effect.EffectCounter.Value >= effect.EffectCounter.Max) {
+                            effects += $"Your effect {effect.Name} has worn off!\n";
+                            character.Effects.Remove(effect);
+                        }
                     }
                 }
 
@@ -290,7 +325,7 @@ namespace brokenHeart.Controllers
                     }
                 }
 
-                turnMessages.Add(new Message(title, round + effects + reminders));
+                turnMessages.Add(new Message(title, round + counters + effects + reminders));
                 return turnMessages;
             }
 

@@ -144,7 +144,7 @@ namespace brokenHeart.Controllers.EntityControllers.Characters
             foreach(InjuryEffectTemplate injuryEffectTemplate in Constants.Bodyparts.InjuryEffects)
             {
                 injuryEffectTemplate.Bodypart = _context.Bodyparts.Single(x => x.Id == injuryEffectTemplate.BodypartId);
-                character.InjuryEffects.Add(injuryEffectTemplate.Instantiate());
+                character.InjuryEffects.Add(injuryEffectTemplate.Instantiate());    
             }
 
             character.Counters.Add(Constants.Dying.Instantiate());
@@ -154,9 +154,10 @@ namespace brokenHeart.Controllers.EntityControllers.Characters
             {
               return Problem("Entity set 'BrokenDbContext.Characters'  is null.");
             }
-            character.Update();
 
             Character returnCharacter = ApiAuxiliary.PostEntity(_context, typeof(Character), character);
+            returnCharacter.Update();
+            _context.SaveChanges();
 
             return CreatedAtAction("GetCharacter", new { id = returnCharacter.Id }, returnCharacter);
         }

@@ -24,7 +24,7 @@ namespace brokenHeart.Entities.Items
         public Item Instantiate()
         {
             return new Item(Name, Abstract, Description, MaxHp, MovementSpeed, Armor, Evasion,
-                StatIncreases.ToList(), CounterTemplates.Select(x => x.Instantiate()).ToList(), 
+                StatIncreases.Select(x => x.Instantiate()).ToList(), CounterTemplates.Select(x => x.Instantiate()).ToList(), 
                 RoundReminderTemplate?.Instantiate());
         }
     }

@@ -45,7 +45,7 @@ namespace brokenHeart.Controllers.EntityControllers.Abilities
                 return NotFound();
             }
 
-            Ability ability = ApiAuxiliary.GetEntityPrepare(await _context.Abilities.FindAsync(id));
+            Ability ability = ApiAuxiliary.GetEntityPrepare(await FullAbilities().FirstOrDefaultAsync(x => x.Id == id));
 
             if (ability == null)
             {
@@ -66,7 +66,7 @@ namespace brokenHeart.Controllers.EntityControllers.Abilities
                 return BadRequest();
             }
 
-            Ability ability = _context.Abilities.Single(x => x.Id == id);
+            Ability ability = FullAbilities().Single(x => x.Id == id);
 
             if (ability == null)
             {

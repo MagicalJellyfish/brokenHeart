@@ -25,7 +25,7 @@ namespace brokenHeart.Entities.Traits
 
         public Trait Instantiate()
         {
-            return new Trait(Name, Abstract, Description, MaxHp, MovementSpeed, Armor, Evasion, StatIncreases.ToList(), 
+            return new Trait(Name, Abstract, Description, MaxHp, MovementSpeed, Armor, Evasion, StatIncreases.Select(x => x.Instantiate()).ToList(), 
                 CounterTemplates.Select(x => x.Instantiate()).ToList(), RoundReminderTemplate?.Instantiate());
         }
     }

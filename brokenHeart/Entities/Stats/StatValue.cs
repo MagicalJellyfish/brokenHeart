@@ -12,6 +12,12 @@ namespace brokenHeart.Entities.Stats
             Value = value;
         }
 
+        public StatValue(int statId, int value)
+        {
+            StatId = statId;
+            Value = value;
+        }
+
         public int Id { get; set; }
         public int Value { get; set; }
 
@@ -24,5 +30,10 @@ namespace brokenHeart.Entities.Stats
         public virtual ModifierTemplate? ModifierTemplate { get; set; }
         public int? CharacterId { get; set; }
         public virtual Character? Character { get; set; }
+
+        public StatValue Instantiate()
+        {
+            return new StatValue(StatId, Value);
+        }
     }
 }

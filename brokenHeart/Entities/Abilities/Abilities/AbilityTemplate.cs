@@ -38,16 +38,16 @@ namespace brokenHeart.Entities.Abilities.Abilities
         public string? Range { get; set; }
 
         [NotMapped]
-        public ICollection<int>? RollsIds { get; set; }
-        public ICollection<Roll>? Rolls { get; set; }
+        public ICollection<int>? RollsIds { get; set; } = new List<int>();
+        public ICollection<Roll>? Rolls { get; set; } = new List<Roll>();
 
         [NotMapped]
-        public ICollection<int>? EffectTemplatesIds { get; set; }
-        public virtual ICollection<EffectTemplate>? EffectTemplates { get; set; }
+        public ICollection<int>? EffectTemplatesIds { get; set; } = new List<int>();
+        public virtual ICollection<EffectTemplate>? EffectTemplates { get; set; } = new List<EffectTemplate>();
 
         [NotMapped]
-        public ICollection<int> CharacterTemplatesIds { get; set; }
-        public virtual ICollection<CharacterTemplate> CharacterTemplates { get; set; }
+        public ICollection<int> CharacterTemplatesIds { get; set; } = new List<int>();
+        public virtual ICollection<CharacterTemplate> CharacterTemplates { get; set; } = new List<CharacterTemplate>();
 
         public Ability Instantiate()
         {

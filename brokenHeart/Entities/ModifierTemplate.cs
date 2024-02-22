@@ -1,13 +1,12 @@
 ﻿using brokenHeart.Entities.Counters;
 using brokenHeart.Entities.Stats;
-using brokenHeart.Entities.Abilities.Abilities;
 using System.Text.Json.Serialization;
 using System.ComponentModel.DataAnnotations.Schema;
 using brokenHeart.Entities.RoundReminders;
 
 namespace brokenHeart.Entities
 {
-    public abstract class ModifierTemplate
+    public class ModifierTemplate
     {
         [JsonConstructor]
         public ModifierTemplate() { }

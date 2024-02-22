@@ -76,7 +76,7 @@ namespace brokenHeart.Entities.Characters
         public Character Instantiate(UserSimplified owner)
         {
             return new Character(Name, owner, Age, null, Description, Height, Weight, Money, Notes, Experience, 
-                ItemTemplates.Select(x => x.Instantiate()).ToList(), TraitTemplates.Select(x => x.Instantiate()).ToList(), EffectTemplates.Select(x => x.Instantiate()).ToList());
+                ItemTemplates.Select(x => x.Instantiate()).ToList(), TraitTemplates.Select(x => x.Instantiate()).ToList(), EffectTemplates.Select(x => x.Instantiate()).ToList(), isNPC: IsNPC);
         }
     }
 }

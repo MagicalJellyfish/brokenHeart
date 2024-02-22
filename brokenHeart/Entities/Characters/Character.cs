@@ -8,8 +8,6 @@ using System.ComponentModel.DataAnnotations.Schema;
 using brokenHeart.Entities.RoundReminders;
 using brokenHeart.Entities.Stats;
 using brokenHeart.Entities.Effects.Injuries;
-using Microsoft.EntityFrameworkCore;
-using brokenHeart.DB;
 using brokenHeart.Entities.Abilities.Abilities;
 
 namespace brokenHeart.Entities
@@ -19,7 +17,7 @@ namespace brokenHeart.Entities
         [JsonConstructor]
         public Character() { }
         public Character(string name, UserSimplified owner, int? age = null, string? defaultShortcut = null, string description = "", decimal? height = null, int? weight = null, decimal money = 0, string notes = "", string experience = "",
-            List<Item>? inventory = null, List<Trait>? traits = null, List<Effect>? effects = null, int? hp = null)
+            List<Item>? inventory = null, List<Trait>? traits = null, List<Effect>? effects = null, int? hp = null, bool isNPC = false)
         {
             Name = name;
             DefaultShortcut = defaultShortcut;
@@ -31,6 +29,7 @@ namespace brokenHeart.Entities
             Age = age;
             Notes = notes;
             Experience = experience;
+            IsNPC = isNPC;
             Items = inventory ?? new List<Item>();
             Traits = traits ?? new List<Trait>();
             Effects = effects ?? new List<Effect>();
@@ -182,7 +181,7 @@ namespace brokenHeart.Entities
 
             foreach(StatValue statIncrease in modifier.StatIncreases)
             {
-                Stats.Single(x => statIncrease.Stat == x.Stat).Value += statIncrease.Value;
+                Stats.Single(x => statIncrease.StatId == x.StatId).Value += statIncrease.Value;
             }
         }
     }

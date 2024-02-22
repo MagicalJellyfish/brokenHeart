@@ -47,7 +47,7 @@ namespace brokenHeart.Entities.Effects
 
         public Effect Instantiate()
         {
-            return new Effect(Name, Abstract, Duration, Description, MaxHp, MovementSpeed, Armor, Evasion, Hp, MaxTempHp, StatIncreases.ToList(),
+            return new Effect(Name, Abstract, Duration, Description, MaxHp, MovementSpeed, Armor, Evasion, Hp, MaxTempHp, StatIncreases.Select(x => x.Instantiate()).ToList(),
                     CounterTemplates.Select(x => x.Instantiate()).ToList(), RoundReminderTemplate?.Instantiate(), EffectCounterTemplate?.Instantiate());
         }
     }
