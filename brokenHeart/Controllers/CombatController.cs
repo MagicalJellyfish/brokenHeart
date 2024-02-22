@@ -1,14 +1,12 @@
 ﻿using brokenHeart.Auxiliary;
 using brokenHeart.DB;
 using brokenHeart.Entities;
-using brokenHeart.Entities.Characters;
 using brokenHeart.Entities.Combat;
+using brokenHeart.Entities.Effects;
 using brokenHeart.Entities.RoundReminders;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using SQLitePCL;
+using Microsoft.IdentityModel.Tokens;
 
 namespace brokenHeart.Controllers
 {
@@ -248,6 +246,18 @@ namespace brokenHeart.Controllers
 
                 string title = "It is " + character.Name + "'s turn! \n";
 
+                string effects = "";
+                foreach (Effect effect in character.Effects)
+                {
+                    if(!effect.Hp.IsNullOrEmpty())
+                    {
+                        //TODO: char-specific rolling
+                        RollResult result = RollAuxiliary.RollString(effect.Hp);
+                        effects += $"Your HP is changed by ({result.Detail}) {result.Result} from Effect \"{effect.Name}\"!";
+                        character.Hp += result.Result;
+                    }
+                }
+
                 List<RoundReminder?> reminderList = new List<RoundReminder?>();
 
                 reminderList.AddRange(character.RoundReminders);
@@ -280,7 +290,7 @@ namespace brokenHeart.Controllers
                     }
                 }
 
-                turnMessages.Add(new Message(title, round + reminders));
+                turnMessages.Add(new Message(title, round + effects + reminders));
                 return turnMessages;
             }
 
