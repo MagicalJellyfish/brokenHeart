@@ -227,7 +227,7 @@ namespace brokenHeart.Controllers.EntityControllers.Characters
         }
 
         [HttpPatch("activate")]
-        [Authorize]
+        [Localhost]
         public async Task<ActionResult<string>> ActivateCharacter(ulong discordId, int charId)
         {
             UserSimplified user = _context.UserSimplified.Include(x => x.ActiveCharacter).SingleOrDefault(x => x.DiscordId == discordId);

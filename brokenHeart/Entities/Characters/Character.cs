@@ -184,5 +184,21 @@ namespace brokenHeart.Entities
                 Stats.Single(x => statIncrease.StatId == x.StatId).Value += statIncrease.Value;
             }
         }
+
+        public List<Counter> GetAllCounters()
+        {
+            List<Counter?> counterList = new List<Counter?>();
+
+            counterList.AddRange(Counters);
+
+            counterList.AddRange(Items.SelectMany(x => x.Counters));
+
+            counterList.AddRange(Effects.SelectMany(x => x.Counters));
+            counterList.AddRange(Effects.Select(x => x.EffectCounter));
+
+            counterList.AddRange(Traits.SelectMany(x => x.Counters));
+
+            return counterList.Where(x => x != null).ToList();
+        }
     }
 }

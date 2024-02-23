@@ -9,6 +9,8 @@ using brokenHeart.Auth.DB;
 using brokenHeart.Auth;
 using brokenHeart.Entities.Effects.Injuries;
 using Microsoft.AspNetCore.Identity;
+using System.Security.Policy;
+using brokenHeart.Entities;
 
 namespace brokenHeart
 {

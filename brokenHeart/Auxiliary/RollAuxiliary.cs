@@ -1,4 +1,5 @@
 ﻿using brokenHeart.Entities;
+using brokenHeart.Entities.Abilities;
 using brokenHeart.Entities.Counters;
 using brokenHeart.Entities.Stats;
 using NuGet.Protocol;
@@ -79,10 +80,10 @@ namespace brokenHeart.Auxiliary
                 }
             }
 
-            return RollString(output);
+            return RollString(output, input);
         }
 
-        public static RollResult RollString(string input)
+        public static RollResult RollString(string input, string? original = null)
         {
             input = input.Replace(" ", "");
 
@@ -182,8 +183,12 @@ namespace brokenHeart.Auxiliary
 
 
             int result = EvaluateString(rolledString);
-
-            return new RollResult(result, detailString);
+            string returnString = "";
+            if(original != null)
+            {
+                returnString += original + "\n= ";
+            }
+            return new RollResult(result, returnString + $"{input}\n= {detailString}\n= {result}");
         }
 
         private static int EvaluateString(string input)

@@ -2,7 +2,6 @@
 using brokenHeart.DB;
 using brokenHeart.Entities;
 using brokenHeart.Entities.Combat;
-using brokenHeart.Entities.Counters;
 using brokenHeart.Entities.Effects;
 using brokenHeart.Entities.RoundReminders;
 using Microsoft.AspNetCore.Mvc;
@@ -13,6 +12,7 @@ namespace brokenHeart.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Localhost]
     public class CombatController : ControllerBase
     {
         private readonly BrokenDbContext _context;
@@ -247,29 +247,15 @@ namespace brokenHeart.Controllers
 
                 string title = "It is " + character.Name + "'s turn! \n";
 
-                List<Counter?> counterList = new List<Counter?>();
-
-                counterList.AddRange(character.Counters);
-
-                counterList.AddRange(character.Items.SelectMany(x => x.Counters));
-
-                counterList.AddRange(character.Effects.SelectMany(x => x.Counters));
-                counterList.AddRange(character.Effects.Select(x => x.EffectCounter));
-
-                counterList.AddRange(character.Traits.SelectMany(x => x.Counters));
-
                 string counters = "";
-                foreach(var counter in counterList)
+                foreach(var counter in character.GetAllCounters())
                 {
-                    if(counter != null)
+                    if (counter.RoundBased)
                     {
-                        if(counter.RoundBased)
+                        counter.Value += 1;
+                        if (counter.Value == counter.Max)
                         {
-                            counter.Value += 1;
-                            if(counter.Value == counter.Max)
-                            {
-                                counters += $"Your counter \"{counter.Name}\" has reached the maximum!\n";
-                            }
+                            counters += $"Your counter \"{counter.Name}\" has reached the maximum!\n";
                         }
                     }
                 }
