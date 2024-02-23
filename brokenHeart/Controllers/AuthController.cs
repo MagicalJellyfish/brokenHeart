@@ -44,7 +44,7 @@ namespace brokenHeart.Controllers
             {
                 string convertedRegistrationToken = Convert.ToBase64String(KeyDerivation.Pbkdf2(
                        password: registerModel.RegistrationToken,
-                       salt: Convert.FromBase64String("60ch1DNQBwzXLQ7F5cRvOIYDEIwvGTDYEcUMc97qeICKyTQKEN//IqZc6yisHTEj9noyMCroGLYEd3YSsw5pzg=="),
+                       salt: Convert.FromBase64String(_configuration["Registration:Salt"]),
                        prf: KeyDerivationPrf.HMACSHA512,
                        iterationCount: 300000,
                        numBytesRequested: 128 / 8));
