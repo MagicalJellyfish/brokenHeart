@@ -44,7 +44,7 @@ namespace brokenHeart.Controllers
             {
                 string convertedRegistrationToken = Convert.ToBase64String(KeyDerivation.Pbkdf2(
                        password: registerModel.RegistrationToken,
-                       salt: Convert.FromBase64String(_configuration["Registration:Salt"]),
+                       salt: Convert.FromBase64String(_configuration["brokenHeart:Registration:Salt"]),
                        prf: KeyDerivationPrf.HMACSHA512,
                        iterationCount: 300000,
                        numBytesRequested: 128 / 8));
@@ -323,7 +323,7 @@ namespace brokenHeart.Controllers
 
         private JwtSecurityToken GenerateAccessToken(List<Claim> authClaims)
         {
-            var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Secret"]));
+            var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["brokenHeart:JWT:Secret"]));
             int.TryParse(_configuration["JWT:AccessTokenValidityInMinutes"], out int tokenValidityInMinutes);
 
             var token = new JwtSecurityToken(
@@ -352,7 +352,7 @@ namespace brokenHeart.Controllers
                 ValidateAudience = false,
                 ValidateIssuer = false,
                 ValidateIssuerSigningKey = true,
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Secret"])),
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["brokenHeart:JWT:Secret"])),
                 ValidateLifetime = false
             };
 
