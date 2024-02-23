@@ -12,5 +12,8 @@ namespace brokenHeart.Auth
 
         [Required(ErrorMessage = "Password is required")]
         public string? Password { get; set; }
+
+        [Required(ErrorMessage = "Registrationtoken is required")]
+        public string? RegistrationToken { get; set; }
     }
 }

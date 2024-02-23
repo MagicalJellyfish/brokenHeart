@@ -2,10 +2,12 @@
 using brokenHeart.DB;
 using brokenHeart.Entities;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis;
 using Microsoft.IdentityModel.Tokens;
+using NuGet.Common;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
@@ -34,6 +36,36 @@ namespace brokenHeart.Controllers
         [HttpPost("register")]
         public async Task<ActionResult> Register(RegistrationModel registerModel)
         {
+            bool registrationTokenValid = false;
+            List<string> lines = System.IO.File.ReadAllLines("registrations.txt").ToList();
+            List<string> writeLines = new List<string>();
+
+            foreach(string line in lines)
+            {
+                string convertedRegistrationToken = Convert.ToBase64String(KeyDerivation.Pbkdf2(
+                       password: registerModel.RegistrationToken,
+                       salt: Convert.FromBase64String("60ch1DNQBwzXLQ7F5cRvOIYDEIwvGTDYEcUMc97qeICKyTQKEN//IqZc6yisHTEj9noyMCroGLYEd3YSsw5pzg=="),
+                       prf: KeyDerivationPrf.HMACSHA512,
+                       iterationCount: 300000,
+                       numBytesRequested: 128 / 8));
+
+                if (line == convertedRegistrationToken)
+                {
+                    registrationTokenValid = true;
+                }
+                else
+                {
+                    writeLines.Add(line);
+                }
+            }
+
+            System.IO.File.WriteAllLines("registrations.txt", writeLines);
+
+            if(!registrationTokenValid)
+            {
+                return Unauthorized("Registration token invalid");
+            }
+
             var userExists = await _userManager.FindByNameAsync(registerModel.Username);
 
             if (userExists != null)
