@@ -9,6 +9,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using brokenHeart.Controllers;
 using brokenHeart.JSON;
+using Microsoft.AspNetCore.HttpOverrides;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,7 +17,7 @@ builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy =>
                       {
-                          policy.WithOrigins("http://localhost:4200")
+                          policy.WithOrigins("https://brokenEye.lupehub.com")
                             .AllowAnyHeader()
                             .AllowAnyMethod();
                       });
@@ -72,7 +73,7 @@ builder.Services.AddAuthentication(options =>
             ValidateIssuerSigningKey = true,
             ValidateLifetime = true,
             ClockSkew = TimeSpan.Zero,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["brokenHeart:JWT:Secret"]))
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT_Secret"]))
         };
     }
 );
@@ -85,6 +86,11 @@ builder.Services.AddSingleton<CharChangeObservable>();
 
 var app = builder.Build();
 
+app.UseForwardedHeaders(new ForwardedHeadersOptions
+{
+    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+});
+
 app.UseWebSockets();
 
 // Configure the HTTP request pipeline.
@@ -93,8 +99,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
-app.UseHttpsRedirection();
 
 app.UseRouting();
 
