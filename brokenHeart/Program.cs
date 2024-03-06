@@ -17,7 +17,7 @@ builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy =>
                       {
-                          policy.WithOrigins("https://brokenEye.lupehub.com")
+                          policy.WithOrigins(builder.Configuration["CORS:Origin"])
                             .AllowAnyHeader()
                             .AllowAnyMethod();
                       });

@@ -37,13 +37,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Auth\DB\brokenAuth.db">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Update="Auth\registrations.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="DB\broken.db">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
