@@ -7,12 +7,10 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis;
 using Microsoft.IdentityModel.Tokens;
-using NuGet.Common;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
-using System.Xml.Linq;
 
 namespace brokenHeart.Controllers
 {
@@ -37,7 +35,7 @@ namespace brokenHeart.Controllers
         public async Task<ActionResult> Register(RegistrationModel registerModel)
         {
             bool registrationTokenValid = false;
-            List<string> lines = System.IO.File.ReadAllLines("registrations.txt").ToList();
+            List<string> lines = System.IO.File.ReadAllLines("Auth/registrations.txt").ToList();
             List<string> writeLines = new List<string>();
 
             foreach(string line in lines)
@@ -59,7 +57,7 @@ namespace brokenHeart.Controllers
                 }
             }
 
-            System.IO.File.WriteAllLines("registrations.txt", writeLines);
+            System.IO.File.WriteAllLines("Auth/registrations.txt", writeLines);
 
             if(!registrationTokenValid)
             {
