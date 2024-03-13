@@ -57,8 +57,6 @@ namespace brokenHeart.Controllers
                 }
             }
 
-            System.IO.File.WriteAllLines("Auth/registrations.txt", writeLines);
-
             if(!registrationTokenValid)
             {
                 return Unauthorized("Registration token invalid");
@@ -82,7 +80,7 @@ namespace brokenHeart.Controllers
 
             if (!createUserResult.Succeeded)
             {
-                return StatusCode(500, "User creation failed! " + createUserResult.Errors.First().Description);
+                return BadRequest("User creation failed! " + createUserResult.Errors.First().Description);
             }
 
             string role = UserRoles.User;
@@ -90,6 +88,8 @@ namespace brokenHeart.Controllers
 
             _brokenDbContext.UserSimplified.Add(new UserSimplified(registerModel.Username, (ulong)registerModel.DiscordId));
             _brokenDbContext.SaveChanges();
+
+            System.IO.File.WriteAllLines("Auth/registrations.txt", writeLines);
 
             return Ok();
         }
