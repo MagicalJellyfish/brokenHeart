@@ -4,7 +4,7 @@ using System.Text;
 
 namespace brokenHeart.Controllers
 {
-    [Route("api")]
+    [Route("ws")]
     [ApiController]
     public class WebSocketController : ControllerBase
     {
@@ -15,7 +15,7 @@ namespace brokenHeart.Controllers
             ccObservable = observable;
         }
 
-        [Route("Characters/ws")]
+        [Route("Character")]
         [ApiExplorerSettings(IgnoreApi = true)]
         public async Task Get()
         {
@@ -32,7 +32,7 @@ namespace brokenHeart.Controllers
 
                 ccObserver.Subscribe(ccObservable, id);
 
-                while(true)
+                while (true)
                 {
                     await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
                 }
