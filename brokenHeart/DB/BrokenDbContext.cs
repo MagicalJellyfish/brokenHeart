@@ -105,6 +105,7 @@ namespace brokenHeart.DB
                     try
                     {
                         Character c = Characters
+                            .Include(x => x.Stats)
                             .Include(x => x.Items).ThenInclude(x => x.StatIncreases).ThenInclude(x => x.Stat)
                             .Include(x => x.Traits).ThenInclude(x => x.StatIncreases).ThenInclude(x => x.Stat)
                             .Include(x => x.Effects).ThenInclude(x => x.StatIncreases).ThenInclude(x => x.Stat)
@@ -133,8 +134,8 @@ namespace brokenHeart.DB
             {
                 return entry.Entity.Id;
             }
-
-            if(entry.Entity.GetType().BaseType == Stats.GetType().GetGenericArguments()[0] || entry.Entity.GetType().BaseType == Bodyparts.GetType().GetGenericArguments()[0])
+            
+            if(entry.Entity.GetType() == Stats.GetType().GetGenericArguments()[0] || entry.Entity.GetType() == Bodyparts.GetType().GetGenericArguments()[0])
             {
                 return -1;
             }
