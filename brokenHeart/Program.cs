@@ -34,7 +34,7 @@ builder.Services.AddControllers(options =>
 });
 
 builder.Services.AddDbContext<BrokenDbContext>
-    (options => options.UseSqlite(builder.Configuration.GetConnectionString("DataConnection")));
+    (options => options.UseSqlite(builder.Configuration.GetConnectionString("DataConnection"), o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)));
 builder.Services.AddDbContext<AuthDbContext>
     (options => options.UseSqlite(builder.Configuration.GetConnectionString("AuthConnection")));
 
