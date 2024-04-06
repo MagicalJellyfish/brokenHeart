@@ -1,8 +1,6 @@
 ﻿using brokenHeart.Entities;
-using brokenHeart.Entities.Abilities;
 using brokenHeart.Entities.Counters;
 using brokenHeart.Entities.Stats;
-using NuGet.Protocol;
 
 namespace brokenHeart.Auxiliary
 {
@@ -241,6 +239,12 @@ namespace brokenHeart.Auxiliary
                 {
                     if (operatorFound)
                     {
+                        if(secondNum == "" && (parsedInput[i] == '-' || parsedInput[i] == '+'))
+                        {
+                            secondNum += parsedInput[i];
+                            continue;
+                        }
+
                         firstNum = Calculate(firstNum, operation, secondNum).ToString();
 
                         operation = parsedInput[i];
@@ -248,6 +252,12 @@ namespace brokenHeart.Auxiliary
                     }
                     else
                     {
+                        if(firstNum == "" && (parsedInput[i] == '-' || parsedInput[i] == '+'))
+                        {
+                            firstNum += parsedInput[i];
+                            continue;
+                        }
+
                         operation = parsedInput[i];
                         operatorFound = true;
                     }
@@ -257,6 +267,10 @@ namespace brokenHeart.Auxiliary
             int result;
             if (operation != ' ')
             {
+                if(firstNum == "")
+                {
+                    firstNum += "-";
+                }
                 result = Calculate(firstNum, operation, secondNum);
             }
             else
@@ -269,7 +283,7 @@ namespace brokenHeart.Auxiliary
 
         private static int Calculate(string first, char operation, string second)
         {
-            int firstNum = int.Parse(first);
+            int firstNum = int.Parse(first); 
             int secondNum = int.Parse(second);
             int result = 0;
 
