@@ -95,7 +95,7 @@ namespace brokenHeart.Entities
         public ICollection<int>? RoundRemindersIds { get; set; } = new List<int>();
         public virtual ICollection<RoundReminder> RoundReminders { get; set; } = new List<RoundReminder>();
 
-        public byte[]? Image { get; set; }
+        public byte[]? Image { get; set; } = new byte[0];
 
         public bool IsNPC { get; set; }
 
