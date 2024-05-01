@@ -72,8 +72,7 @@ namespace brokenHeart.Controllers
         public ActionResult<List<Message>> ActiveAbility(
             ulong discordId,
             string shortcut,
-            string? targets,
-            bool targetShortcuts = true
+            string? targets
         )
         {
             UserSimplified? user = _context
@@ -102,16 +101,11 @@ namespace brokenHeart.Controllers
                 .ThenInclude(x => x.RoundReminderTemplate)
                 .Single(x => x.Id == user.ActiveCharacter.Id);
 
-            return ExecuteAbility(c, shortcut, targets, targetShortcuts);
+            return ExecuteAbility(c, shortcut, targets);
         }
 
         [HttpGet("ability/{charId}/{shortcut}")]
-        public ActionResult<List<Message>> Ability(
-            int charId,
-            string shortcut,
-            string? targets,
-            bool targetShortcuts = true
-        )
+        public ActionResult<List<Message>> Ability(int charId, string shortcut, string? targets)
         {
             Character? c = GetBaseCharacters()
                 .Include(x => x.Abilities)
@@ -130,14 +124,13 @@ namespace brokenHeart.Controllers
                 return NotFound("No character found!");
             }
 
-            return ExecuteAbility(c, shortcut, targets, targetShortcuts);
+            return ExecuteAbility(c, shortcut, targets);
         }
 
         private ActionResult<List<Message>> ExecuteAbility(
             Character c,
             string shortcut,
-            string? targets,
-            bool targetShortcuts
+            string? targets
         )
         {
             Ability? ability;
@@ -163,54 +156,33 @@ namespace brokenHeart.Controllers
             List<Character> targetChars = new List<Character>();
             if (!targets.IsNullOrEmpty())
             {
-                if (targetShortcuts)
+                Combat? activeCombat = _context
+                    .Combats.Include(x => x.Entries)
+                    .ThenInclude(x => x.Character)
+                    .SingleOrDefault(x => x.Active);
+                if (activeCombat == null)
                 {
-                    Combat? activeCombat = _context
-                        .Combats.Include(x => x.Entries)
-                        .ThenInclude(x => x.Character)
-                        .SingleOrDefault(x => x.Active);
-                    if (activeCombat == null)
-                    {
-                        return NotFound("No active combat found!");
-                    }
-
-                    List<Character> potentialTargets = new List<Character>();
-                    potentialTargets = activeCombat
-                        .Entries.Where(x => x.Character != null)
-                        .Select(x => x.Character)
-                        .ToList()!;
-                    if (potentialTargets.Count() == 0)
-                    {
-                        return NotFound("No potential targets in combat!");
-                    }
-
-                    List<Character> expandedTargets = GetBaseCharacters()
-                        .Where(x => potentialTargets.Contains(x))
-                        .ToList();
-                    List<string> targetList = targets!.Split(' ').ToList();
-                    foreach (string target in targetList)
-                    {
-                        string fixedTarget = target.ToLower().Trim();
-                        CombatEntry? entry = activeCombat.Entries.SingleOrDefault(entry =>
-                            entry.Shortcut.ToLower().Trim() == fixedTarget
-                            && entry.Character != null
-                        );
-                        if (entry == null)
-                        {
-                            return NotFound($"No combatant found for shortcut \"{fixedTarget}\"");
-                        }
-
-                        Character targetChar = expandedTargets.Single(x =>
-                            x.Id == entry.Character!.Id
-                        );
-                        targetChars.Add(targetChar);
-                    }
+                    return NotFound("No active combat found!");
                 }
-                else
+
+                List<Character> combatTargets = new List<Character>();
+                combatTargets = activeCombat
+                    .Entries.Where(x => x.Character != null)
+                    .Select(x => x.Character)
+                    .ToList()!;
+                if (combatTargets.Count() == 0)
                 {
-                    List<Character> baseCharacters = GetBaseCharacters().ToList();
-                    List<string> targetList = targets!.Split(' ').ToList();
-                    foreach (string target in targetList)
+                    return NotFound("No potential targets in combat!");
+                }
+
+                List<Character> baseCharacters = GetBaseCharacters().ToList();
+
+                List<string> targetList = targets!.Split(' ').ToList();
+
+                foreach (string target in targetList)
+                {
+                    //If just numbers it's a char's ID, otherwise shortcut
+                    if (int.TryParse(target, out _))
                     {
                         int fixedTarget = int.Parse(target.Trim());
 
@@ -222,6 +194,29 @@ namespace brokenHeart.Controllers
                             return NotFound($"No character found for ID \"{fixedTarget}\"");
                         }
 
+                        targetChars.Add(targetChar);
+                    }
+                    else
+                    {
+                        List<Character> fullCombatTargets = baseCharacters
+                            .Where(x => combatTargets.Select(y => y.Id).Contains(x.Id))
+                            .ToList();
+
+                        string normalizedTarget = target.ToLower().Trim();
+                        CombatEntry? entry = activeCombat.Entries.SingleOrDefault(entry =>
+                            entry.Shortcut.ToLower().Trim() == normalizedTarget
+                            && entry.Character != null
+                        );
+                        if (entry == null)
+                        {
+                            return NotFound(
+                                $"No combatant found for shortcut \"{normalizedTarget}\""
+                            );
+                        }
+
+                        Character targetChar = fullCombatTargets.Single(x =>
+                            x.Id == entry.Character!.Id
+                        );
                         targetChars.Add(targetChar);
                     }
                 }

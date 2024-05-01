@@ -118,7 +118,22 @@ namespace brokenHeart.Controllers.EntityControllers.Characters
 
             if (character == null)
             {
-                return BadRequest();
+                return NotFound($"No character with id {id} found!");
+            }
+
+            if (patchDocument.Operations.Any(x => x.path == "/defaultShortcut"))
+            {
+                if (
+                    int.TryParse(
+                        patchDocument
+                            .Operations.First(x => x.path == "/defaultShortcut")
+                            .value.ToString(),
+                        out _
+                    )
+                )
+                {
+                    return BadRequest("Default Shortcut cannot be purely numbers.");
+                }
             }
 
             List<Operation> operations = new List<Operation>();
@@ -147,6 +162,11 @@ namespace brokenHeart.Controllers.EntityControllers.Characters
         [Authorize]
         public async Task<ActionResult<Character>> PostCharacter(Character character)
         {
+            if (int.TryParse(character.DefaultShortcut, out _))
+            {
+                return BadRequest("Default Shortcut cannot be purely numbers.");
+            }
+
             foreach (Stat stat in _context.Stats)
             {
                 character.Stats.Add(new StatValue(stat, 0));
