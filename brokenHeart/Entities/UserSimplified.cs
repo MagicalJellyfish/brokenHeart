@@ -1,5 +1,5 @@
-﻿using brokenHeart.Entities.Characters;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
+using brokenHeart.Entities.Characters;
 
 namespace brokenHeart.Entities
 {
@@ -7,6 +7,7 @@ namespace brokenHeart.Entities
     {
         [JsonConstructor]
         public UserSimplified() { }
+
         public UserSimplified(string username, ulong discordId)
         {
             Username = username;

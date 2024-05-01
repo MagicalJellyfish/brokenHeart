@@ -1,11 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+﻿using brokenHeart.Auxiliary;
 using brokenHeart.DB;
 using brokenHeart.Entities.Counters;
-using brokenHeart.Auxiliary;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.JsonPatch.Operations;
-using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace brokenHeart.Controllers.EntityControllers.Counters
 {
@@ -25,12 +25,14 @@ namespace brokenHeart.Controllers.EntityControllers.Counters
         [Authorize]
         public async Task<ActionResult<IEnumerable<Counter>>> GetCounters()
         {
-          if (_context.Counters == null || _context.Counters.Count() == 0)
-          {
-              return NotFound();
-          }
+            if (_context.Counters == null || _context.Counters.Count() == 0)
+            {
+                return NotFound();
+            }
 
-            IEnumerable<Counter> counters = FullCounters().Select(x => ApiAuxiliary.GetEntityPrepare(x) as Counter).ToList();
+            IEnumerable<Counter> counters = FullCounters()
+                .Select(x => ApiAuxiliary.GetEntityPrepare(x) as Counter)
+                .ToList();
 
             return Ok(counters);
         }
@@ -40,11 +42,13 @@ namespace brokenHeart.Controllers.EntityControllers.Counters
         [Authorize]
         public async Task<ActionResult<Counter>> GetCounter(int id)
         {
-          if (_context.Counters == null || _context.Counters.Count() == 0)
-          {
-              return NotFound();
-          }
-            Counter counter = ApiAuxiliary.GetEntityPrepare(await FullCounters().FirstOrDefaultAsync(x => x.Id == id));
+            if (_context.Counters == null || _context.Counters.Count() == 0)
+            {
+                return NotFound();
+            }
+            Counter counter = ApiAuxiliary.GetEntityPrepare(
+                await FullCounters().FirstOrDefaultAsync(x => x.Id == id)
+            );
 
             if (counter == null)
             {
@@ -58,7 +62,10 @@ namespace brokenHeart.Controllers.EntityControllers.Counters
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPatch("{id}")]
         [Authorize]
-        public async Task<IActionResult> PatchCounter(int id, JsonPatchDocument<Counter> patchDocument)
+        public async Task<IActionResult> PatchCounter(
+            int id,
+            JsonPatchDocument<Counter> patchDocument
+        )
         {
             if (patchDocument == null)
             {
@@ -132,8 +139,7 @@ namespace brokenHeart.Controllers.EntityControllers.Counters
 
         private IQueryable<Counter> FullCounters()
         {
-            return _context.Counters
-                .Include(x => x.RoundReminder);
+            return _context.Counters.Include(x => x.RoundReminder);
         }
     }
 }

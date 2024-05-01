@@ -1,5 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 
 namespace brokenHeart.Auth.DB
 {
@@ -7,13 +7,9 @@ namespace brokenHeart.Auth.DB
     {
         public string DbPath { get; }
 
-        public AuthDbContext(DbContextOptions<AuthDbContext> options) : base(options)
-        {
+        public AuthDbContext(DbContextOptions<AuthDbContext> options)
+            : base(options) { }
 
-        }
-
-        public AuthDbContext()
-        {
-        }
+        public AuthDbContext() { }
     }
 }

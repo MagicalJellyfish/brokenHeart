@@ -1,5 +1,5 @@
-﻿using brokenHeart.Entities.Counters;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
+using brokenHeart.Entities.Counters;
 using brokenHeart.Entities.RoundReminders;
 using brokenHeart.Entities.Stats;
 
@@ -9,10 +9,32 @@ namespace brokenHeart.Entities.Items
     {
         [JsonConstructor]
         public Item() { }
-        public Item(string name, string @abstract, string description, int maxHp, int movementSpeed, int armor, int evasion, 
-            List<StatValue> statIncreases, List<Counter> counters, RoundReminder? reminder)
-            : base(name, @abstract, description, maxHp, movementSpeed, armor, evasion, statIncreases, counters, reminder)
-        { 
+
+        public Item(
+            string name,
+            string @abstract,
+            string description,
+            int maxHp,
+            int movementSpeed,
+            int armor,
+            int evasion,
+            List<StatValue> statIncreases,
+            List<Counter> counters,
+            RoundReminder? reminder
+        )
+            : base(
+                name,
+                @abstract,
+                description,
+                maxHp,
+                movementSpeed,
+                armor,
+                evasion,
+                statIncreases,
+                counters,
+                reminder
+            )
+        {
             Equipped = false;
         }
 

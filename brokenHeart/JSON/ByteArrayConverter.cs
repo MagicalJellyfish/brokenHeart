@@ -5,7 +5,11 @@ namespace brokenHeart.JSON
 {
     public class ByteArrayConverter : JsonConverter<byte[]>
     {
-        public override byte[]? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        public override byte[]? Read(
+            ref Utf8JsonReader reader,
+            Type typeToConvert,
+            JsonSerializerOptions options
+        )
         {
             short[] sByteArray = JsonSerializer.Deserialize<short[]>(ref reader);
             byte[] value = new byte[sByteArray.Length];
@@ -17,7 +21,11 @@ namespace brokenHeart.JSON
             return value;
         }
 
-        public override void Write(Utf8JsonWriter writer, byte[] value, JsonSerializerOptions options)
+        public override void Write(
+            Utf8JsonWriter writer,
+            byte[] value,
+            JsonSerializerOptions options
+        )
         {
             writer.WriteStartArray();
 

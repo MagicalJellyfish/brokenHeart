@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System.Net.WebSockets;
+﻿using System.Net.WebSockets;
 using System.Text;
+using Microsoft.AspNetCore.Mvc;
 
 namespace brokenHeart.Controllers
 {
@@ -8,8 +8,8 @@ namespace brokenHeart.Controllers
     [ApiController]
     public class WebSocketController : ControllerBase
     {
-
         private CharChangeObservable ccObservable;
+
         public WebSocketController(CharChangeObservable observable)
         {
             ccObservable = observable;
@@ -24,7 +24,10 @@ namespace brokenHeart.Controllers
                 using var webSocket = await HttpContext.WebSockets.AcceptWebSocketAsync();
 
                 var buffer = new byte[1024 * 4];
-                var receiveResult = await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
+                var receiveResult = await webSocket.ReceiveAsync(
+                    new ArraySegment<byte>(buffer),
+                    CancellationToken.None
+                );
 
                 int id = int.Parse(Encoding.UTF8.GetString(buffer, 0, receiveResult.Count));
 
@@ -34,7 +37,10 @@ namespace brokenHeart.Controllers
 
                 while (true)
                 {
-                    await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
+                    await webSocket.ReceiveAsync(
+                        new ArraySegment<byte>(buffer),
+                        CancellationToken.None
+                    );
                 }
             }
             else
@@ -70,6 +76,7 @@ namespace brokenHeart.Controllers
             }
 
             public void OnCompleted() { }
+
             public void OnError(Exception error) { }
         }
     }
@@ -88,7 +95,10 @@ namespace brokenHeart.Controllers
             Dictionary<int, List<IObserver<bool>>> _observersById;
             private IObserver<bool> _observer;
 
-            public Unsubscriber(Dictionary<int, List<IObserver<bool>>> observersById, IObserver<bool> observer)
+            public Unsubscriber(
+                Dictionary<int, List<IObserver<bool>>> observersById,
+                IObserver<bool> observer
+            )
             {
                 _observersById = observersById;
                 _observer = observer;
@@ -96,7 +106,7 @@ namespace brokenHeart.Controllers
 
             public void Dispose()
             {
-                for(int i = 0; i < _observersById.Count; i++)
+                for (int i = 0; i < _observersById.Count; i++)
                 {
                     if (_observersById[i].Contains(_observer))
                     {
@@ -113,7 +123,7 @@ namespace brokenHeart.Controllers
 
         public IDisposable Subscribe(IObserver<bool> observer, int id)
         {
-            if(!observersById.ContainsKey(id))
+            if (!observersById.ContainsKey(id))
             {
                 observersById.Add(id, new List<IObserver<bool>>());
             }
@@ -128,7 +138,7 @@ namespace brokenHeart.Controllers
 
         public void Trigger(int id)
         {
-            if(observersById.ContainsKey(id))
+            if (observersById.ContainsKey(id))
             {
                 foreach (var observer in observersById[id])
                 {

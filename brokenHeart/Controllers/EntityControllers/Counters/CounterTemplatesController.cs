@@ -1,12 +1,12 @@
-using Microsoft.AspNetCore.Mvc;
-using brokenHeart.DB;
-using brokenHeart.Auxiliary;
-using Microsoft.AspNetCore.JsonPatch;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.JsonPatch.Operations;
-using brokenHeart.Entities.Counters;
 using System.Diagnostics.Metrics;
+using brokenHeart.Auxiliary;
+using brokenHeart.DB;
+using brokenHeart.Entities.Counters;
 using brokenHeart.Entities.RoundReminders;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.JsonPatch;
+using Microsoft.AspNetCore.JsonPatch.Operations;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace brokenHeart.Controllers.EntityControllers.CounterTemplates
@@ -17,13 +17,13 @@ namespace brokenHeart.Controllers.EntityControllers.CounterTemplates
     {
         private readonly BrokenDbContext _context;
 
-	    public CounterTemplatesController(BrokenDbContext context)
+        public CounterTemplatesController(BrokenDbContext context)
         {
             _context = context;
         }
 
-	    // GET: api/CounterTemplates
-	    [HttpGet]
+        // GET: api/CounterTemplates
+        [HttpGet]
         [Authorize]
         public async Task<ActionResult<IEnumerable<CounterTemplate>>> GetCounterTemplates()
         {
@@ -32,7 +32,10 @@ namespace brokenHeart.Controllers.EntityControllers.CounterTemplates
                 return NotFound();
             }
 
-            IEnumerable<CounterTemplate> counterTemplates = FullCounterTemplates().Where(x => EF.Property<string>(x, "Discriminator") == "CounterTemplate").Select(x => ApiAuxiliary.GetEntityPrepare(x) as CounterTemplate).ToList();
+            IEnumerable<CounterTemplate> counterTemplates = FullCounterTemplates()
+                .Where(x => EF.Property<string>(x, "Discriminator") == "CounterTemplate")
+                .Select(x => ApiAuxiliary.GetEntityPrepare(x) as CounterTemplate)
+                .ToList();
 
             return Ok(counterTemplates);
         }
@@ -47,7 +50,9 @@ namespace brokenHeart.Controllers.EntityControllers.CounterTemplates
                 return NotFound();
             }
 
-            CounterTemplate counterTemplate = ApiAuxiliary.GetEntityPrepare(await FullCounterTemplates().FirstOrDefaultAsync(x => x.Id == id));
+            CounterTemplate counterTemplate = ApiAuxiliary.GetEntityPrepare(
+                await FullCounterTemplates().FirstOrDefaultAsync(x => x.Id == id)
+            );
 
             if (counterTemplate == null)
             {
@@ -61,7 +66,10 @@ namespace brokenHeart.Controllers.EntityControllers.CounterTemplates
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPatch("{id}")]
         [Authorize]
-        public async Task<IActionResult> PatchCounterTemplate(int id, JsonPatchDocument<CounterTemplate> patchDocument)
+        public async Task<IActionResult> PatchCounterTemplate(
+            int id,
+            JsonPatchDocument<CounterTemplate> patchDocument
+        )
         {
             if (patchDocument == null)
             {
@@ -70,20 +78,25 @@ namespace brokenHeart.Controllers.EntityControllers.CounterTemplates
 
             CounterTemplate counterTemplate = FullCounterTemplates().Single(x => x.Id == id);
 
-            if(counterTemplate == null)
+            if (counterTemplate == null)
             {
                 return BadRequest();
             }
 
             List<Operation> operations = new List<Operation>();
-            foreach(var operation in patchDocument.Operations)
+            foreach (var operation in patchDocument.Operations)
             {
                 operations.Add(operation);
             }
 
             try
             {
-                ApiAuxiliary.PatchEntity(_context, typeof(CounterTemplate), counterTemplate, operations);
+                ApiAuxiliary.PatchEntity(
+                    _context,
+                    typeof(CounterTemplate),
+                    counterTemplate,
+                    operations
+                );
             }
             catch (Exception)
             {
@@ -99,16 +112,26 @@ namespace brokenHeart.Controllers.EntityControllers.CounterTemplates
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         [Authorize]
-        public async Task<ActionResult<CounterTemplate>> PostCounterTemplate(CounterTemplate counterTemplate)
+        public async Task<ActionResult<CounterTemplate>> PostCounterTemplate(
+            CounterTemplate counterTemplate
+        )
         {
             if (_context.CounterTemplates == null)
             {
-              return Problem("Entity set 'BrokenDbContext.CounterTemplates'  is null.");
+                return Problem("Entity set 'BrokenDbContext.CounterTemplates'  is null.");
             }
 
-            CounterTemplate returnCounterTemplate = ApiAuxiliary.PostEntity(_context, typeof(CounterTemplate), counterTemplate);
+            CounterTemplate returnCounterTemplate = ApiAuxiliary.PostEntity(
+                _context,
+                typeof(CounterTemplate),
+                counterTemplate
+            );
 
-            return CreatedAtAction("GetCounterTemplate", new { id = returnCounterTemplate.Id }, returnCounterTemplate);
+            return CreatedAtAction(
+                "GetCounterTemplate",
+                new { id = returnCounterTemplate.Id },
+                returnCounterTemplate
+            );
         }
 
         // DELETE: api/CounterTemplates/5
@@ -161,8 +184,8 @@ namespace brokenHeart.Controllers.EntityControllers.CounterTemplates
 
         private IQueryable<CounterTemplate> FullCounterTemplates()
         {
-            return _context.CounterTemplates
-                .Include(x => x.CharacterTemplates)
+            return _context
+                .CounterTemplates.Include(x => x.CharacterTemplates)
                 .Include(x => x.RoundReminderTemplate);
         }
     }

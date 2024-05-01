@@ -1,18 +1,18 @@
-﻿using brokenHeart.Entities.Characters;
-using brokenHeart.Entities.Counters;
-using brokenHeart.Entities.Items;
-using brokenHeart.Entities.Effects;
-using brokenHeart.Entities.Traits;
-using Microsoft.EntityFrameworkCore;
+﻿using brokenHeart.Controllers;
 using brokenHeart.Entities;
-using brokenHeart.Controllers;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
+using brokenHeart.Entities.Abilities;
+using brokenHeart.Entities.Abilities.Abilities;
+using brokenHeart.Entities.Characters;
+using brokenHeart.Entities.Combat;
+using brokenHeart.Entities.Counters;
+using brokenHeart.Entities.Effects;
+using brokenHeart.Entities.Effects.Injuries;
+using brokenHeart.Entities.Items;
 using brokenHeart.Entities.RoundReminders;
 using brokenHeart.Entities.Stats;
-using brokenHeart.Entities.Combat;
-using brokenHeart.Entities.Effects.Injuries;
-using brokenHeart.Entities.Abilities.Abilities;
-using brokenHeart.Entities.Abilities;
+using brokenHeart.Entities.Traits;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace brokenHeart.DB
 {
@@ -57,7 +57,11 @@ namespace brokenHeart.DB
 
         public string DbPath { get; }
 
-        public BrokenDbContext(DbContextOptions<BrokenDbContext> options, CharChangeObservable observable) : base(options)
+        public BrokenDbContext(
+            DbContextOptions<BrokenDbContext> options,
+            CharChangeObservable observable
+        )
+            : base(options)
         {
             ccObservable = observable;
         }
@@ -78,15 +82,17 @@ namespace brokenHeart.DB
         {
             int saveChanges = 0;
             List<EntityEntry> changedEntries = new List<EntityEntry>();
-            foreach (var entity in ChangeTracker.Entries().Where(x => x.State != EntityState.Unchanged))
+            foreach (
+                var entity in ChangeTracker.Entries().Where(x => x.State != EntityState.Unchanged)
+            )
             {
                 changedEntries.Add(entity);
             }
 
-            foreach(var entry in changedEntries)
+            foreach (var entry in changedEntries)
             {
                 bool deleted = false;
-                if(entry.State == EntityState.Deleted)
+                if (entry.State == EntityState.Deleted)
                 {
                     deleted = true;
                     entry.State = EntityState.Modified;
@@ -106,9 +112,15 @@ namespace brokenHeart.DB
                     {
                         Character c = Characters
                             .Include(x => x.Stats)
-                            .Include(x => x.Items).ThenInclude(x => x.StatIncreases).ThenInclude(x => x.Stat)
-                            .Include(x => x.Traits).ThenInclude(x => x.StatIncreases).ThenInclude(x => x.Stat)
-                            .Include(x => x.Effects).ThenInclude(x => x.StatIncreases).ThenInclude(x => x.Stat)
+                            .Include(x => x.Items)
+                            .ThenInclude(x => x.StatIncreases)
+                            .ThenInclude(x => x.Stat)
+                            .Include(x => x.Traits)
+                            .ThenInclude(x => x.StatIncreases)
+                            .ThenInclude(x => x.Stat)
+                            .Include(x => x.Effects)
+                            .ThenInclude(x => x.StatIncreases)
+                            .ThenInclude(x => x.Stat)
                             .Single(x => x.Id == changedChar);
 
                         c.Update();
@@ -134,27 +146,35 @@ namespace brokenHeart.DB
             {
                 return entry.Entity.Id;
             }
-            
-            if(entry.Entity.GetType() == Stats.GetType().GetGenericArguments()[0] || entry.Entity.GetType() == Bodyparts.GetType().GetGenericArguments()[0])
+
+            if (
+                entry.Entity.GetType() == Stats.GetType().GetGenericArguments()[0]
+                || entry.Entity.GetType() == Bodyparts.GetType().GetGenericArguments()[0]
+            )
             {
                 return -1;
             }
 
             foreach (var navigationEntry in entry.Navigations)
             {
-                if(navigationEntry is CollectionEntry collectionEntry)
+                if (navigationEntry is CollectionEntry collectionEntry)
                 {
                     collectionEntry.Load();
-                    foreach(var referencedEntity in collectionEntry.CurrentValue)
+                    foreach (var referencedEntity in collectionEntry.CurrentValue)
                     {
                         dynamic referencedEntry = Entry(referencedEntity);
 
-                        if (!checkedEntries.Any(x => x.Entity.GetType() == referencedEntry.Entity.GetType() && x.Entity.Id == referencedEntry.Entity.Id))
+                        if (
+                            !checkedEntries.Any(x =>
+                                x.Entity.GetType() == referencedEntry.Entity.GetType()
+                                && x.Entity.Id == referencedEntry.Entity.Id
+                            )
+                        )
                         {
                             checkedEntries.Add(referencedEntry);
 
                             int result = RecursiveSearch(referencedEntry);
-                            if(result != -1)
+                            if (result != -1)
                             {
                                 return result;
                             }
@@ -166,9 +186,14 @@ namespace brokenHeart.DB
                     referenceEntry.Load();
                     dynamic referencedEntry = referenceEntry.TargetEntry;
 
-                    if(referencedEntry != null)
+                    if (referencedEntry != null)
                     {
-                        if (!checkedEntries.Any(x => x.Entity.GetType() == referencedEntry.Entity.GetType() && x.Entity.Id == referencedEntry.Entity.Id))
+                        if (
+                            !checkedEntries.Any(x =>
+                                x.Entity.GetType() == referencedEntry.Entity.GetType()
+                                && x.Entity.Id == referencedEntry.Entity.Id
+                            )
+                        )
                         {
                             checkedEntries.Add(referencedEntry);
 
@@ -179,8 +204,6 @@ namespace brokenHeart.DB
                             }
                         }
                     }
-
-                    
                 }
             }
             return -1;
@@ -227,13 +250,16 @@ namespace brokenHeart.DB
                     .OnDelete(DeleteBehavior.Cascade);
 
                 x.HasOne("brokenHeart.Entities.Counters.Counter", "Counter")
-                       .WithOne("RoundReminder")
-                       .HasForeignKey("brokenHeart.Entities.RoundReminders.RoundReminder", "CounterId")
+                    .WithOne("RoundReminder")
+                    .HasForeignKey("brokenHeart.Entities.RoundReminders.RoundReminder", "CounterId")
                     .OnDelete(DeleteBehavior.Cascade);
 
                 x.HasOne("brokenHeart.Entities.Modifier", "Modifier")
                     .WithOne("RoundReminder")
-                    .HasForeignKey("brokenHeart.Entities.RoundReminders.RoundReminder", "ModifierId")
+                    .HasForeignKey(
+                        "brokenHeart.Entities.RoundReminders.RoundReminder",
+                        "ModifierId"
+                    )
                     .OnDelete(DeleteBehavior.Cascade);
             });
 
@@ -263,13 +289,15 @@ namespace brokenHeart.DB
                     .OnDelete(DeleteBehavior.Cascade);
             });
 
-            modelBuilder.Entity<Character>().
-                HasOne("brokenHeart.Entities.UserSimplified", "Owner")
+            modelBuilder
+                .Entity<Character>()
+                .HasOne("brokenHeart.Entities.UserSimplified", "Owner")
                 .WithMany("Characters")
                 .HasForeignKey("OwnerId")
                 .OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder.Entity<Effect>()
+            modelBuilder
+                .Entity<Effect>()
                 .HasOne("brokenHeart.Entities.Character", "Character")
                 .WithMany("Effects")
                 .HasForeignKey("CharacterId")

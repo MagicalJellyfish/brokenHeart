@@ -1,6 +1,6 @@
-﻿using brokenHeart.Entities.Effects;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
+using brokenHeart.Entities.Effects;
 
 namespace brokenHeart.Entities.Counters
 {
@@ -8,7 +8,14 @@ namespace brokenHeart.Entities.Counters
     {
         [JsonConstructor]
         public EffectCounterTemplate() { }
-        public EffectCounterTemplate(string name, int max, string description, bool roundBased,  bool endEffect = true) 
+
+        public EffectCounterTemplate(
+            string name,
+            int max,
+            string description,
+            bool roundBased,
+            bool endEffect = true
+        )
             : base(name, max, description, roundBased)
         {
             EndEffect = endEffect;
@@ -18,7 +25,8 @@ namespace brokenHeart.Entities.Counters
 
         [NotMapped]
         public ICollection<int> EffectTemplatesIds { get; set; } = new List<int>();
-        public virtual ICollection<EffectTemplate> EffectTemplates { get; set; } = new List<EffectTemplate>();
+        public virtual ICollection<EffectTemplate> EffectTemplates { get; set; } =
+            new List<EffectTemplate>();
 
         public new EffectCounter Instantiate()
         {

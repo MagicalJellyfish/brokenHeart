@@ -1,12 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using brokenHeart.Auxiliary;
 using brokenHeart.DB;
-using brokenHeart.Entities.Characters;
-using brokenHeart.Auxiliary;
-using Microsoft.AspNetCore.JsonPatch;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.JsonPatch.Operations;
-using Microsoft.EntityFrameworkCore;
 using brokenHeart.Entities;
+using brokenHeart.Entities.Characters;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.JsonPatch;
+using Microsoft.AspNetCore.JsonPatch.Operations;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace brokenHeart.Controllers.EntityControllers.Characters
 {
@@ -31,7 +31,11 @@ namespace brokenHeart.Controllers.EntityControllers.Characters
                 return NotFound();
             }
 
-            IEnumerable<CharacterTemplate> characterTemplates = _context.CharacterTemplates.Select(x => ApiAuxiliary.GetEntityPrepare(x) as CharacterTemplate).ToList();
+            IEnumerable<CharacterTemplate> characterTemplates = _context
+                .CharacterTemplates.Select(x =>
+                    ApiAuxiliary.GetEntityPrepare(x) as CharacterTemplate
+                )
+                .ToList();
 
             return Ok(characterTemplates);
         }
@@ -46,7 +50,9 @@ namespace brokenHeart.Controllers.EntityControllers.Characters
                 return NotFound();
             }
 
-            CharacterTemplate characterTemplate = ApiAuxiliary.GetEntityPrepare(await FullCharacterTemplates().FirstOrDefaultAsync(x => x.Id == id));
+            CharacterTemplate characterTemplate = ApiAuxiliary.GetEntityPrepare(
+                await FullCharacterTemplates().FirstOrDefaultAsync(x => x.Id == id)
+            );
 
             if (characterTemplate == null)
             {
@@ -60,7 +66,10 @@ namespace brokenHeart.Controllers.EntityControllers.Characters
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPatch("{id}")]
         [Authorize]
-        public async Task<IActionResult> PatchCharacterTemplates(int id, JsonPatchDocument<CharacterTemplate> patchDocument)
+        public async Task<IActionResult> PatchCharacterTemplates(
+            int id,
+            JsonPatchDocument<CharacterTemplate> patchDocument
+        )
         {
             if (patchDocument == null)
             {
@@ -82,7 +91,12 @@ namespace brokenHeart.Controllers.EntityControllers.Characters
 
             try
             {
-                ApiAuxiliary.PatchEntity(_context, typeof(CharacterTemplate), characterTemplate, operations);
+                ApiAuxiliary.PatchEntity(
+                    _context,
+                    typeof(CharacterTemplate),
+                    characterTemplate,
+                    operations
+                );
             }
             catch (Exception)
             {
@@ -98,16 +112,26 @@ namespace brokenHeart.Controllers.EntityControllers.Characters
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         [Authorize]
-        public async Task<ActionResult<CharacterTemplate>> PostCharacterTemplate(CharacterTemplate characterTemplate)
+        public async Task<ActionResult<CharacterTemplate>> PostCharacterTemplate(
+            CharacterTemplate characterTemplate
+        )
         {
             if (_context.CharacterTemplates == null)
             {
                 return Problem("Entity set 'BrokenDbContext.CharacterTemplates'  is null.");
             }
 
-            CharacterTemplate returnCharacterTemplate = ApiAuxiliary.PostEntity(_context, typeof(CharacterTemplate), characterTemplate);
+            CharacterTemplate returnCharacterTemplate = ApiAuxiliary.PostEntity(
+                _context,
+                typeof(CharacterTemplate),
+                characterTemplate
+            );
 
-            return CreatedAtAction("GetCharacterTemplate", new { id = returnCharacterTemplate.Id }, returnCharacterTemplate);
+            return CreatedAtAction(
+                "GetCharacterTemplate",
+                new { id = returnCharacterTemplate.Id },
+                returnCharacterTemplate
+            );
         }
 
         // DELETE: api/CharacterTemplates/5
@@ -148,33 +172,50 @@ namespace brokenHeart.Controllers.EntityControllers.Characters
                 return NotFound();
             }
 
-            Character character = characterTemplate.Instantiate(_context.UserSimplified.Single(x => x.Username == User.Identity.Name));
+            Character character = characterTemplate.Instantiate(
+                _context.UserSimplified.Single(x => x.Username == User.Identity.Name)
+            );
 
             return character;
         }
 
         private IQueryable<CharacterTemplate> FullCharacterTemplates()
         {
-            return _context.CharacterTemplates
-                .Include(x => x.AbilityTemplates).ThenInclude(x => x.EffectTemplates)
-                .Include(x => x.AbilityTemplates).ThenInclude(x => x.Rolls)
-
+            return _context
+                .CharacterTemplates.Include(x => x.AbilityTemplates)
+                .ThenInclude(x => x.EffectTemplates)
+                .Include(x => x.AbilityTemplates)
+                .ThenInclude(x => x.Rolls)
                 .Include(x => x.RoundReminderTemplates)
-                .Include(x => x.CounterTemplates).ThenInclude(x => x.RoundReminderTemplate)
-
-                .Include(x => x.EffectTemplates).ThenInclude(x => x.CounterTemplates).ThenInclude(x => x.RoundReminderTemplate)
-                .Include(x => x.EffectTemplates).ThenInclude(x => x.EffectCounterTemplate).ThenInclude(x => x.RoundReminderTemplate)
-                .Include(x => x.EffectTemplates).ThenInclude(x => x.RoundReminderTemplate)
-                .Include(x => x.EffectTemplates).ThenInclude(x => x.StatIncreases).ThenInclude(x => x.Stat)
-
-                .Include(x => x.ItemTemplates).ThenInclude(x => x.CounterTemplates).ThenInclude(x => x.RoundReminderTemplate)
-                .Include(x => x.ItemTemplates).ThenInclude(x => x.RoundReminderTemplate)
-                .Include(x => x.ItemTemplates).ThenInclude(x => x.StatIncreases).ThenInclude(x => x.Stat)
-
-                .Include(x => x.TraitTemplates).ThenInclude(x => x.CounterTemplates).ThenInclude(x => x.RoundReminderTemplate)
-                .Include(x => x.TraitTemplates).ThenInclude(x => x.RoundReminderTemplate)
-                .Include(x => x.TraitTemplates).ThenInclude(x => x.StatIncreases).ThenInclude(x => x.Stat)
-                ;
+                .Include(x => x.CounterTemplates)
+                .ThenInclude(x => x.RoundReminderTemplate)
+                .Include(x => x.EffectTemplates)
+                .ThenInclude(x => x.CounterTemplates)
+                .ThenInclude(x => x.RoundReminderTemplate)
+                .Include(x => x.EffectTemplates)
+                .ThenInclude(x => x.EffectCounterTemplate)
+                .ThenInclude(x => x.RoundReminderTemplate)
+                .Include(x => x.EffectTemplates)
+                .ThenInclude(x => x.RoundReminderTemplate)
+                .Include(x => x.EffectTemplates)
+                .ThenInclude(x => x.StatIncreases)
+                .ThenInclude(x => x.Stat)
+                .Include(x => x.ItemTemplates)
+                .ThenInclude(x => x.CounterTemplates)
+                .ThenInclude(x => x.RoundReminderTemplate)
+                .Include(x => x.ItemTemplates)
+                .ThenInclude(x => x.RoundReminderTemplate)
+                .Include(x => x.ItemTemplates)
+                .ThenInclude(x => x.StatIncreases)
+                .ThenInclude(x => x.Stat)
+                .Include(x => x.TraitTemplates)
+                .ThenInclude(x => x.CounterTemplates)
+                .ThenInclude(x => x.RoundReminderTemplate)
+                .Include(x => x.TraitTemplates)
+                .ThenInclude(x => x.RoundReminderTemplate)
+                .Include(x => x.TraitTemplates)
+                .ThenInclude(x => x.StatIncreases)
+                .ThenInclude(x => x.Stat);
         }
     }
 }

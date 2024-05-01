@@ -6,6 +6,7 @@ namespace brokenHeart.Entities.Stats
     {
         [JsonConstructor]
         public StatValue() { }
+
         public StatValue(Stat stat, int value)
         {
             Stat = stat;

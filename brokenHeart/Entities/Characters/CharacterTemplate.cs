@@ -1,12 +1,12 @@
-﻿using brokenHeart.DB;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
+using brokenHeart.DB;
 using brokenHeart.Entities.Abilities.Abilities;
 using brokenHeart.Entities.Counters;
 using brokenHeart.Entities.Effects;
 using brokenHeart.Entities.Items;
 using brokenHeart.Entities.RoundReminders;
 using brokenHeart.Entities.Traits;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Text.Json.Serialization;
 
 namespace brokenHeart.Entities.Characters
 {
@@ -14,8 +14,19 @@ namespace brokenHeart.Entities.Characters
     {
         [JsonConstructor]
         public CharacterTemplate() { }
-        public CharacterTemplate(string name, int age, string description = "", decimal height = 0, int weight = 0, decimal money = 0, string notes = "", string experience = "",
-            List<ItemTemplate>? inventory = null, List<TraitTemplate>? traits = null)
+
+        public CharacterTemplate(
+            string name,
+            int age,
+            string description = "",
+            decimal height = 0,
+            int weight = 0,
+            decimal money = 0,
+            string notes = "",
+            string experience = "",
+            List<ItemTemplate>? inventory = null,
+            List<TraitTemplate>? traits = null
+        )
         {
             Name = name;
             Description = description;
@@ -35,8 +46,10 @@ namespace brokenHeart.Entities.Characters
 
         //in m
         public decimal? Height { get; set; }
+
         //in kg
         public int? Weight { get; set; }
+
         //in €
         public decimal Money { get; set; }
 
@@ -46,28 +59,34 @@ namespace brokenHeart.Entities.Characters
 
         [NotMapped]
         public ICollection<int>? AbilityTemplatesIds { get; set; } = new List<int>();
-        public virtual ICollection<AbilityTemplate> AbilityTemplates { get; set; } = new List<AbilityTemplate>();
+        public virtual ICollection<AbilityTemplate> AbilityTemplates { get; set; } =
+            new List<AbilityTemplate>();
 
         [NotMapped]
         public ICollection<int>? ItemTemplatesIds { get; set; } = new List<int>();
-        public virtual ICollection<ItemTemplate> ItemTemplates { get; set; } = new List<ItemTemplate>();
+        public virtual ICollection<ItemTemplate> ItemTemplates { get; set; } =
+            new List<ItemTemplate>();
 
         [NotMapped]
         public ICollection<int>? TraitTemplatesIds { get; set; } = new List<int>();
 
-        public virtual ICollection<TraitTemplate> TraitTemplates { get; set; } = new List<TraitTemplate>();
+        public virtual ICollection<TraitTemplate> TraitTemplates { get; set; } =
+            new List<TraitTemplate>();
 
         [NotMapped]
         public ICollection<int>? EffectTemplatesIds { get; set; } = new List<int>();
-        public virtual ICollection<EffectTemplate> EffectTemplates { get; set; } = new List<EffectTemplate>();
+        public virtual ICollection<EffectTemplate> EffectTemplates { get; set; } =
+            new List<EffectTemplate>();
 
         [NotMapped]
         public ICollection<int>? CounterTemplatesIds { get; set; } = new List<int>();
-        public virtual ICollection<CounterTemplate> CounterTemplates { get; set; } = new List<CounterTemplate>();
+        public virtual ICollection<CounterTemplate> CounterTemplates { get; set; } =
+            new List<CounterTemplate>();
 
         [NotMapped]
         public ICollection<int>? RoundReminderTemplatesIds { get; set; } = new List<int>();
-        public virtual ICollection<RoundReminderTemplate> RoundReminderTemplates { get; set; } = new List<RoundReminderTemplate>();
+        public virtual ICollection<RoundReminderTemplate> RoundReminderTemplates { get; set; } =
+            new List<RoundReminderTemplate>();
 
         public byte[]? Image { get; set; }
 
@@ -75,8 +94,22 @@ namespace brokenHeart.Entities.Characters
 
         public Character Instantiate(UserSimplified owner)
         {
-            return new Character(Name, owner, Age, null, Description, Height, Weight, Money, Notes, Experience, 
-                ItemTemplates.Select(x => x.Instantiate()).ToList(), TraitTemplates.Select(x => x.Instantiate()).ToList(), EffectTemplates.Select(x => x.Instantiate()).ToList(), isNPC: IsNPC);
+            return new Character(
+                Name,
+                owner,
+                Age,
+                null,
+                Description,
+                Height,
+                Weight,
+                Money,
+                Notes,
+                Experience,
+                ItemTemplates.Select(x => x.Instantiate()).ToList(),
+                TraitTemplates.Select(x => x.Instantiate()).ToList(),
+                EffectTemplates.Select(x => x.Instantiate()).ToList(),
+                isNPC: IsNPC
+            );
         }
     }
 }

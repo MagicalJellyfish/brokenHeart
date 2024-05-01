@@ -1,11 +1,11 @@
-using Microsoft.AspNetCore.Mvc;
-using brokenHeart.DB;
 using brokenHeart.Auxiliary;
-using Microsoft.AspNetCore.JsonPatch;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.JsonPatch.Operations;
+using brokenHeart.DB;
 using brokenHeart.Entities.RoundReminders;
 using brokenHeart.Entities.Traits;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.JsonPatch;
+using Microsoft.AspNetCore.JsonPatch.Operations;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace brokenHeart.Controllers.EntityControllers.RoundReminderTemplates
@@ -16,22 +16,29 @@ namespace brokenHeart.Controllers.EntityControllers.RoundReminderTemplates
     {
         private readonly BrokenDbContext _context;
 
-	    public RoundReminderTemplatesController(BrokenDbContext context)
+        public RoundReminderTemplatesController(BrokenDbContext context)
         {
             _context = context;
         }
 
-	    // GET: api/RoundReminderTemplates
-	    [HttpGet]
+        // GET: api/RoundReminderTemplates
+        [HttpGet]
         [Authorize]
-        public async Task<ActionResult<IEnumerable<RoundReminderTemplate>>> GetRoundReminderTemplates()
+        public async Task<
+            ActionResult<IEnumerable<RoundReminderTemplate>>
+        > GetRoundReminderTemplates()
         {
-            if (_context.RoundReminderTemplates == null || _context.RoundReminderTemplates.Count() == 0)
+            if (
+                _context.RoundReminderTemplates == null
+                || _context.RoundReminderTemplates.Count() == 0
+            )
             {
                 return NotFound();
             }
 
-            IEnumerable<RoundReminderTemplate> roundReminderTemplates = FullRoundReminderTemplates().Select(x => ApiAuxiliary.GetEntityPrepare(x) as RoundReminderTemplate).ToList();
+            IEnumerable<RoundReminderTemplate> roundReminderTemplates = FullRoundReminderTemplates()
+                .Select(x => ApiAuxiliary.GetEntityPrepare(x) as RoundReminderTemplate)
+                .ToList();
 
             return Ok(roundReminderTemplates);
         }
@@ -41,12 +48,17 @@ namespace brokenHeart.Controllers.EntityControllers.RoundReminderTemplates
         [Authorize]
         public async Task<ActionResult<RoundReminderTemplate>> GetRoundReminderTemplate(int id)
         {
-            if (_context.RoundReminderTemplates == null || _context.RoundReminderTemplates.Count() == 0)
+            if (
+                _context.RoundReminderTemplates == null
+                || _context.RoundReminderTemplates.Count() == 0
+            )
             {
                 return NotFound();
             }
 
-            RoundReminderTemplate roundReminderTemplate = ApiAuxiliary.GetEntityPrepare(await FullRoundReminderTemplates().FirstOrDefaultAsync(x => x.Id == id));
+            RoundReminderTemplate roundReminderTemplate = ApiAuxiliary.GetEntityPrepare(
+                await FullRoundReminderTemplates().FirstOrDefaultAsync(x => x.Id == id)
+            );
 
             if (roundReminderTemplate == null)
             {
@@ -60,29 +72,38 @@ namespace brokenHeart.Controllers.EntityControllers.RoundReminderTemplates
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPatch("{id}")]
         [Authorize]
-        public async Task<IActionResult> PatchRoundReminderTemplate(int id, JsonPatchDocument<RoundReminderTemplate> patchDocument)
+        public async Task<IActionResult> PatchRoundReminderTemplate(
+            int id,
+            JsonPatchDocument<RoundReminderTemplate> patchDocument
+        )
         {
             if (patchDocument == null)
             {
                 return BadRequest();
             }
 
-            RoundReminderTemplate roundReminderTemplate = FullRoundReminderTemplates().Single(x => x.Id == id);
+            RoundReminderTemplate roundReminderTemplate = FullRoundReminderTemplates()
+                .Single(x => x.Id == id);
 
-            if(roundReminderTemplate == null)
+            if (roundReminderTemplate == null)
             {
                 return BadRequest();
             }
 
             List<Operation> operations = new List<Operation>();
-            foreach(var operation in patchDocument.Operations)
+            foreach (var operation in patchDocument.Operations)
             {
                 operations.Add(operation);
             }
 
             try
             {
-                ApiAuxiliary.PatchEntity(_context, typeof(RoundReminderTemplate), roundReminderTemplate, operations);
+                ApiAuxiliary.PatchEntity(
+                    _context,
+                    typeof(RoundReminderTemplate),
+                    roundReminderTemplate,
+                    operations
+                );
             }
             catch (Exception)
             {
@@ -98,16 +119,26 @@ namespace brokenHeart.Controllers.EntityControllers.RoundReminderTemplates
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         [Authorize]
-        public async Task<ActionResult<RoundReminderTemplate>> PostRoundReminderTemplate(RoundReminderTemplate roundReminderTemplate)
+        public async Task<ActionResult<RoundReminderTemplate>> PostRoundReminderTemplate(
+            RoundReminderTemplate roundReminderTemplate
+        )
         {
             if (_context.RoundReminderTemplates == null)
             {
-              return Problem("Entity set 'BrokenDbContext.RoundReminderTemplates'  is null.");
+                return Problem("Entity set 'BrokenDbContext.RoundReminderTemplates'  is null.");
             }
 
-            RoundReminderTemplate returnRoundReminderTemplate = ApiAuxiliary.PostEntity(_context, typeof(RoundReminderTemplate), roundReminderTemplate);
+            RoundReminderTemplate returnRoundReminderTemplate = ApiAuxiliary.PostEntity(
+                _context,
+                typeof(RoundReminderTemplate),
+                roundReminderTemplate
+            );
 
-            return CreatedAtAction("GetRoundReminderTemplate", new { id = returnRoundReminderTemplate.Id }, returnRoundReminderTemplate);
+            return CreatedAtAction(
+                "GetRoundReminderTemplate",
+                new { id = returnRoundReminderTemplate.Id },
+                returnRoundReminderTemplate
+            );
         }
 
         // DELETE: api/RoundReminderTemplates/5
@@ -125,7 +156,7 @@ namespace brokenHeart.Controllers.EntityControllers.RoundReminderTemplates
                 return NotFound();
             }
 
-            if(roundReminderTemplate.Id <= 15)
+            if (roundReminderTemplate.Id <= 15)
             {
                 return BadRequest("Integral Reminder-Templates can't be deleted");
             }
@@ -141,12 +172,16 @@ namespace brokenHeart.Controllers.EntityControllers.RoundReminderTemplates
         [Authorize]
         public async Task<ActionResult<RoundReminder>> InstantiateRoundReminderTemplate(int id)
         {
-            if (_context.RoundReminderTemplates == null || _context.RoundReminderTemplates.Count() == 0)
+            if (
+                _context.RoundReminderTemplates == null
+                || _context.RoundReminderTemplates.Count() == 0
+            )
             {
                 return NotFound();
             }
 
-            RoundReminderTemplate roundReminderTemplate = await _context.RoundReminderTemplates.FindAsync(id);
+            RoundReminderTemplate roundReminderTemplate =
+                await _context.RoundReminderTemplates.FindAsync(id);
 
             if (roundReminderTemplate == null)
             {
@@ -160,8 +195,8 @@ namespace brokenHeart.Controllers.EntityControllers.RoundReminderTemplates
 
         private IQueryable<RoundReminderTemplate> FullRoundReminderTemplates()
         {
-            return _context.RoundReminderTemplates
-                .Include(x => x.CharacterTemplates)
+            return _context
+                .RoundReminderTemplates.Include(x => x.CharacterTemplates)
                 .Include(x => x.ModifierTemplates);
         }
     }

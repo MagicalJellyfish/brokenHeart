@@ -1,11 +1,11 @@
-using Microsoft.AspNetCore.Mvc;
-using brokenHeart.DB;
 using brokenHeart.Auxiliary;
-using Microsoft.AspNetCore.JsonPatch;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.JsonPatch.Operations;
-using brokenHeart.Entities.Stats;
+using brokenHeart.DB;
 using brokenHeart.Entities.Effects;
+using brokenHeart.Entities.Stats;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.JsonPatch;
+using Microsoft.AspNetCore.JsonPatch.Operations;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace brokenHeart.Controllers.EntityControllers.StatValues
@@ -16,13 +16,13 @@ namespace brokenHeart.Controllers.EntityControllers.StatValues
     {
         private readonly BrokenDbContext _context;
 
-	    public StatValuesController(BrokenDbContext context)
+        public StatValuesController(BrokenDbContext context)
         {
             _context = context;
         }
 
-	    // GET: api/StatValues
-	    [HttpGet]
+        // GET: api/StatValues
+        [HttpGet]
         [Authorize]
         public async Task<ActionResult<IEnumerable<StatValue>>> GetStatValues()
         {
@@ -31,7 +31,9 @@ namespace brokenHeart.Controllers.EntityControllers.StatValues
                 return NotFound();
             }
 
-            IEnumerable<StatValue> statValues = FullStatValues().Select(x => ApiAuxiliary.GetEntityPrepare(x) as StatValue).ToList();
+            IEnumerable<StatValue> statValues = FullStatValues()
+                .Select(x => ApiAuxiliary.GetEntityPrepare(x) as StatValue)
+                .ToList();
 
             return Ok(statValues);
         }
@@ -46,7 +48,9 @@ namespace brokenHeart.Controllers.EntityControllers.StatValues
                 return NotFound();
             }
 
-            StatValue statValue = ApiAuxiliary.GetEntityPrepare(await FullStatValues().FirstOrDefaultAsync(x => x.Id == id));
+            StatValue statValue = ApiAuxiliary.GetEntityPrepare(
+                await FullStatValues().FirstOrDefaultAsync(x => x.Id == id)
+            );
 
             if (statValue == null)
             {
@@ -60,7 +64,10 @@ namespace brokenHeart.Controllers.EntityControllers.StatValues
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPatch("{id}")]
         [Authorize]
-        public async Task<IActionResult> PatchStatValue(int id, JsonPatchDocument<StatValue> patchDocument)
+        public async Task<IActionResult> PatchStatValue(
+            int id,
+            JsonPatchDocument<StatValue> patchDocument
+        )
         {
             if (patchDocument == null)
             {
@@ -69,13 +76,13 @@ namespace brokenHeart.Controllers.EntityControllers.StatValues
 
             StatValue statValue = FullStatValues().Single(x => x.Id == id);
 
-            if(statValue == null)
+            if (statValue == null)
             {
                 return BadRequest();
             }
 
             List<Operation> operations = new List<Operation>();
-            foreach(var operation in patchDocument.Operations)
+            foreach (var operation in patchDocument.Operations)
             {
                 operations.Add(operation);
             }
@@ -102,12 +109,20 @@ namespace brokenHeart.Controllers.EntityControllers.StatValues
         {
             if (_context.StatValues == null)
             {
-              return Problem("Entity set 'BrokenDbContext.StatValues'  is null.");
+                return Problem("Entity set 'BrokenDbContext.StatValues'  is null.");
             }
 
-            StatValue returnStatValue = ApiAuxiliary.PostEntity(_context, typeof(StatValue), statValue);
+            StatValue returnStatValue = ApiAuxiliary.PostEntity(
+                _context,
+                typeof(StatValue),
+                statValue
+            );
 
-            return CreatedAtAction("GetStatValue", new { id = returnStatValue.Id }, returnStatValue);
+            return CreatedAtAction(
+                "GetStatValue",
+                new { id = returnStatValue.Id },
+                returnStatValue
+            );
         }
 
         // DELETE: api/StatValues/5
@@ -133,8 +148,7 @@ namespace brokenHeart.Controllers.EntityControllers.StatValues
 
         private IQueryable<StatValue> FullStatValues()
         {
-            return _context.StatValues
-                .Include(x => x.Stat);
+            return _context.StatValues.Include(x => x.Stat);
         }
     }
 }

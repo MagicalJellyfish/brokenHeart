@@ -1,11 +1,11 @@
-using Microsoft.AspNetCore.Mvc;
-using brokenHeart.DB;
 using brokenHeart.Auxiliary;
-using Microsoft.AspNetCore.JsonPatch;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.JsonPatch.Operations;
-using brokenHeart.Entities.RoundReminders;
+using brokenHeart.DB;
 using brokenHeart.Entities.Effects;
+using brokenHeart.Entities.RoundReminders;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.JsonPatch;
+using Microsoft.AspNetCore.JsonPatch.Operations;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace brokenHeart.Controllers.EntityControllers.RoundReminders
@@ -16,13 +16,13 @@ namespace brokenHeart.Controllers.EntityControllers.RoundReminders
     {
         private readonly BrokenDbContext _context;
 
-	    public RoundRemindersController(BrokenDbContext context)
+        public RoundRemindersController(BrokenDbContext context)
         {
             _context = context;
         }
 
-	    // GET: api/RoundReminders
-	    [HttpGet]
+        // GET: api/RoundReminders
+        [HttpGet]
         [Authorize]
         public async Task<ActionResult<IEnumerable<RoundReminder>>> GetRoundReminders()
         {
@@ -31,7 +31,9 @@ namespace brokenHeart.Controllers.EntityControllers.RoundReminders
                 return NotFound();
             }
 
-            IEnumerable<RoundReminder> roundReminders = FullRoundReminders().Select(x => ApiAuxiliary.GetEntityPrepare(x) as RoundReminder).ToList();
+            IEnumerable<RoundReminder> roundReminders = FullRoundReminders()
+                .Select(x => ApiAuxiliary.GetEntityPrepare(x) as RoundReminder)
+                .ToList();
 
             return Ok(roundReminders);
         }
@@ -46,7 +48,9 @@ namespace brokenHeart.Controllers.EntityControllers.RoundReminders
                 return NotFound();
             }
 
-            RoundReminder roundReminder = ApiAuxiliary.GetEntityPrepare(await FullRoundReminders().FirstOrDefaultAsync(x => x.Id == id));
+            RoundReminder roundReminder = ApiAuxiliary.GetEntityPrepare(
+                await FullRoundReminders().FirstOrDefaultAsync(x => x.Id == id)
+            );
 
             if (roundReminder == null)
             {
@@ -60,7 +64,10 @@ namespace brokenHeart.Controllers.EntityControllers.RoundReminders
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPatch("{id}")]
         [Authorize]
-        public async Task<IActionResult> PatchRoundReminder(int id, JsonPatchDocument<RoundReminder> patchDocument)
+        public async Task<IActionResult> PatchRoundReminder(
+            int id,
+            JsonPatchDocument<RoundReminder> patchDocument
+        )
         {
             if (patchDocument == null)
             {
@@ -69,20 +76,25 @@ namespace brokenHeart.Controllers.EntityControllers.RoundReminders
 
             RoundReminder roundReminder = FullRoundReminders().Single(x => x.Id == id);
 
-            if(roundReminder == null)
+            if (roundReminder == null)
             {
                 return BadRequest();
             }
 
             List<Operation> operations = new List<Operation>();
-            foreach(var operation in patchDocument.Operations)
+            foreach (var operation in patchDocument.Operations)
             {
                 operations.Add(operation);
             }
 
             try
             {
-                ApiAuxiliary.PatchEntity(_context, typeof(RoundReminder), roundReminder, operations);
+                ApiAuxiliary.PatchEntity(
+                    _context,
+                    typeof(RoundReminder),
+                    roundReminder,
+                    operations
+                );
             }
             catch (Exception)
             {
@@ -98,16 +110,26 @@ namespace brokenHeart.Controllers.EntityControllers.RoundReminders
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         [Authorize]
-        public async Task<ActionResult<RoundReminder>> PostRoundReminder(RoundReminder roundReminder)
+        public async Task<ActionResult<RoundReminder>> PostRoundReminder(
+            RoundReminder roundReminder
+        )
         {
             if (_context.RoundReminders == null)
             {
-              return Problem("Entity set 'BrokenDbContext.RoundReminders'  is null.");
+                return Problem("Entity set 'BrokenDbContext.RoundReminders'  is null.");
             }
 
-            RoundReminder returnRoundReminder = ApiAuxiliary.PostEntity(_context, typeof(RoundReminder), roundReminder);
+            RoundReminder returnRoundReminder = ApiAuxiliary.PostEntity(
+                _context,
+                typeof(RoundReminder),
+                roundReminder
+            );
 
-            return CreatedAtAction("GetRoundReminder", new { id = returnRoundReminder.Id }, returnRoundReminder);
+            return CreatedAtAction(
+                "GetRoundReminder",
+                new { id = returnRoundReminder.Id },
+                returnRoundReminder
+            );
         }
 
         // DELETE: api/RoundReminders/5

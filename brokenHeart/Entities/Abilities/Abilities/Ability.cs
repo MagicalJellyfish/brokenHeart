@@ -1,6 +1,6 @@
-﻿using brokenHeart.Entities.Effects;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
+using brokenHeart.Entities.Effects;
 
 namespace brokenHeart.Entities.Abilities.Abilities
 {
@@ -9,12 +9,24 @@ namespace brokenHeart.Entities.Abilities.Abilities
         [JsonConstructor]
         public Ability() { }
 
-        public Ability(string name, string description, string? shortcut = null, bool canInjure = false, TargetType targetType = TargetType.None, string? self = null, string? target = null, string? damage = null, string? range = null, ICollection<Roll>? rolls = null, ICollection<EffectTemplate>? effectTemplates = null)
+        public Ability(
+            string name,
+            string description,
+            string? shortcut = null,
+            bool canInjure = false,
+            TargetType targetType = TargetType.None,
+            string? self = null,
+            string? target = null,
+            string? damage = null,
+            string? range = null,
+            ICollection<Roll>? rolls = null,
+            ICollection<EffectTemplate>? effectTemplates = null
+        )
         {
             Name = name;
             Description = description;
 
-            if(shortcut != null)
+            if (shortcut != null)
             {
                 Shortcut = shortcut;
             }
@@ -53,7 +65,8 @@ namespace brokenHeart.Entities.Abilities.Abilities
 
         [NotMapped]
         public ICollection<int>? EffectTemplatesIds { get; set; } = new List<int>();
-        public virtual ICollection<EffectTemplate>? EffectTemplates { get; set; } = new List<EffectTemplate>();
+        public virtual ICollection<EffectTemplate>? EffectTemplates { get; set; } =
+            new List<EffectTemplate>();
 
         public int? CharacterId { get; set; }
         public Character? Character { get; set; }

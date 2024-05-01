@@ -6,6 +6,7 @@ namespace brokenHeart.Entities.Combat
     {
         [JsonConstructor]
         public Event() { }
+
         public Event(string name, int round, bool secret, int init = 0)
         {
             Name = name;

@@ -1,11 +1,11 @@
-using Microsoft.AspNetCore.Mvc;
-using brokenHeart.DB;
 using brokenHeart.Auxiliary;
-using Microsoft.AspNetCore.JsonPatch;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.JsonPatch.Operations;
-using brokenHeart.Entities.Traits;
+using brokenHeart.DB;
 using brokenHeart.Entities.Effects;
+using brokenHeart.Entities.Traits;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.JsonPatch;
+using Microsoft.AspNetCore.JsonPatch.Operations;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace brokenHeart.Controllers.EntityControllers.TraitTemplates
@@ -16,13 +16,13 @@ namespace brokenHeart.Controllers.EntityControllers.TraitTemplates
     {
         private readonly BrokenDbContext _context;
 
-	    public TraitTemplatesController(BrokenDbContext context)
+        public TraitTemplatesController(BrokenDbContext context)
         {
             _context = context;
         }
 
-	    // GET: api/TraitTemplates
-	    [HttpGet]
+        // GET: api/TraitTemplates
+        [HttpGet]
         [Authorize]
         public async Task<ActionResult<IEnumerable<TraitTemplate>>> GetTraitTemplates()
         {
@@ -31,7 +31,9 @@ namespace brokenHeart.Controllers.EntityControllers.TraitTemplates
                 return NotFound();
             }
 
-            IEnumerable<TraitTemplate> traitTemplates = FullTraitTemplates().Select(x => ApiAuxiliary.GetEntityPrepare(x) as TraitTemplate).ToList();
+            IEnumerable<TraitTemplate> traitTemplates = FullTraitTemplates()
+                .Select(x => ApiAuxiliary.GetEntityPrepare(x) as TraitTemplate)
+                .ToList();
 
             return Ok(traitTemplates);
         }
@@ -46,7 +48,9 @@ namespace brokenHeart.Controllers.EntityControllers.TraitTemplates
                 return NotFound();
             }
 
-            TraitTemplate traitTemplate = ApiAuxiliary.GetEntityPrepare(await FullTraitTemplates().FirstOrDefaultAsync(x => x.Id == id));
+            TraitTemplate traitTemplate = ApiAuxiliary.GetEntityPrepare(
+                await FullTraitTemplates().FirstOrDefaultAsync(x => x.Id == id)
+            );
 
             if (traitTemplate == null)
             {
@@ -60,7 +64,10 @@ namespace brokenHeart.Controllers.EntityControllers.TraitTemplates
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPatch("{id}")]
         [Authorize]
-        public async Task<IActionResult> PatchTraitTemplate(int id, JsonPatchDocument<TraitTemplate> patchDocument)
+        public async Task<IActionResult> PatchTraitTemplate(
+            int id,
+            JsonPatchDocument<TraitTemplate> patchDocument
+        )
         {
             if (patchDocument == null)
             {
@@ -69,20 +76,25 @@ namespace brokenHeart.Controllers.EntityControllers.TraitTemplates
 
             TraitTemplate traitTemplate = FullTraitTemplates().Single(x => x.Id == id);
 
-            if(traitTemplate == null)
+            if (traitTemplate == null)
             {
                 return BadRequest();
             }
 
             List<Operation> operations = new List<Operation>();
-            foreach(var operation in patchDocument.Operations)
+            foreach (var operation in patchDocument.Operations)
             {
                 operations.Add(operation);
             }
 
             try
             {
-                ApiAuxiliary.PatchEntity(_context, typeof(TraitTemplate), traitTemplate, operations);
+                ApiAuxiliary.PatchEntity(
+                    _context,
+                    typeof(TraitTemplate),
+                    traitTemplate,
+                    operations
+                );
             }
             catch (Exception)
             {
@@ -98,16 +110,26 @@ namespace brokenHeart.Controllers.EntityControllers.TraitTemplates
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         [Authorize]
-        public async Task<ActionResult<TraitTemplate>> PostTraitTemplate(TraitTemplate traitTemplate)
+        public async Task<ActionResult<TraitTemplate>> PostTraitTemplate(
+            TraitTemplate traitTemplate
+        )
         {
             if (_context.TraitTemplates == null)
             {
-              return Problem("Entity set 'BrokenDbContext.TraitTemplates'  is null.");
+                return Problem("Entity set 'BrokenDbContext.TraitTemplates'  is null.");
             }
 
-            TraitTemplate returnTraitTemplate = ApiAuxiliary.PostEntity(_context, typeof(TraitTemplate), traitTemplate);
+            TraitTemplate returnTraitTemplate = ApiAuxiliary.PostEntity(
+                _context,
+                typeof(TraitTemplate),
+                traitTemplate
+            );
 
-            return CreatedAtAction("GetTraitTemplate", new { id = returnTraitTemplate.Id }, returnTraitTemplate);
+            return CreatedAtAction(
+                "GetTraitTemplate",
+                new { id = returnTraitTemplate.Id },
+                returnTraitTemplate
+            );
         }
 
         // DELETE: api/TraitTemplates/5
@@ -155,11 +177,12 @@ namespace brokenHeart.Controllers.EntityControllers.TraitTemplates
 
         private IQueryable<TraitTemplate> FullTraitTemplates()
         {
-            return _context.TraitTemplates
-                .Include(x => x.CharacterTemplates)
+            return _context
+                .TraitTemplates.Include(x => x.CharacterTemplates)
                 .Include(x => x.CounterTemplates)
                 .Include(x => x.RoundReminderTemplate)
-                .Include(x => x.StatIncreases).ThenInclude(x => x.Stat);
+                .Include(x => x.StatIncreases)
+                .ThenInclude(x => x.Stat);
         }
     }
 }

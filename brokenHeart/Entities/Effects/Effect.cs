@@ -1,7 +1,7 @@
-﻿using brokenHeart.Entities.Counters;
-using brokenHeart.Entities.Stats;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
+using brokenHeart.Entities.Counters;
 using brokenHeart.Entities.RoundReminders;
+using brokenHeart.Entities.Stats;
 
 namespace brokenHeart.Entities.Effects
 {
@@ -9,10 +9,35 @@ namespace brokenHeart.Entities.Effects
     {
         [JsonConstructor]
         public Effect() { }
-        public Effect(string name, string @abstract, string duration, string description = "", int maxHp = 0, int movementSpeed = 0, int armor = 0, int evasion = 0, string hp = "", int maxTempHp = 0,
-            List<StatValue>? statIncreases = null, List<Counter>? counters = null, RoundReminder? reminder = null, EffectCounter? effectCounter = null)
-            : base(name, @abstract, description, maxHp, movementSpeed, armor, evasion,
-                  statIncreases, counters, reminder)
+
+        public Effect(
+            string name,
+            string @abstract,
+            string duration,
+            string description = "",
+            int maxHp = 0,
+            int movementSpeed = 0,
+            int armor = 0,
+            int evasion = 0,
+            string hp = "",
+            int maxTempHp = 0,
+            List<StatValue>? statIncreases = null,
+            List<Counter>? counters = null,
+            RoundReminder? reminder = null,
+            EffectCounter? effectCounter = null
+        )
+            : base(
+                name,
+                @abstract,
+                description,
+                maxHp,
+                movementSpeed,
+                armor,
+                evasion,
+                statIncreases,
+                counters,
+                reminder
+            )
         {
             Hp = hp;
             MaxTempHp = maxTempHp;
@@ -22,6 +47,7 @@ namespace brokenHeart.Entities.Effects
 
         //Per round
         public string Hp { get; set; }
+
         //Total for the duration
         public int MaxTempHp { get; set; }
         public string Duration { get; set; }

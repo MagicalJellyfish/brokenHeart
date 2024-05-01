@@ -1,8 +1,8 @@
-﻿using brokenHeart.Entities.Counters;
-using brokenHeart.Entities.Stats;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
-using System.ComponentModel.DataAnnotations.Schema;
+using brokenHeart.Entities.Counters;
 using brokenHeart.Entities.RoundReminders;
+using brokenHeart.Entities.Stats;
 
 namespace brokenHeart.Entities
 {
@@ -10,8 +10,19 @@ namespace brokenHeart.Entities
     {
         [JsonConstructor]
         public ModifierTemplate() { }
-        public ModifierTemplate(string name, string description = "", string @abstract = "", int maxHp = 0, int movementSpeed = 0, int armor = 0, int evasion = 0,
-            List<StatValue>? statIncrease = null, List<CounterTemplate>? counterTemplates = null, RoundReminderTemplate? reminderTemplate = null)
+
+        public ModifierTemplate(
+            string name,
+            string description = "",
+            string @abstract = "",
+            int maxHp = 0,
+            int movementSpeed = 0,
+            int armor = 0,
+            int evasion = 0,
+            List<StatValue>? statIncrease = null,
+            List<CounterTemplate>? counterTemplates = null,
+            RoundReminderTemplate? reminderTemplate = null
+        )
         {
             Name = name;
             Description = description;
@@ -40,7 +51,8 @@ namespace brokenHeart.Entities
 
         [NotMapped]
         public ICollection<int>? CounterTemplatesIds { get; set; } = new List<int>();
-        public virtual ICollection<CounterTemplate> CounterTemplates { get; set; } = new List<CounterTemplate>();
+        public virtual ICollection<CounterTemplate> CounterTemplates { get; set; } =
+            new List<CounterTemplate>();
 
         public int? RoundReminderTemplateId { get; set; }
         public virtual RoundReminderTemplate? RoundReminderTemplate { get; set; }

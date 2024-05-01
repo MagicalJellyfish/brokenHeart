@@ -1,11 +1,11 @@
-using Microsoft.AspNetCore.Mvc;
-using brokenHeart.DB;
 using brokenHeart.Auxiliary;
-using Microsoft.AspNetCore.JsonPatch;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.JsonPatch.Operations;
+using brokenHeart.DB;
 using brokenHeart.Entities.Effects;
 using brokenHeart.Entities.RoundReminders;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.JsonPatch;
+using Microsoft.AspNetCore.JsonPatch.Operations;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace brokenHeart.Controllers.EntityControllers.EffectTemplates
@@ -16,13 +16,13 @@ namespace brokenHeart.Controllers.EntityControllers.EffectTemplates
     {
         private readonly BrokenDbContext _context;
 
-	    public EffectTemplatesController(BrokenDbContext context)
+        public EffectTemplatesController(BrokenDbContext context)
         {
             _context = context;
         }
 
-	    // GET: api/EffectTemplates
-	    [HttpGet]
+        // GET: api/EffectTemplates
+        [HttpGet]
         [Authorize]
         public async Task<ActionResult<IEnumerable<EffectTemplate>>> GetEffectTemplates()
         {
@@ -31,7 +31,9 @@ namespace brokenHeart.Controllers.EntityControllers.EffectTemplates
                 return NotFound();
             }
 
-            IEnumerable<EffectTemplate> effectTemplates = FullEffectTemplates().Select(x => ApiAuxiliary.GetEntityPrepare(x) as EffectTemplate).ToList();
+            IEnumerable<EffectTemplate> effectTemplates = FullEffectTemplates()
+                .Select(x => ApiAuxiliary.GetEntityPrepare(x) as EffectTemplate)
+                .ToList();
 
             return Ok(effectTemplates);
         }
@@ -46,7 +48,9 @@ namespace brokenHeart.Controllers.EntityControllers.EffectTemplates
                 return NotFound();
             }
 
-            EffectTemplate effectTemplate = ApiAuxiliary.GetEntityPrepare(await FullEffectTemplates().FirstOrDefaultAsync(x => x.Id == id));
+            EffectTemplate effectTemplate = ApiAuxiliary.GetEntityPrepare(
+                await FullEffectTemplates().FirstOrDefaultAsync(x => x.Id == id)
+            );
 
             if (effectTemplate == null)
             {
@@ -60,7 +64,10 @@ namespace brokenHeart.Controllers.EntityControllers.EffectTemplates
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPatch("{id}")]
         [Authorize]
-        public async Task<IActionResult> PatchEffectTemplate(int id, JsonPatchDocument<EffectTemplate> patchDocument)
+        public async Task<IActionResult> PatchEffectTemplate(
+            int id,
+            JsonPatchDocument<EffectTemplate> patchDocument
+        )
         {
             if (patchDocument == null)
             {
@@ -69,20 +76,25 @@ namespace brokenHeart.Controllers.EntityControllers.EffectTemplates
 
             EffectTemplate effectTemplate = FullEffectTemplates().Single(x => x.Id == id);
 
-            if(effectTemplate == null)
+            if (effectTemplate == null)
             {
                 return BadRequest();
             }
 
             List<Operation> operations = new List<Operation>();
-            foreach(var operation in patchDocument.Operations)
+            foreach (var operation in patchDocument.Operations)
             {
                 operations.Add(operation);
             }
 
             try
             {
-                ApiAuxiliary.PatchEntity(_context, typeof(EffectTemplate), effectTemplate, operations);
+                ApiAuxiliary.PatchEntity(
+                    _context,
+                    typeof(EffectTemplate),
+                    effectTemplate,
+                    operations
+                );
             }
             catch (Exception)
             {
@@ -98,16 +110,26 @@ namespace brokenHeart.Controllers.EntityControllers.EffectTemplates
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         [Authorize]
-        public async Task<ActionResult<EffectTemplate>> PostEffectTemplate(EffectTemplate effectTemplate)
+        public async Task<ActionResult<EffectTemplate>> PostEffectTemplate(
+            EffectTemplate effectTemplate
+        )
         {
             if (_context.EffectTemplates == null)
             {
-              return Problem("Entity set 'BrokenDbContext.EffectTemplates'  is null.");
+                return Problem("Entity set 'BrokenDbContext.EffectTemplates'  is null.");
             }
 
-            EffectTemplate returnEffectTemplate = ApiAuxiliary.PostEntity(_context, typeof(EffectTemplate), effectTemplate);
+            EffectTemplate returnEffectTemplate = ApiAuxiliary.PostEntity(
+                _context,
+                typeof(EffectTemplate),
+                effectTemplate
+            );
 
-            return CreatedAtAction("GetEffectTemplate", new { id = returnEffectTemplate.Id }, returnEffectTemplate);
+            return CreatedAtAction(
+                "GetEffectTemplate",
+                new { id = returnEffectTemplate.Id },
+                returnEffectTemplate
+            );
         }
 
         // DELETE: api/EffectTemplates/5
@@ -160,12 +182,13 @@ namespace brokenHeart.Controllers.EntityControllers.EffectTemplates
 
         private IQueryable<EffectTemplate> FullEffectTemplates()
         {
-            return _context.EffectTemplates
-                .Include(x => x.CharacterTemplates)
+            return _context
+                .EffectTemplates.Include(x => x.CharacterTemplates)
                 .Include(x => x.CounterTemplates)
                 .Include(x => x.EffectCounterTemplate)
                 .Include(x => x.RoundReminderTemplate)
-                .Include(x => x.StatIncreases).ThenInclude(x => x.Stat);
+                .Include(x => x.StatIncreases)
+                .ThenInclude(x => x.Stat);
         }
     }
 }

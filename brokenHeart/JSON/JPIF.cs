@@ -16,9 +16,7 @@ public static class JPIF
 
         return builder
             .GetRequiredService<IOptions<MvcOptions>>()
-            .Value
-            .InputFormatters
-            .OfType<NewtonsoftJsonPatchInputFormatter>()
+            .Value.InputFormatters.OfType<NewtonsoftJsonPatchInputFormatter>()
             .First();
     }
 }

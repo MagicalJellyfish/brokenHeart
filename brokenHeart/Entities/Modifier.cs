@@ -1,9 +1,9 @@
-﻿using brokenHeart.Entities.Counters;
-using brokenHeart.Entities.Stats;
-using brokenHeart.Entities.Abilities.Abilities;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
-using System.ComponentModel.DataAnnotations.Schema;
+using brokenHeart.Entities.Abilities.Abilities;
+using brokenHeart.Entities.Counters;
 using brokenHeart.Entities.RoundReminders;
+using brokenHeart.Entities.Stats;
 
 namespace brokenHeart.Entities
 {
@@ -11,8 +11,19 @@ namespace brokenHeart.Entities
     {
         [JsonConstructor]
         public Modifier() { }
-        public Modifier(string name, string description = "", string @abstract = "", int maxHp = 0, int movementSpeed = 0, int armor = 0, int evasion = 0,
-            List<StatValue>? statIncrease = null, /*List<Ability>? abilities = null,*/ List<Counter>? counters = null, RoundReminder? roundReminder = null)
+
+        public Modifier(
+            string name,
+            string description = "",
+            string @abstract = "",
+            int maxHp = 0,
+            int movementSpeed = 0,
+            int armor = 0,
+            int evasion = 0,
+            List<StatValue>? statIncrease = null, /*List<Ability>? abilities = null,*/
+            List<Counter>? counters = null,
+            RoundReminder? roundReminder = null
+        )
         {
             Name = name;
             Description = description;

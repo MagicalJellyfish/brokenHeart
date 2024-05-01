@@ -30,7 +30,9 @@ namespace brokenHeart.Controllers.EntityControllers
                 return NotFound();
             }
 
-            IEnumerable<Stat> stats = _context.Stats.Select(x => ApiAuxiliary.GetEntityPrepare(x) as Stat).ToList();
+            IEnumerable<Stat> stats = _context
+                .Stats.Select(x => ApiAuxiliary.GetEntityPrepare(x) as Stat)
+                .ToList();
 
             return Ok(stats);
         }
@@ -45,7 +47,9 @@ namespace brokenHeart.Controllers.EntityControllers
                 return NotFound();
             }
 
-            IEnumerable<Bodypart> bodyparts = _context.Bodyparts.Select(x => ApiAuxiliary.GetEntityPrepare(x) as Bodypart).ToList();
+            IEnumerable<Bodypart> bodyparts = _context
+                .Bodyparts.Select(x => ApiAuxiliary.GetEntityPrepare(x) as Bodypart)
+                .ToList();
 
             return Ok(bodyparts);
         }

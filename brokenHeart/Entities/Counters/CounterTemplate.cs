@@ -1,7 +1,7 @@
-﻿using brokenHeart.Entities.Characters;
-using brokenHeart.Entities.RoundReminders;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
+using brokenHeart.Entities.Characters;
+using brokenHeart.Entities.RoundReminders;
 
 namespace brokenHeart.Entities.Counters
 {
@@ -9,7 +9,14 @@ namespace brokenHeart.Entities.Counters
     {
         [JsonConstructor]
         public CounterTemplate() { }
-        public CounterTemplate(string name, int max, string description, bool roundBased = true, RoundReminderTemplate? reminderTemplate = null)
+
+        public CounterTemplate(
+            string name,
+            int max,
+            string description,
+            bool roundBased = true,
+            RoundReminderTemplate? reminderTemplate = null
+        )
         {
             Name = name;
             Max = max;
@@ -29,15 +36,18 @@ namespace brokenHeart.Entities.Counters
 
         [NotMapped]
         public ICollection<int> ModifierTemplatesIds { get; set; } = new List<int>();
-        public virtual ICollection<ModifierTemplate> ModifierTemplates { get; set; } = new List<ModifierTemplate>();
+        public virtual ICollection<ModifierTemplate> ModifierTemplates { get; set; } =
+            new List<ModifierTemplate>();
 
         [NotMapped]
         public ICollection<int>? CharacterTemplatesIds { get; set; } = new List<int>();
-        public virtual ICollection<CharacterTemplate> CharacterTemplates { get; set; } = new List<CharacterTemplate>();
+        public virtual ICollection<CharacterTemplate> CharacterTemplates { get; set; } =
+            new List<CharacterTemplate>();
 
         public Counter Instantiate()
         {
-            RoundReminder? reminder = RoundReminderTemplate != null ? RoundReminderTemplate.Instantiate() : null;
+            RoundReminder? reminder =
+                RoundReminderTemplate != null ? RoundReminderTemplate.Instantiate() : null;
             return new Counter(Name, Max, Description, RoundBased, reminder);
         }
     }

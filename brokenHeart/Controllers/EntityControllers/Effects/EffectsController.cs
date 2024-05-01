@@ -1,10 +1,10 @@
-using Microsoft.AspNetCore.Mvc;
-using brokenHeart.DB;
 using brokenHeart.Auxiliary;
-using Microsoft.AspNetCore.JsonPatch;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.JsonPatch.Operations;
+using brokenHeart.DB;
 using brokenHeart.Entities.Effects;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.JsonPatch;
+using Microsoft.AspNetCore.JsonPatch.Operations;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace brokenHeart.Controllers.EntityControllers.Effects
@@ -15,13 +15,13 @@ namespace brokenHeart.Controllers.EntityControllers.Effects
     {
         private readonly BrokenDbContext _context;
 
-	    public EffectsController(BrokenDbContext context)
+        public EffectsController(BrokenDbContext context)
         {
             _context = context;
         }
 
-	    // GET: api/Effects
-	    [HttpGet]
+        // GET: api/Effects
+        [HttpGet]
         [Authorize]
         public async Task<ActionResult<IEnumerable<Effect>>> GetEffects()
         {
@@ -30,7 +30,9 @@ namespace brokenHeart.Controllers.EntityControllers.Effects
                 return NotFound();
             }
 
-            IEnumerable<Effect> effects = FullEffects().Select(x => ApiAuxiliary.GetEntityPrepare(x) as Effect).ToList();
+            IEnumerable<Effect> effects = FullEffects()
+                .Select(x => ApiAuxiliary.GetEntityPrepare(x) as Effect)
+                .ToList();
 
             return Ok(effects);
         }
@@ -45,7 +47,9 @@ namespace brokenHeart.Controllers.EntityControllers.Effects
                 return NotFound();
             }
 
-            Effect effect = ApiAuxiliary.GetEntityPrepare(await FullEffects().FirstOrDefaultAsync(x => x.Id == id));
+            Effect effect = ApiAuxiliary.GetEntityPrepare(
+                await FullEffects().FirstOrDefaultAsync(x => x.Id == id)
+            );
 
             if (effect == null)
             {
@@ -59,7 +63,10 @@ namespace brokenHeart.Controllers.EntityControllers.Effects
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPatch("{id}")]
         [Authorize]
-        public async Task<IActionResult> PatchEffect(int id, JsonPatchDocument<Effect> patchDocument)
+        public async Task<IActionResult> PatchEffect(
+            int id,
+            JsonPatchDocument<Effect> patchDocument
+        )
         {
             if (patchDocument == null)
             {
@@ -68,13 +75,13 @@ namespace brokenHeart.Controllers.EntityControllers.Effects
 
             Effect effect = FullEffects().Single(x => x.Id == id);
 
-            if(effect == null)
+            if (effect == null)
             {
                 return BadRequest();
             }
 
             List<Operation> operations = new List<Operation>();
-            foreach(var operation in patchDocument.Operations)
+            foreach (var operation in patchDocument.Operations)
             {
                 operations.Add(operation);
             }
@@ -101,7 +108,7 @@ namespace brokenHeart.Controllers.EntityControllers.Effects
         {
             if (_context.Effects == null)
             {
-              return Problem("Entity set 'BrokenDbContext.Effects'  is null.");
+                return Problem("Entity set 'BrokenDbContext.Effects'  is null.");
             }
 
             Effect returnEffect = ApiAuxiliary.PostEntity(_context, typeof(Effect), effect);
@@ -124,7 +131,7 @@ namespace brokenHeart.Controllers.EntityControllers.Effects
                 return NotFound();
             }
 
-            if(_context.InjuryEffects.Any(x => x.Id == effect.Id))
+            if (_context.InjuryEffects.Any(x => x.Id == effect.Id))
             {
                 return BadRequest("Cannot delete InjuryEffect");
             }
@@ -137,11 +144,12 @@ namespace brokenHeart.Controllers.EntityControllers.Effects
 
         private IQueryable<Effect> FullEffects()
         {
-            return _context.Effects
-                .Include(x => x.Counters)
+            return _context
+                .Effects.Include(x => x.Counters)
                 .Include(x => x.EffectCounter)
                 .Include(x => x.RoundReminder)
-                .Include(x => x.StatIncreases).ThenInclude(x => x.Stat);
+                .Include(x => x.StatIncreases)
+                .ThenInclude(x => x.Stat);
         }
     }
 }

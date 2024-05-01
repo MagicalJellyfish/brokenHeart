@@ -30,7 +30,9 @@ namespace brokenHeart.Controllers.EntityControllers.Abilities
                 return NotFound();
             }
 
-            IEnumerable<AbilityTemplate> abilityTemplates = FullAbilityTemplates().Select(x => ApiAuxiliary.GetEntityPrepare(x) as AbilityTemplate).ToList();
+            IEnumerable<AbilityTemplate> abilityTemplates = FullAbilityTemplates()
+                .Select(x => ApiAuxiliary.GetEntityPrepare(x) as AbilityTemplate)
+                .ToList();
 
             return Ok(abilityTemplates);
         }
@@ -45,7 +47,9 @@ namespace brokenHeart.Controllers.EntityControllers.Abilities
                 return NotFound();
             }
 
-            AbilityTemplate abilityTemplate = ApiAuxiliary.GetEntityPrepare(await FullAbilityTemplates().FirstOrDefaultAsync(x => x.Id == id));
+            AbilityTemplate abilityTemplate = ApiAuxiliary.GetEntityPrepare(
+                await FullAbilityTemplates().FirstOrDefaultAsync(x => x.Id == id)
+            );
 
             if (abilityTemplate == null)
             {
@@ -59,7 +63,10 @@ namespace brokenHeart.Controllers.EntityControllers.Abilities
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPatch("{id}")]
         [Authorize]
-        public async Task<IActionResult> PatchAbilityTemplate(int id, JsonPatchDocument<AbilityTemplate> patchDocument)
+        public async Task<IActionResult> PatchAbilityTemplate(
+            int id,
+            JsonPatchDocument<AbilityTemplate> patchDocument
+        )
         {
             if (patchDocument == null)
             {
@@ -81,7 +88,12 @@ namespace brokenHeart.Controllers.EntityControllers.Abilities
 
             try
             {
-                ApiAuxiliary.PatchEntity(_context, typeof(AbilityTemplate), abilityTemplate, operations);
+                ApiAuxiliary.PatchEntity(
+                    _context,
+                    typeof(AbilityTemplate),
+                    abilityTemplate,
+                    operations
+                );
             }
             catch (Exception)
             {
@@ -97,16 +109,26 @@ namespace brokenHeart.Controllers.EntityControllers.Abilities
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         [Authorize]
-        public async Task<ActionResult<AbilityTemplate>> PostAbilityTemplate(AbilityTemplate abilityTemplate)
+        public async Task<ActionResult<AbilityTemplate>> PostAbilityTemplate(
+            AbilityTemplate abilityTemplate
+        )
         {
             if (_context.AbilityTemplates == null)
             {
                 return Problem("Entity set 'BrokenDbContext.AbilityTemplates'  is null.");
             }
 
-            AbilityTemplate returnAbilityTemplate = ApiAuxiliary.PostEntity(_context, typeof(AbilityTemplate), abilityTemplate);
+            AbilityTemplate returnAbilityTemplate = ApiAuxiliary.PostEntity(
+                _context,
+                typeof(AbilityTemplate),
+                abilityTemplate
+            );
 
-            return CreatedAtAction("GetAbilityTemplate", new { id = returnAbilityTemplate.Id }, returnAbilityTemplate);
+            return CreatedAtAction(
+                "GetAbilityTemplate",
+                new { id = returnAbilityTemplate.Id },
+                returnAbilityTemplate
+            );
         }
 
         // DELETE: api/AbilityTemplates/5
@@ -154,8 +176,8 @@ namespace brokenHeart.Controllers.EntityControllers.Abilities
 
         private IQueryable<AbilityTemplate> FullAbilityTemplates()
         {
-            return _context.AbilityTemplates
-                .Include(x => x.Rolls)
+            return _context
+                .AbilityTemplates.Include(x => x.Rolls)
                 .Include(x => x.EffectTemplates)
                 .Include(x => x.CharacterTemplates);
         }

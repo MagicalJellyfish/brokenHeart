@@ -6,6 +6,7 @@ namespace brokenHeart.Entities.Stats
     {
         [JsonConstructor]
         public Stat() { }
+
         public Stat(int id, string name)
         {
             Id = id;
@@ -17,5 +18,4 @@ namespace brokenHeart.Entities.Stats
 
         public virtual ICollection<StatValue> StatValues { get; set; } = new List<StatValue>();
     }
-
 }

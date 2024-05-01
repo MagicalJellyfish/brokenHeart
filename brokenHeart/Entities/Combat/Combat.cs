@@ -1,5 +1,5 @@
-﻿using brokenHeart.Entities.Stats;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using brokenHeart.Entities.Stats;
 
 namespace brokenHeart.Entities.Combat
 {

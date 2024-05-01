@@ -30,7 +30,9 @@ namespace brokenHeart.Controllers.EntityControllers.Rolls
                 return NotFound();
             }
 
-            IEnumerable<Roll> rolls = FullRolls().Select(x => ApiAuxiliary.GetEntityPrepare(x) as Roll).ToList();
+            IEnumerable<Roll> rolls = FullRolls()
+                .Select(x => ApiAuxiliary.GetEntityPrepare(x) as Roll)
+                .ToList();
 
             return Ok(rolls);
         }
@@ -45,7 +47,9 @@ namespace brokenHeart.Controllers.EntityControllers.Rolls
                 return NotFound();
             }
 
-            Roll roll = ApiAuxiliary.GetEntityPrepare(await FullRolls().FirstOrDefaultAsync(x => x.Id == id));
+            Roll roll = ApiAuxiliary.GetEntityPrepare(
+                await FullRolls().FirstOrDefaultAsync(x => x.Id == id)
+            );
 
             if (roll == null)
             {

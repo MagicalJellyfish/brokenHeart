@@ -1,4 +1,8 @@
-﻿using brokenHeart.Auth;
+﻿using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Security.Cryptography;
+using System.Text;
+using brokenHeart.Auth;
 using brokenHeart.DB;
 using brokenHeart.Entities;
 using Microsoft.AspNetCore.Authorization;
@@ -7,10 +11,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis;
 using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Security.Cryptography;
-using System.Text;
 
 namespace brokenHeart.Controllers
 {
@@ -23,7 +23,12 @@ namespace brokenHeart.Controllers
         private readonly IConfiguration _configuration;
         private readonly BrokenDbContext _brokenDbContext;
 
-        public AuthController(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, IConfiguration configuration, BrokenDbContext brokenDbContext)
+        public AuthController(
+            UserManager<ApplicationUser> userManager,
+            RoleManager<IdentityRole> roleManager,
+            IConfiguration configuration,
+            BrokenDbContext brokenDbContext
+        )
         {
             _userManager = userManager;
             _roleManager = roleManager;
@@ -38,14 +43,17 @@ namespace brokenHeart.Controllers
             List<string> lines = System.IO.File.ReadAllLines("Auth/registrations.txt").ToList();
             List<string> writeLines = new List<string>();
 
-            foreach(string line in lines)
+            foreach (string line in lines)
             {
-                string convertedRegistrationToken = Convert.ToBase64String(KeyDerivation.Pbkdf2(
-                       password: registerModel.RegistrationToken,
-                       salt: Convert.FromBase64String(_configuration["Registration_Salt"]),
-                       prf: KeyDerivationPrf.HMACSHA512,
-                       iterationCount: 300000,
-                       numBytesRequested: 128 / 8));
+                string convertedRegistrationToken = Convert.ToBase64String(
+                    KeyDerivation.Pbkdf2(
+                        password: registerModel.RegistrationToken,
+                        salt: Convert.FromBase64String(_configuration["Registration_Salt"]),
+                        prf: KeyDerivationPrf.HMACSHA512,
+                        iterationCount: 300000,
+                        numBytesRequested: 128 / 8
+                    )
+                );
 
                 if (line == convertedRegistrationToken)
                 {
@@ -57,7 +65,7 @@ namespace brokenHeart.Controllers
                 }
             }
 
-            if(!registrationTokenValid)
+            if (!registrationTokenValid)
             {
                 return Unauthorized("Registration token invalid");
             }
@@ -69,24 +77,29 @@ namespace brokenHeart.Controllers
                 return BadRequest("User already exists!");
             }
 
-            ApplicationUser user = new()
-            {
-                SecurityStamp = Guid.NewGuid().ToString(),
-                UserName = registerModel.Username,
-                DiscordId = (ulong)registerModel.DiscordId
-            };
+            ApplicationUser user =
+                new()
+                {
+                    SecurityStamp = Guid.NewGuid().ToString(),
+                    UserName = registerModel.Username,
+                    DiscordId = (ulong)registerModel.DiscordId
+                };
 
             var createUserResult = await _userManager.CreateAsync(user, registerModel.Password);
 
             if (!createUserResult.Succeeded)
             {
-                return BadRequest("User creation failed! " + createUserResult.Errors.First().Description);
+                return BadRequest(
+                    "User creation failed! " + createUserResult.Errors.First().Description
+                );
             }
 
             string role = UserRoles.User;
             await _userManager.AddToRoleAsync(user, role);
 
-            _brokenDbContext.UserSimplified.Add(new UserSimplified(registerModel.Username, (ulong)registerModel.DiscordId));
+            _brokenDbContext.UserSimplified.Add(
+                new UserSimplified(registerModel.Username, (ulong)registerModel.DiscordId)
+            );
             _brokenDbContext.SaveChanges();
 
             System.IO.File.WriteAllLines("Auth/registrations.txt", writeLines);
@@ -113,8 +126,8 @@ namespace brokenHeart.Controllers
 
             var authClaims = new List<Claim>
             {
-               new Claim(ClaimTypes.Name, user.UserName),
-               new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                new Claim(ClaimTypes.Name, user.UserName),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
             };
 
             foreach (var userRole in userRoles)
@@ -125,21 +138,30 @@ namespace brokenHeart.Controllers
             var token = GenerateAccessToken(authClaims);
             var refreshToken = GenerateRefreshToken();
 
-            int.TryParse(_configuration["JWT:RefreshTokenValidityInDays"], out int refreshTokenValidityInDays);
+            int.TryParse(
+                _configuration["JWT:RefreshTokenValidityInDays"],
+                out int refreshTokenValidityInDays
+            );
 
             user.RefreshToken = refreshToken;
             user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(refreshTokenValidityInDays);
 
             await _userManager.UpdateAsync(user);
 
-            return Ok(new
-            {
-                Username = user.UserName,
-                AccessToken = new JwtSecurityTokenHandler().WriteToken(token),
-                AccessTokenExpiration = ((DateTimeOffset)token.ValidTo).ToUnixTimeMilliseconds(),
-                RefreshToken = refreshToken,
-                RefreshTokenExpiration = ((DateTimeOffset)user.RefreshTokenExpiryTime).ToUnixTimeMilliseconds()
-            });
+            return Ok(
+                new
+                {
+                    Username = user.UserName,
+                    AccessToken = new JwtSecurityTokenHandler().WriteToken(token),
+                    AccessTokenExpiration = (
+                        (DateTimeOffset)token.ValidTo
+                    ).ToUnixTimeMilliseconds(),
+                    RefreshToken = refreshToken,
+                    RefreshTokenExpiration = (
+                        (DateTimeOffset)user.RefreshTokenExpiryTime
+                    ).ToUnixTimeMilliseconds()
+                }
+            );
         }
 
         [HttpGet("logout")]
@@ -177,7 +199,7 @@ namespace brokenHeart.Controllers
                 return BadRequest("Invalid access token or refresh token");
             }
 
-            if(refreshToken != user.RefreshToken)
+            if (refreshToken != user.RefreshToken)
             {
                 user.RefreshToken = null;
                 return BadRequest("Invalid refresh token");
@@ -186,21 +208,30 @@ namespace brokenHeart.Controllers
             var newAccessToken = GenerateAccessToken(principal.Claims.ToList());
             var newRefreshToken = GenerateRefreshToken();
 
-            int.TryParse(_configuration["JWT:RefreshTokenValidityInDays"], out int refreshTokenValidityInDays);
+            int.TryParse(
+                _configuration["JWT:RefreshTokenValidityInDays"],
+                out int refreshTokenValidityInDays
+            );
 
             user.RefreshToken = newRefreshToken;
             user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(refreshTokenValidityInDays);
 
             await _userManager.UpdateAsync(user);
 
-            return new ObjectResult(new
-            {
-                Username = user.UserName,
-                AccessToken = new JwtSecurityTokenHandler().WriteToken(newAccessToken),
-                AccessTokenExpiration = ((DateTimeOffset)newAccessToken.ValidTo).ToUnixTimeMilliseconds(),
-                RefreshToken = newRefreshToken,
-                RefreshTokenExpiration = ((DateTimeOffset)user.RefreshTokenExpiryTime).ToUnixTimeMilliseconds()
-            });
+            return new ObjectResult(
+                new
+                {
+                    Username = user.UserName,
+                    AccessToken = new JwtSecurityTokenHandler().WriteToken(newAccessToken),
+                    AccessTokenExpiration = (
+                        (DateTimeOffset)newAccessToken.ValidTo
+                    ).ToUnixTimeMilliseconds(),
+                    RefreshToken = newRefreshToken,
+                    RefreshTokenExpiration = (
+                        (DateTimeOffset)user.RefreshTokenExpiryTime
+                    ).ToUnixTimeMilliseconds()
+                }
+            );
         }
 
         [HttpGet("discord")]
@@ -231,7 +262,9 @@ namespace brokenHeart.Controllers
             user.DiscordId = discordId;
             await _userManager.UpdateAsync(user);
 
-            UserSimplified userSimple = _brokenDbContext.UserSimplified.Single(x => x.Username == user.UserName);
+            UserSimplified userSimple = _brokenDbContext.UserSimplified.Single(x =>
+                x.Username == user.UserName
+            );
             userSimple.DiscordId = discordId;
             _brokenDbContext.SaveChanges();
 
@@ -306,7 +339,7 @@ namespace brokenHeart.Controllers
             {
                 var user = await _userManager.FindByNameAsync(name);
 
-                if(user == null)
+                if (user == null)
                 {
                     return BadRequest("User not found!");
                 }
@@ -321,15 +354,23 @@ namespace brokenHeart.Controllers
 
         private JwtSecurityToken GenerateAccessToken(List<Claim> authClaims)
         {
-            var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT_Secret"]));
-            int.TryParse(_configuration["JWT:AccessTokenValidityInMinutes"], out int tokenValidityInMinutes);
+            var authSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(_configuration["JWT_Secret"])
+            );
+            int.TryParse(
+                _configuration["JWT:AccessTokenValidityInMinutes"],
+                out int tokenValidityInMinutes
+            );
 
             var token = new JwtSecurityToken(
                 issuer: _configuration["JWT:ValidIssuer"],
                 audience: _configuration["JWT:ValidAudience"],
                 expires: DateTime.UtcNow.AddMinutes(tokenValidityInMinutes),
                 claims: authClaims,
-                signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha512)
+                signingCredentials: new SigningCredentials(
+                    authSigningKey,
+                    SecurityAlgorithms.HmacSha512
+                )
             );
 
             return token;
@@ -350,14 +391,26 @@ namespace brokenHeart.Controllers
                 ValidateAudience = false,
                 ValidateIssuer = false,
                 ValidateIssuerSigningKey = true,
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT_Secret"])),
+                IssuerSigningKey = new SymmetricSecurityKey(
+                    Encoding.UTF8.GetBytes(_configuration["JWT_Secret"])
+                ),
                 ValidateLifetime = false
             };
 
             var tokenHandler = new JwtSecurityTokenHandler();
-            var principal = tokenHandler.ValidateToken(token, tokenValidationParameters, out SecurityToken securityToken);
+            var principal = tokenHandler.ValidateToken(
+                token,
+                tokenValidationParameters,
+                out SecurityToken securityToken
+            );
 
-            if (securityToken is not JwtSecurityToken jwtSecurityToken || !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha512, StringComparison.InvariantCultureIgnoreCase))
+            if (
+                securityToken is not JwtSecurityToken jwtSecurityToken
+                || !jwtSecurityToken.Header.Alg.Equals(
+                    SecurityAlgorithms.HmacSha512,
+                    StringComparison.InvariantCultureIgnoreCase
+                )
+            )
             {
                 throw new SecurityTokenException("Invalid token");
             }

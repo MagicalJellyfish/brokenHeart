@@ -1,12 +1,12 @@
-using Microsoft.AspNetCore.Mvc;
-using brokenHeart.DB;
 using brokenHeart.Auxiliary;
-using Microsoft.AspNetCore.JsonPatch;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.JsonPatch.Operations;
-using brokenHeart.Entities.Items;
+using brokenHeart.DB;
 using brokenHeart.Entities.Effects;
+using brokenHeart.Entities.Items;
 using brokenHeart.Entities.Traits;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.JsonPatch;
+using Microsoft.AspNetCore.JsonPatch.Operations;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace brokenHeart.Controllers.EntityControllers.Items
@@ -17,13 +17,13 @@ namespace brokenHeart.Controllers.EntityControllers.Items
     {
         private readonly BrokenDbContext _context;
 
-	    public ItemsController(BrokenDbContext context)
+        public ItemsController(BrokenDbContext context)
         {
             _context = context;
         }
 
-	    // GET: api/Items
-	    [HttpGet]
+        // GET: api/Items
+        [HttpGet]
         [Authorize]
         public async Task<ActionResult<IEnumerable<Item>>> GetItems()
         {
@@ -32,7 +32,9 @@ namespace brokenHeart.Controllers.EntityControllers.Items
                 return NotFound();
             }
 
-            IEnumerable<Item> items = FullItems().Select(x => ApiAuxiliary.GetEntityPrepare(x) as Item).ToList();
+            IEnumerable<Item> items = FullItems()
+                .Select(x => ApiAuxiliary.GetEntityPrepare(x) as Item)
+                .ToList();
 
             return Ok(items);
         }
@@ -47,7 +49,9 @@ namespace brokenHeart.Controllers.EntityControllers.Items
                 return NotFound();
             }
 
-            Item item = ApiAuxiliary.GetEntityPrepare(await FullItems().FirstOrDefaultAsync(x => x.Id == id));
+            Item item = ApiAuxiliary.GetEntityPrepare(
+                await FullItems().FirstOrDefaultAsync(x => x.Id == id)
+            );
 
             if (item == null)
             {
@@ -70,13 +74,13 @@ namespace brokenHeart.Controllers.EntityControllers.Items
 
             Item item = FullItems().Single(x => x.Id == id);
 
-            if(item == null)
+            if (item == null)
             {
                 return BadRequest();
             }
 
             List<Operation> operations = new List<Operation>();
-            foreach(var operation in patchDocument.Operations)
+            foreach (var operation in patchDocument.Operations)
             {
                 operations.Add(operation);
             }
@@ -103,7 +107,7 @@ namespace brokenHeart.Controllers.EntityControllers.Items
         {
             if (_context.Items == null)
             {
-              return Problem("Entity set 'BrokenDbContext.Items'  is null.");
+                return Problem("Entity set 'BrokenDbContext.Items'  is null.");
             }
 
             Item returnItem = ApiAuxiliary.PostEntity(_context, typeof(Item), item);
@@ -134,10 +138,11 @@ namespace brokenHeart.Controllers.EntityControllers.Items
 
         private IQueryable<Item> FullItems()
         {
-            return _context.Items
-                .Include(x => x.Counters)
+            return _context
+                .Items.Include(x => x.Counters)
                 .Include(x => x.RoundReminder)
-                .Include(x => x.StatIncreases).ThenInclude(x => x.Stat);
+                .Include(x => x.StatIncreases)
+                .ThenInclude(x => x.Stat);
         }
     }
 }

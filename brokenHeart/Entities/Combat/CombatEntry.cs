@@ -1,6 +1,6 @@
-﻿using brokenHeart.Entities.Characters;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
+using brokenHeart.Entities.Characters;
 
 namespace brokenHeart.Entities.Combat
 {
@@ -8,6 +8,7 @@ namespace brokenHeart.Entities.Combat
     {
         [JsonConstructor]
         public CombatEntry() { }
+
         public CombatEntry(Character character, int initRoll, string shortcut)
         {
             Character = character;

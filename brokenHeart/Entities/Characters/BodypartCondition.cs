@@ -6,8 +6,9 @@ namespace brokenHeart.Entities.Characters
     {
         [JsonConstructor]
         public BodypartCondition() { }
-        public BodypartCondition(Bodypart bodypart) 
-        { 
+
+        public BodypartCondition(Bodypart bodypart)
+        {
             Bodypart = bodypart;
         }
 

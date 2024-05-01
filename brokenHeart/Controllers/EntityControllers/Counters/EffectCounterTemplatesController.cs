@@ -1,11 +1,11 @@
-using Microsoft.AspNetCore.Mvc;
-using brokenHeart.DB;
 using brokenHeart.Auxiliary;
-using Microsoft.AspNetCore.JsonPatch;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.JsonPatch.Operations;
+using brokenHeart.DB;
 using brokenHeart.Entities.Counters;
 using brokenHeart.Entities.RoundReminders;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.JsonPatch;
+using Microsoft.AspNetCore.JsonPatch.Operations;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace brokenHeart.Controllers.EntityControllers.EffectCounterTemplates
@@ -16,22 +16,29 @@ namespace brokenHeart.Controllers.EntityControllers.EffectCounterTemplates
     {
         private readonly BrokenDbContext _context;
 
-	    public EffectCounterTemplatesController(BrokenDbContext context)
+        public EffectCounterTemplatesController(BrokenDbContext context)
         {
             _context = context;
         }
 
-	    // GET: api/EffectCounterTemplates
-	    [HttpGet]
+        // GET: api/EffectCounterTemplates
+        [HttpGet]
         [Authorize]
-        public async Task<ActionResult<IEnumerable<EffectCounterTemplate>>> GetEffectCounterTemplates()
+        public async Task<
+            ActionResult<IEnumerable<EffectCounterTemplate>>
+        > GetEffectCounterTemplates()
         {
-            if (_context.EffectCounterTemplates == null || _context.EffectCounterTemplates.Count() == 0)
+            if (
+                _context.EffectCounterTemplates == null
+                || _context.EffectCounterTemplates.Count() == 0
+            )
             {
                 return NotFound();
             }
 
-            IEnumerable<EffectCounterTemplate> effectCounterTemplates = FullEffectCounterTemplates().Select(x => ApiAuxiliary.GetEntityPrepare(x) as EffectCounterTemplate).ToList();
+            IEnumerable<EffectCounterTemplate> effectCounterTemplates = FullEffectCounterTemplates()
+                .Select(x => ApiAuxiliary.GetEntityPrepare(x) as EffectCounterTemplate)
+                .ToList();
 
             return Ok(effectCounterTemplates);
         }
@@ -41,12 +48,17 @@ namespace brokenHeart.Controllers.EntityControllers.EffectCounterTemplates
         [Authorize]
         public async Task<ActionResult<EffectCounterTemplate>> GetEffectCounterTemplate(int id)
         {
-            if (_context.EffectCounterTemplates == null || _context.EffectCounterTemplates.Count() == 0)
+            if (
+                _context.EffectCounterTemplates == null
+                || _context.EffectCounterTemplates.Count() == 0
+            )
             {
                 return NotFound();
             }
 
-            EffectCounterTemplate effectCounterTemplate = ApiAuxiliary.GetEntityPrepare(await FullEffectCounterTemplates().FirstOrDefaultAsync(x => x.Id == id));
+            EffectCounterTemplate effectCounterTemplate = ApiAuxiliary.GetEntityPrepare(
+                await FullEffectCounterTemplates().FirstOrDefaultAsync(x => x.Id == id)
+            );
 
             if (effectCounterTemplate == null)
             {
@@ -60,29 +72,38 @@ namespace brokenHeart.Controllers.EntityControllers.EffectCounterTemplates
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPatch("{id}")]
         [Authorize]
-        public async Task<IActionResult> PatchEffectCounterTemplate(int id, JsonPatchDocument<EffectCounterTemplate> patchDocument)
+        public async Task<IActionResult> PatchEffectCounterTemplate(
+            int id,
+            JsonPatchDocument<EffectCounterTemplate> patchDocument
+        )
         {
             if (patchDocument == null)
             {
                 return BadRequest();
             }
 
-            EffectCounterTemplate effectCounterTemplate = FullEffectCounterTemplates().Single(x => x.Id == id);
+            EffectCounterTemplate effectCounterTemplate = FullEffectCounterTemplates()
+                .Single(x => x.Id == id);
 
-            if(effectCounterTemplate == null)
+            if (effectCounterTemplate == null)
             {
                 return BadRequest();
             }
 
             List<Operation> operations = new List<Operation>();
-            foreach(var operation in patchDocument.Operations)
+            foreach (var operation in patchDocument.Operations)
             {
                 operations.Add(operation);
             }
 
             try
             {
-                ApiAuxiliary.PatchEntity(_context, typeof(EffectCounterTemplate), effectCounterTemplate, operations);
+                ApiAuxiliary.PatchEntity(
+                    _context,
+                    typeof(EffectCounterTemplate),
+                    effectCounterTemplate,
+                    operations
+                );
             }
             catch (Exception)
             {
@@ -98,16 +119,26 @@ namespace brokenHeart.Controllers.EntityControllers.EffectCounterTemplates
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         [Authorize]
-        public async Task<ActionResult<EffectCounterTemplate>> PostEffectCounterTemplate(EffectCounterTemplate effectCounterTemplate)
+        public async Task<ActionResult<EffectCounterTemplate>> PostEffectCounterTemplate(
+            EffectCounterTemplate effectCounterTemplate
+        )
         {
             if (_context.EffectCounterTemplates == null)
             {
-              return Problem("Entity set 'BrokenDbContext.EffectCounterTemplates'  is null.");
+                return Problem("Entity set 'BrokenDbContext.EffectCounterTemplates'  is null.");
             }
 
-            EffectCounterTemplate returnEffectCounterTemplate = ApiAuxiliary.PostEntity(_context, typeof(EffectCounterTemplate), effectCounterTemplate);
+            EffectCounterTemplate returnEffectCounterTemplate = ApiAuxiliary.PostEntity(
+                _context,
+                typeof(EffectCounterTemplate),
+                effectCounterTemplate
+            );
 
-            return CreatedAtAction("GetEffectCounterTemplate", new { id = returnEffectCounterTemplate.Id }, returnEffectCounterTemplate);
+            return CreatedAtAction(
+                "GetEffectCounterTemplate",
+                new { id = returnEffectCounterTemplate.Id },
+                returnEffectCounterTemplate
+            );
         }
 
         // DELETE: api/EffectCounterTemplates/5
@@ -136,12 +167,16 @@ namespace brokenHeart.Controllers.EntityControllers.EffectCounterTemplates
         [Authorize]
         public async Task<ActionResult<EffectCounter>> InstantiateEffectCounterTemplate(int id)
         {
-            if (_context.EffectCounterTemplates == null || _context.EffectCounterTemplates.Count() == 0)
+            if (
+                _context.EffectCounterTemplates == null
+                || _context.EffectCounterTemplates.Count() == 0
+            )
             {
                 return NotFound();
             }
 
-            EffectCounterTemplate effectCounterTemplate = await _context.EffectCounterTemplates.FindAsync(id);
+            EffectCounterTemplate effectCounterTemplate =
+                await _context.EffectCounterTemplates.FindAsync(id);
 
             if (effectCounterTemplate == null)
             {
@@ -155,8 +190,8 @@ namespace brokenHeart.Controllers.EntityControllers.EffectCounterTemplates
 
         private IQueryable<EffectCounterTemplate> FullEffectCounterTemplates()
         {
-            return _context.EffectCounterTemplates
-                .Include(x => x.CharacterTemplates)
+            return _context
+                .EffectCounterTemplates.Include(x => x.CharacterTemplates)
                 .Include(x => x.RoundReminderTemplate);
         }
     }

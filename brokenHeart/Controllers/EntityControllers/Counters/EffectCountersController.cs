@@ -1,11 +1,11 @@
-using Microsoft.AspNetCore.Mvc;
-using brokenHeart.DB;
-using brokenHeart.Auxiliary;
-using Microsoft.AspNetCore.JsonPatch;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.JsonPatch.Operations;
-using brokenHeart.Entities.Counters;
 using System.Diagnostics.Metrics;
+using brokenHeart.Auxiliary;
+using brokenHeart.DB;
+using brokenHeart.Entities.Counters;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.JsonPatch;
+using Microsoft.AspNetCore.JsonPatch.Operations;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace brokenHeart.Controllers.EntityControllers.EffectCounters
@@ -16,13 +16,13 @@ namespace brokenHeart.Controllers.EntityControllers.EffectCounters
     {
         private readonly BrokenDbContext _context;
 
-	    public EffectCountersController(BrokenDbContext context)
+        public EffectCountersController(BrokenDbContext context)
         {
             _context = context;
         }
 
-	    // GET: api/EffectCounters
-	    [HttpGet]
+        // GET: api/EffectCounters
+        [HttpGet]
         [Authorize]
         public async Task<ActionResult<IEnumerable<EffectCounter>>> GetEffectCounters()
         {
@@ -31,7 +31,9 @@ namespace brokenHeart.Controllers.EntityControllers.EffectCounters
                 return NotFound();
             }
 
-            IEnumerable<EffectCounter> effectCounters = FullEffectCounters().Select(x => ApiAuxiliary.GetEntityPrepare(x) as EffectCounter).ToList();
+            IEnumerable<EffectCounter> effectCounters = FullEffectCounters()
+                .Select(x => ApiAuxiliary.GetEntityPrepare(x) as EffectCounter)
+                .ToList();
 
             return Ok(effectCounters);
         }
@@ -46,7 +48,9 @@ namespace brokenHeart.Controllers.EntityControllers.EffectCounters
                 return NotFound();
             }
 
-            EffectCounter effectCounter = ApiAuxiliary.GetEntityPrepare(await FullEffectCounters().FirstOrDefaultAsync(x => x.Id == id));
+            EffectCounter effectCounter = ApiAuxiliary.GetEntityPrepare(
+                await FullEffectCounters().FirstOrDefaultAsync(x => x.Id == id)
+            );
 
             if (effectCounter == null)
             {
@@ -60,7 +64,10 @@ namespace brokenHeart.Controllers.EntityControllers.EffectCounters
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPatch("{id}")]
         [Authorize]
-        public async Task<IActionResult> PatchEffectCounter(int id, JsonPatchDocument<EffectCounter> patchDocument)
+        public async Task<IActionResult> PatchEffectCounter(
+            int id,
+            JsonPatchDocument<EffectCounter> patchDocument
+        )
         {
             if (patchDocument == null)
             {
@@ -69,20 +76,25 @@ namespace brokenHeart.Controllers.EntityControllers.EffectCounters
 
             EffectCounter effectCounter = FullEffectCounters().Single(x => x.Id == id);
 
-            if(effectCounter == null)
+            if (effectCounter == null)
             {
                 return BadRequest();
             }
 
             List<Operation> operations = new List<Operation>();
-            foreach(var operation in patchDocument.Operations)
+            foreach (var operation in patchDocument.Operations)
             {
                 operations.Add(operation);
             }
 
             try
             {
-                ApiAuxiliary.PatchEntity(_context, typeof(EffectCounter), effectCounter, operations);
+                ApiAuxiliary.PatchEntity(
+                    _context,
+                    typeof(EffectCounter),
+                    effectCounter,
+                    operations
+                );
             }
             catch (Exception)
             {
@@ -98,16 +110,26 @@ namespace brokenHeart.Controllers.EntityControllers.EffectCounters
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         [Authorize]
-        public async Task<ActionResult<EffectCounter>> PostEffectCounter(EffectCounter effectCounter)
+        public async Task<ActionResult<EffectCounter>> PostEffectCounter(
+            EffectCounter effectCounter
+        )
         {
             if (_context.EffectCounters == null)
             {
-              return Problem("Entity set 'BrokenDbContext.EffectCounters'  is null.");
+                return Problem("Entity set 'BrokenDbContext.EffectCounters'  is null.");
             }
 
-            EffectCounter returnEffectCounter = ApiAuxiliary.PostEntity(_context, typeof(EffectCounter), effectCounter);
+            EffectCounter returnEffectCounter = ApiAuxiliary.PostEntity(
+                _context,
+                typeof(EffectCounter),
+                effectCounter
+            );
 
-            return CreatedAtAction("GetEffectCounter", new { id = returnEffectCounter.Id }, returnEffectCounter);
+            return CreatedAtAction(
+                "GetEffectCounter",
+                new { id = returnEffectCounter.Id },
+                returnEffectCounter
+            );
         }
 
         // DELETE: api/EffectCounters/5
@@ -133,8 +155,7 @@ namespace brokenHeart.Controllers.EntityControllers.EffectCounters
 
         private IQueryable<EffectCounter> FullEffectCounters()
         {
-            return _context.EffectCounters
-                .Include(x => x.RoundReminder);
+            return _context.EffectCounters.Include(x => x.RoundReminder);
         }
     }
 }

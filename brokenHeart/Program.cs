@@ -1,64 +1,75 @@
+using System.Text;
 using brokenHeart;
 using brokenHeart.Auth;
+using brokenHeart.Auth.DB;
+using brokenHeart.Controllers;
 using brokenHeart.DB;
+using brokenHeart.JSON;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using brokenHeart.Auth.DB;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
-using System.Text;
-using brokenHeart.Controllers;
-using brokenHeart.JSON;
-using Microsoft.AspNetCore.HttpOverrides;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy =>
-                      {
-                          policy.WithOrigins(builder.Configuration["CORS:Origin"])
-                            .AllowAnyHeader()
-                            .AllowAnyMethod();
-                      });
+    {
+        policy.WithOrigins(builder.Configuration["CORS:Origin"]).AllowAnyHeader().AllowAnyMethod();
+    });
 });
 
 // Add services to the container.
-builder.Services.AddControllers(options =>
-{
-    options.InputFormatters.Insert(0, JPIF.GetJsonPatchInputFormatter());
-}).AddJsonOptions(options =>
-{
-    options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
-    options.JsonSerializerOptions.Converters.Add(new ByteArrayConverter());
-});
+builder
+    .Services.AddControllers(options =>
+    {
+        options.InputFormatters.Insert(0, JPIF.GetJsonPatchInputFormatter());
+    })
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.ReferenceHandler = System
+            .Text
+            .Json
+            .Serialization
+            .ReferenceHandler
+            .IgnoreCycles;
+        options.JsonSerializerOptions.Converters.Add(new ByteArrayConverter());
+    });
 
-builder.Services.AddDbContext<BrokenDbContext>
-    (options => options.UseSqlite(builder.Configuration.GetConnectionString("DataConnection"), o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)));
-builder.Services.AddDbContext<AuthDbContext>
-    (options => options.UseSqlite(builder.Configuration.GetConnectionString("AuthConnection")));
+builder.Services.AddDbContext<BrokenDbContext>(options =>
+    options.UseSqlite(
+        builder.Configuration.GetConnectionString("DataConnection"),
+        o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)
+    )
+);
+builder.Services.AddDbContext<AuthDbContext>(options =>
+    options.UseSqlite(builder.Configuration.GetConnectionString("AuthConnection"))
+);
 
-builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+builder
+    .Services.AddIdentity<ApplicationUser, IdentityRole>()
     .AddEntityFrameworkStores<AuthDbContext>()
     .AddDefaultTokenProviders();
 
 builder.Services.Configure<IdentityOptions>(options =>
-    {
-        options.Password.RequireNonAlphanumeric = false;
-    }
-);
+{
+    options.Password.RequireNonAlphanumeric = false;
+});
 builder.Services.Configure<PasswordHasherOptions>(options =>
 {
     options.IterationCount = 300_000;
 });
 
-builder.Services.AddAuthentication(options =>
+builder
+    .Services.AddAuthentication(options =>
     {
         options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
         options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
         options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-    }
-).AddJwtBearer(options =>
+    })
+    .AddJwtBearer(options =>
     {
         options.SaveToken = true;
         options.RequireHttpsMetadata = false;
@@ -73,10 +84,11 @@ builder.Services.AddAuthentication(options =>
             ValidateIssuerSigningKey = true,
             ValidateLifetime = true,
             ClockSkew = TimeSpan.Zero,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT_Secret"]))
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(builder.Configuration["JWT_Secret"])
+            )
         };
-    }
-);
+    });
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -86,10 +98,12 @@ builder.Services.AddSingleton<CharChangeObservable>();
 
 var app = builder.Build();
 
-app.UseForwardedHeaders(new ForwardedHeadersOptions
-{
-    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
-});
+app.UseForwardedHeaders(
+    new ForwardedHeadersOptions
+    {
+        ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+    }
+);
 
 app.UseWebSockets();
 
@@ -110,8 +124,9 @@ app.UseAuthorization();
 app.MapControllers();
 
 await Constants.ValidateAsync(
-    app.Services.CreateScope().ServiceProvider.GetRequiredService<BrokenDbContext>(), 
-    app.Services.CreateScope().ServiceProvider.GetRequiredService<AuthDbContext>(), 
-    app.Services.CreateScope().ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>());
+    app.Services.CreateScope().ServiceProvider.GetRequiredService<BrokenDbContext>(),
+    app.Services.CreateScope().ServiceProvider.GetRequiredService<AuthDbContext>(),
+    app.Services.CreateScope().ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>()
+);
 
 app.Run();

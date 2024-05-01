@@ -1,11 +1,11 @@
-using Microsoft.AspNetCore.Mvc;
-using brokenHeart.DB;
 using brokenHeart.Auxiliary;
-using Microsoft.AspNetCore.JsonPatch;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.JsonPatch.Operations;
+using brokenHeart.DB;
 using brokenHeart.Entities.Items;
 using brokenHeart.Entities.RoundReminders;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.JsonPatch;
+using Microsoft.AspNetCore.JsonPatch.Operations;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace brokenHeart.Controllers.EntityControllers.ItemTemplates
@@ -16,13 +16,13 @@ namespace brokenHeart.Controllers.EntityControllers.ItemTemplates
     {
         private readonly BrokenDbContext _context;
 
-	    public ItemTemplatesController(BrokenDbContext context)
+        public ItemTemplatesController(BrokenDbContext context)
         {
             _context = context;
         }
 
-	    // GET: api/ItemTemplates
-	    [HttpGet]
+        // GET: api/ItemTemplates
+        [HttpGet]
         [Authorize]
         public async Task<ActionResult<IEnumerable<ItemTemplate>>> GetItemTemplates()
         {
@@ -31,7 +31,9 @@ namespace brokenHeart.Controllers.EntityControllers.ItemTemplates
                 return NotFound();
             }
 
-            IEnumerable<ItemTemplate> itemTemplates = FullItemTemplates().Select(x => ApiAuxiliary.GetEntityPrepare(x) as ItemTemplate).ToList();
+            IEnumerable<ItemTemplate> itemTemplates = FullItemTemplates()
+                .Select(x => ApiAuxiliary.GetEntityPrepare(x) as ItemTemplate)
+                .ToList();
 
             return Ok(itemTemplates);
         }
@@ -46,7 +48,9 @@ namespace brokenHeart.Controllers.EntityControllers.ItemTemplates
                 return NotFound();
             }
 
-            ItemTemplate itemTemplate = ApiAuxiliary.GetEntityPrepare(await FullItemTemplates().FirstOrDefaultAsync(x => x.Id == id));
+            ItemTemplate itemTemplate = ApiAuxiliary.GetEntityPrepare(
+                await FullItemTemplates().FirstOrDefaultAsync(x => x.Id == id)
+            );
 
             if (itemTemplate == null)
             {
@@ -60,7 +64,10 @@ namespace brokenHeart.Controllers.EntityControllers.ItemTemplates
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPatch("{id}")]
         [Authorize]
-        public async Task<IActionResult> PatchItemTemplate(int id, JsonPatchDocument<ItemTemplate> patchDocument)
+        public async Task<IActionResult> PatchItemTemplate(
+            int id,
+            JsonPatchDocument<ItemTemplate> patchDocument
+        )
         {
             if (patchDocument == null)
             {
@@ -69,13 +76,13 @@ namespace brokenHeart.Controllers.EntityControllers.ItemTemplates
 
             ItemTemplate itemTemplate = FullItemTemplates().Single(x => x.Id == id);
 
-            if(itemTemplate == null)
+            if (itemTemplate == null)
             {
                 return BadRequest();
             }
 
             List<Operation> operations = new List<Operation>();
-            foreach(var operation in patchDocument.Operations)
+            foreach (var operation in patchDocument.Operations)
             {
                 operations.Add(operation);
             }
@@ -102,12 +109,20 @@ namespace brokenHeart.Controllers.EntityControllers.ItemTemplates
         {
             if (_context.ItemTemplates == null)
             {
-              return Problem("Entity set 'BrokenDbContext.ItemTemplates'  is null.");
+                return Problem("Entity set 'BrokenDbContext.ItemTemplates'  is null.");
             }
 
-            ItemTemplate returnItemTemplate = ApiAuxiliary.PostEntity(_context, typeof(ItemTemplate), itemTemplate);
+            ItemTemplate returnItemTemplate = ApiAuxiliary.PostEntity(
+                _context,
+                typeof(ItemTemplate),
+                itemTemplate
+            );
 
-            return CreatedAtAction("GetItemTemplate", new { id = returnItemTemplate.Id }, returnItemTemplate);
+            return CreatedAtAction(
+                "GetItemTemplate",
+                new { id = returnItemTemplate.Id },
+                returnItemTemplate
+            );
         }
 
         // DELETE: api/ItemTemplates/5
@@ -155,11 +170,12 @@ namespace brokenHeart.Controllers.EntityControllers.ItemTemplates
 
         private IQueryable<ItemTemplate> FullItemTemplates()
         {
-            return _context.ItemTemplates
-                .Include(x => x.CharacterTemplates)
+            return _context
+                .ItemTemplates.Include(x => x.CharacterTemplates)
                 .Include(x => x.CounterTemplates)
                 .Include(x => x.RoundReminderTemplate)
-                .Include(x => x.StatIncreases).ThenInclude(x => x.Stat);
+                .Include(x => x.StatIncreases)
+                .ThenInclude(x => x.Stat);
         }
     }
 }

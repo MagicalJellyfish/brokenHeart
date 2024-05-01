@@ -30,7 +30,9 @@ namespace brokenHeart.Controllers.EntityControllers.Abilities
                 return NotFound();
             }
 
-            IEnumerable<Ability> abilities = FullAbilities().Select(x => ApiAuxiliary.GetEntityPrepare(x) as Ability).ToList();
+            IEnumerable<Ability> abilities = FullAbilities()
+                .Select(x => ApiAuxiliary.GetEntityPrepare(x) as Ability)
+                .ToList();
 
             return Ok(abilities);
         }
@@ -45,7 +47,9 @@ namespace brokenHeart.Controllers.EntityControllers.Abilities
                 return NotFound();
             }
 
-            Ability ability = ApiAuxiliary.GetEntityPrepare(await FullAbilities().FirstOrDefaultAsync(x => x.Id == id));
+            Ability ability = ApiAuxiliary.GetEntityPrepare(
+                await FullAbilities().FirstOrDefaultAsync(x => x.Id == id)
+            );
 
             if (ability == null)
             {
@@ -59,7 +63,10 @@ namespace brokenHeart.Controllers.EntityControllers.Abilities
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPatch("{id}")]
         [Authorize]
-        public async Task<IActionResult> PatchAbility(int id, JsonPatchDocument<Ability> patchDocument)
+        public async Task<IActionResult> PatchAbility(
+            int id,
+            JsonPatchDocument<Ability> patchDocument
+        )
         {
             if (patchDocument == null)
             {
@@ -132,8 +139,8 @@ namespace brokenHeart.Controllers.EntityControllers.Abilities
 
         private IQueryable<Ability> FullAbilities()
         {
-            return _context.Abilities
-                .Include(x => x.Rolls)
+            return _context
+                .Abilities.Include(x => x.Rolls)
                 .Include(x => x.EffectTemplates)
                 .Include(x => x.Character);
         }

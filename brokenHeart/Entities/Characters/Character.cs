@@ -1,14 +1,14 @@
-﻿using brokenHeart.Entities.Characters;
-using brokenHeart.Entities.Counters;
-using brokenHeart.Entities.Items;
-using brokenHeart.Entities.Effects;
-using brokenHeart.Entities.Traits;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
-using System.ComponentModel.DataAnnotations.Schema;
+using brokenHeart.Entities.Abilities.Abilities;
+using brokenHeart.Entities.Characters;
+using brokenHeart.Entities.Counters;
+using brokenHeart.Entities.Effects;
+using brokenHeart.Entities.Effects.Injuries;
+using brokenHeart.Entities.Items;
 using brokenHeart.Entities.RoundReminders;
 using brokenHeart.Entities.Stats;
-using brokenHeart.Entities.Effects.Injuries;
-using brokenHeart.Entities.Abilities.Abilities;
+using brokenHeart.Entities.Traits;
 
 namespace brokenHeart.Entities
 {
@@ -16,8 +16,24 @@ namespace brokenHeart.Entities
     {
         [JsonConstructor]
         public Character() { }
-        public Character(string name, UserSimplified owner, int? age = null, string? defaultShortcut = null, string description = "", decimal? height = null, int? weight = null, decimal money = 0, string notes = "", string experience = "",
-            List<Item>? inventory = null, List<Trait>? traits = null, List<Effect>? effects = null, int? hp = null, bool isNPC = false)
+
+        public Character(
+            string name,
+            UserSimplified owner,
+            int? age = null,
+            string? defaultShortcut = null,
+            string description = "",
+            decimal? height = null,
+            int? weight = null,
+            decimal money = 0,
+            string notes = "",
+            string experience = "",
+            List<Item>? inventory = null,
+            List<Trait>? traits = null,
+            List<Effect>? effects = null,
+            int? hp = null,
+            bool isNPC = false
+        )
         {
             Name = name;
             DefaultShortcut = defaultShortcut;
@@ -39,11 +55,13 @@ namespace brokenHeart.Entities
         public string Name { get; set; }
         public string? DefaultShortcut { get; set; }
         public string Description { get; set; }
-        
+
         //in m
         public decimal? Height { get; set; }
+
         //in kg
         public int? Weight { get; set; }
+
         //in €
         public decimal Money { get; set; }
 
@@ -53,6 +71,7 @@ namespace brokenHeart.Entities
 
         public int MaxTempHp { get; private set; }
         public int TempHp { get; set; }
+
         //in m/Round
         public int MovementSpeed { get; private set; }
 
@@ -64,7 +83,8 @@ namespace brokenHeart.Entities
         public string Experience { get; set; }
 
         public virtual ICollection<StatValue> Stats { get; private set; } = new List<StatValue>();
-        public virtual ICollection<BodypartCondition> BodypartConditions { get; set; } = new List<BodypartCondition>();
+        public virtual ICollection<BodypartCondition> BodypartConditions { get; set; } =
+            new List<BodypartCondition>();
 
         [NotMapped]
         public ICollection<int>? AbilitiesIds { get; set; } = new List<int>();
@@ -85,7 +105,8 @@ namespace brokenHeart.Entities
 
         [NotMapped]
         public ICollection<int>? InjuryEffectsIds { get; set; } = new List<int>();
-        public virtual ICollection<InjuryEffect> InjuryEffects { get; set; } = new List<InjuryEffect>();
+        public virtual ICollection<InjuryEffect> InjuryEffects { get; set; } =
+            new List<InjuryEffect>();
 
         [NotMapped]
         public ICollection<int>? CountersIds { get; set; } = new List<int>();
@@ -93,7 +114,8 @@ namespace brokenHeart.Entities
 
         [NotMapped]
         public ICollection<int>? RoundRemindersIds { get; set; } = new List<int>();
-        public virtual ICollection<RoundReminder> RoundReminders { get; set; } = new List<RoundReminder>();
+        public virtual ICollection<RoundReminder> RoundReminders { get; set; } =
+            new List<RoundReminder>();
 
         public byte[]? Image { get; set; } = new byte[0];
 
@@ -101,7 +123,6 @@ namespace brokenHeart.Entities
 
         public int OwnerId { get; set; }
         public virtual UserSimplified? Owner { get; set; }
-
 
         //Update any stat-derived changes
         public void Update()
@@ -126,7 +147,7 @@ namespace brokenHeart.Entities
             //Add item modifiers
             foreach (var item in Items)
             {
-                if(item.Equipped)
+                if (item.Equipped)
                 {
                     UpdateModified(item);
                 }
@@ -135,7 +156,7 @@ namespace brokenHeart.Entities
             //Add trait modifiers
             foreach (var trait in Traits)
             {
-                if(trait.Active)
+                if (trait.Active)
                 {
                     UpdateModified(trait);
                 }
@@ -179,7 +200,7 @@ namespace brokenHeart.Entities
             Armor += modifier.Armor;
             Evasion += modifier.Evasion;
 
-            foreach(StatValue statIncrease in modifier.StatIncreases)
+            foreach (StatValue statIncrease in modifier.StatIncreases)
             {
                 Stats.Single(x => statIncrease.StatId == x.StatId).Value += statIncrease.Value;
             }

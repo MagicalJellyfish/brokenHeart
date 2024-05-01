@@ -1,11 +1,11 @@
-using Microsoft.AspNetCore.Mvc;
-using brokenHeart.DB;
 using brokenHeart.Auxiliary;
-using Microsoft.AspNetCore.JsonPatch;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.JsonPatch.Operations;
-using brokenHeart.Entities.Traits;
+using brokenHeart.DB;
 using brokenHeart.Entities.Effects;
+using brokenHeart.Entities.Traits;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.JsonPatch;
+using Microsoft.AspNetCore.JsonPatch.Operations;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace brokenHeart.Controllers.EntityControllers.Traits
@@ -16,13 +16,13 @@ namespace brokenHeart.Controllers.EntityControllers.Traits
     {
         private readonly BrokenDbContext _context;
 
-	    public TraitsController(BrokenDbContext context)
+        public TraitsController(BrokenDbContext context)
         {
             _context = context;
         }
 
-	    // GET: api/Traits
-	    [HttpGet]
+        // GET: api/Traits
+        [HttpGet]
         [Authorize]
         public async Task<ActionResult<IEnumerable<Trait>>> GetTraits()
         {
@@ -31,7 +31,9 @@ namespace brokenHeart.Controllers.EntityControllers.Traits
                 return NotFound();
             }
 
-            IEnumerable<Trait> traits = FullTraits().Select(x => ApiAuxiliary.GetEntityPrepare(x) as Trait).ToList();
+            IEnumerable<Trait> traits = FullTraits()
+                .Select(x => ApiAuxiliary.GetEntityPrepare(x) as Trait)
+                .ToList();
 
             return Ok(traits);
         }
@@ -46,7 +48,9 @@ namespace brokenHeart.Controllers.EntityControllers.Traits
                 return NotFound();
             }
 
-            Trait trait = ApiAuxiliary.GetEntityPrepare(await FullTraits().FirstOrDefaultAsync(x => x.Id == id));
+            Trait trait = ApiAuxiliary.GetEntityPrepare(
+                await FullTraits().FirstOrDefaultAsync(x => x.Id == id)
+            );
 
             if (trait == null)
             {
@@ -69,13 +73,13 @@ namespace brokenHeart.Controllers.EntityControllers.Traits
 
             Trait trait = FullTraits().Single(x => x.Id == id);
 
-            if(trait == null)
+            if (trait == null)
             {
                 return BadRequest();
             }
 
             List<Operation> operations = new List<Operation>();
-            foreach(var operation in patchDocument.Operations)
+            foreach (var operation in patchDocument.Operations)
             {
                 operations.Add(operation);
             }
@@ -102,7 +106,7 @@ namespace brokenHeart.Controllers.EntityControllers.Traits
         {
             if (_context.Traits == null)
             {
-              return Problem("Entity set 'BrokenDbContext.Traits'  is null.");
+                return Problem("Entity set 'BrokenDbContext.Traits'  is null.");
             }
 
             Trait returnTrait = ApiAuxiliary.PostEntity(_context, typeof(Trait), trait);
@@ -133,10 +137,11 @@ namespace brokenHeart.Controllers.EntityControllers.Traits
 
         private IQueryable<Trait> FullTraits()
         {
-            return _context.Traits
-                .Include(x => x.Counters)
+            return _context
+                .Traits.Include(x => x.Counters)
                 .Include(x => x.RoundReminder)
-                .Include(x => x.StatIncreases).ThenInclude(x => x.Stat);
+                .Include(x => x.StatIncreases)
+                .ThenInclude(x => x.Stat);
         }
     }
 }

@@ -1,6 +1,6 @@
-﻿using brokenHeart.Entities.Abilities.Abilities;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
+using brokenHeart.Entities.Abilities.Abilities;
 
 namespace brokenHeart.Entities.Abilities
 {
@@ -21,7 +21,7 @@ namespace brokenHeart.Entities.Abilities
 
         public int? AbilityId { get; set; }
         public Ability? Ability { get; set; }
-        
+
         public int? AbilityTemplateId { get; set; }
         public AbilityTemplate? AbilityTemplate { get; set; }
 

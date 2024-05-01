@@ -1,6 +1,6 @@
-﻿using brokenHeart.Entities.Counters;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
+using brokenHeart.Entities.Counters;
 
 namespace brokenHeart.Entities.RoundReminders
 {
@@ -8,6 +8,7 @@ namespace brokenHeart.Entities.RoundReminders
     {
         [JsonConstructor]
         public RoundReminder() { }
+
         public RoundReminder(string reminder, bool reminding = true)
         {
             Reminding = reminding;

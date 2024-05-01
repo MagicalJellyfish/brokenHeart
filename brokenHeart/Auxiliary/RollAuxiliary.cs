@@ -28,17 +28,21 @@ namespace brokenHeart.Auxiliary
                 {
                     string value = input[(i + 1)..].Split(']').First();
 
-                    StatValue? statValue = c.Stats.SingleOrDefault(x => x.Stat.Name.ToLower().StartsWith(value.ToLower()));
-                    if(statValue != null)
+                    StatValue? statValue = c.Stats.SingleOrDefault(x =>
+                        x.Stat.Name.ToLower().StartsWith(value.ToLower())
+                    );
+                    if (statValue != null)
                     {
                         output += statValue.Value;
                         i += 4;
                     }
-                    else if(value.StartsWith("c:"))
+                    else if (value.StartsWith("c:"))
                     {
                         string counterName = value.Substring(2);
-                        Counter? counter = c.Counters.SingleOrDefault(x => x.Name.ToLower().Equals(counterName.ToLower()));
-                        if(counter != null)
+                        Counter? counter = c.Counters.SingleOrDefault(x =>
+                            x.Name.ToLower().Equals(counterName.ToLower())
+                        );
+                        if (counter != null)
                         {
                             output += counter.Value;
                             i += (2 + counterName.Length);
@@ -48,8 +52,9 @@ namespace brokenHeart.Auxiliary
                             throw new Exception($"No counter found with name \"{counterName}\"");
                         }
                     }
-                    else {
-                        switch(value.ToLower())
+                    else
+                    {
+                        switch (value.ToLower())
                         {
                             case "hp":
                                 output += c.Hp;
@@ -173,16 +178,20 @@ namespace brokenHeart.Auxiliary
                         i = post - 1;
                     }
 
-                    RollResult rollReturn = Roll(int.Parse(preD), int.Parse(postD), keepType, int.Parse(keepNum));
+                    RollResult rollReturn = Roll(
+                        int.Parse(preD),
+                        int.Parse(postD),
+                        keepType,
+                        int.Parse(keepNum)
+                    );
                     rolledString += rollReturn.Result;
                     detailString += rollReturn.Detail;
                 }
             }
 
-
             int result = EvaluateString(rolledString);
             string returnString = "";
-            if(original != null)
+            if (original != null)
             {
                 returnString += original + "\n= ";
             }
@@ -239,7 +248,7 @@ namespace brokenHeart.Auxiliary
                 {
                     if (operatorFound)
                     {
-                        if(secondNum == "" && (parsedInput[i] == '-' || parsedInput[i] == '+'))
+                        if (secondNum == "" && (parsedInput[i] == '-' || parsedInput[i] == '+'))
                         {
                             secondNum += parsedInput[i];
                             continue;
@@ -252,7 +261,7 @@ namespace brokenHeart.Auxiliary
                     }
                     else
                     {
-                        if(firstNum == "" && (parsedInput[i] == '-' || parsedInput[i] == '+'))
+                        if (firstNum == "" && (parsedInput[i] == '-' || parsedInput[i] == '+'))
                         {
                             firstNum += parsedInput[i];
                             continue;
@@ -267,7 +276,7 @@ namespace brokenHeart.Auxiliary
             int result;
             if (operation != ' ')
             {
-                if(firstNum == "")
+                if (firstNum == "")
                 {
                     firstNum += "-";
                 }
@@ -283,7 +292,7 @@ namespace brokenHeart.Auxiliary
 
         private static int Calculate(string first, char operation, string second)
         {
-            int firstNum = int.Parse(first); 
+            int firstNum = int.Parse(first);
             int secondNum = int.Parse(second);
             int result = 0;
 
@@ -306,7 +315,12 @@ namespace brokenHeart.Auxiliary
             return result;
         }
 
-        public static RollResult Roll(int rolls, int die, KeepType keep = KeepType.None, int keepNum = -1)
+        public static RollResult Roll(
+            int rolls,
+            int die,
+            KeepType keep = KeepType.None,
+            int keepNum = -1
+        )
         {
             if (keepNum == -1)
             {
@@ -359,7 +373,6 @@ namespace brokenHeart.Auxiliary
                         detailString = detailString[..^3] + " } ";
                     }
                 }
-
             }
             detailString += "]";
 

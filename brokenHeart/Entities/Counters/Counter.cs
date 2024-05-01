@@ -1,5 +1,5 @@
-﻿using brokenHeart.Entities.RoundReminders;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
+using brokenHeart.Entities.RoundReminders;
 
 namespace brokenHeart.Entities.Counters
 {
@@ -7,7 +7,14 @@ namespace brokenHeart.Entities.Counters
     {
         [JsonConstructor]
         public Counter() { }
-        public Counter(string name, int max, string description, bool roundBased = true, RoundReminder? reminder = null)
+
+        public Counter(
+            string name,
+            int max,
+            string description,
+            bool roundBased = true,
+            RoundReminder? reminder = null
+        )
         {
             Name = name;
             Max = max;
@@ -29,7 +36,6 @@ namespace brokenHeart.Entities.Counters
         public virtual RoundReminder? RoundReminder { get; set; }
 
         public int ViewPosition { get; set; }
-
 
         public int? CharacterId { get; set; }
         public virtual Character? Character { get; set; }
