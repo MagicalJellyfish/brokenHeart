@@ -339,7 +339,19 @@ namespace brokenHeart.Controllers
                 reminderList.AddRange(
                     character.Effects.SelectMany(x => x.Counters.Select(x => x.RoundReminder))
                 );
-                reminderList.AddRange(character.Effects.Select(x => x.EffectCounter.RoundReminder));
+                reminderList.AddRange(
+                    character.Effects.Select(x =>
+                    {
+                        if (x.EffectCounter != null)
+                        {
+                            return x.EffectCounter.RoundReminder;
+                        }
+                        else
+                        {
+                            return null;
+                        }
+                    })
+                );
 
                 reminderList.AddRange(character.Traits.Select(x => x.RoundReminder));
                 reminderList.AddRange(
