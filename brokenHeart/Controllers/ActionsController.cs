@@ -304,6 +304,10 @@ namespace brokenHeart.Controllers
                                 }
                             }
 
+                            if (target.Hp <= 0)
+                            {
+                                message.Description += $"\n\n\"{target.Name}\" is at 0 HP!";
+                            }
                             returnMessages.Add(message);
                         }
                     }
@@ -357,6 +361,20 @@ namespace brokenHeart.Controllers
                     message.Description += $"\"{target.Name}\" (Id {target.Id}), ";
                 }
                 message.Description = message.Description[..^2];
+
+                bool firstDownMessage = true;
+                foreach (Character target in targetChars)
+                {
+                    if (target.Hp <= 0)
+                    {
+                        if (firstDownMessage)
+                        {
+                            firstDownMessage = false;
+                            message.Description += "\n";
+                        }
+                        message.Description += $"\n\"{target.Name}\" (Id {target.Id}) is at 0 HP!";
+                    }
+                }
                 returnMessages.Add(message);
             }
 
