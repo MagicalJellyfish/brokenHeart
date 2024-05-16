@@ -20,6 +20,8 @@ namespace brokenHeart.Entities.Items
             int movementSpeed = 0,
             int armor = 0,
             int evasion = 0,
+            int amount = 1,
+            string unit = "",
             List<StatValue>? statIncreases = null,
             List<CounterTemplate>? counterTemplates = null,
             RoundReminderTemplate? reminderTemplate = null
@@ -35,7 +37,14 @@ namespace brokenHeart.Entities.Items
                 statIncreases,
                 counterTemplates,
                 reminderTemplate
-            ) { }
+            )
+        {
+            Amount = amount;
+            Unit = unit;
+        }
+
+        public int Amount { get; set; }
+        public string Unit { get; set; }
 
         [NotMapped]
         public ICollection<int>? CharacterTemplatesIds { get; set; } = new List<int>();
@@ -52,6 +61,8 @@ namespace brokenHeart.Entities.Items
                 MovementSpeed,
                 Armor,
                 Evasion,
+                Amount,
+                Unit,
                 StatIncreases.Select(x => x.Instantiate()).ToList(),
                 CounterTemplates.Select(x => x.Instantiate()).ToList(),
                 RoundReminderTemplate?.Instantiate()

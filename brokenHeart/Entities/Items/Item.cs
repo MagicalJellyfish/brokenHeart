@@ -18,6 +18,8 @@ namespace brokenHeart.Entities.Items
             int movementSpeed,
             int armor,
             int evasion,
+            int amount,
+            string unit,
             List<StatValue> statIncreases,
             List<Counter> counters,
             RoundReminder? reminder
@@ -36,9 +38,13 @@ namespace brokenHeart.Entities.Items
             )
         {
             Equipped = false;
+            Amount = 1;
+            Unit = "";
         }
 
         public bool Equipped { get; set; }
+        public int Amount { get; set; }
+        public string Unit { get; set; }
 
         public int CharacterId { get; set; }
         public virtual Character? Character { get; set; }

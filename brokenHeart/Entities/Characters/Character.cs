@@ -149,7 +149,10 @@ namespace brokenHeart.Entities
             {
                 if (item.Equipped)
                 {
-                    UpdateModified(item);
+                    for (int i = 0; i < item.Amount; i++)
+                    {
+                        UpdateModified(item);
+                    }
                 }
             }
 
