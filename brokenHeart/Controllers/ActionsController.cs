@@ -1,4 +1,5 @@
-﻿using brokenHeart.Auxiliary;
+﻿using System;
+using brokenHeart.Auxiliary;
 using brokenHeart.DB;
 using brokenHeart.Entities;
 using brokenHeart.Entities.Abilities;
@@ -68,10 +69,11 @@ namespace brokenHeart.Controllers
             );
         }
 
-        [HttpGet("activeAbility/{discordId}/{shortcut}")]
-        public ActionResult<List<Message>> ActiveAbility(
+        [HttpGet("ability")]
+        public ActionResult<List<Message>> Ability(
             ulong discordId,
-            string shortcut,
+            int? charId,
+            string? shortcut,
             string? targets
         )
         {
@@ -81,47 +83,43 @@ namespace brokenHeart.Controllers
 
             if (user == null)
             {
-                return NotFound("No user found!");
+                return NotFound($"No user found for Discord ID {discordId}!");
             }
 
-            if (user.ActiveCharacter == null)
+            if (shortcut == null)
             {
-                return NotFound("No active character!");
+                if (user.DefaultAbilityString == null)
+                {
+                    return NotFound(
+                        "No shortcut supplied and no default shortcut configured for user!"
+                    );
+                }
+
+                shortcut = user.DefaultAbilityString;
             }
 
-            Character c = GetBaseCharacters()
-                .Include(x => x.Abilities)
-                .ThenInclude(x => x.Rolls)
-                .Include(x => x.Abilities)
-                .ThenInclude(x => x.EffectTemplates)!
-                .ThenInclude(x => x.CounterTemplates)
-                .ThenInclude(x => x.RoundReminderTemplate)
-                .Include(x => x.Abilities)
-                .ThenInclude(x => x.EffectTemplates)!
-                .ThenInclude(x => x.RoundReminderTemplate)
-                .Single(x => x.Id == user.ActiveCharacter.Id);
+            Character? c;
+            if (charId == null)
+            {
+                if (user.ActiveCharacter == null)
+                {
+                    return NotFound("No active character!");
+                }
 
-            return ExecuteAbility(c, shortcut, targets);
-        }
-
-        [HttpGet("ability/{charId}/{shortcut}")]
-        public ActionResult<List<Message>> Ability(int charId, string shortcut, string? targets)
-        {
-            Character? c = GetBaseCharacters()
-                .Include(x => x.Abilities)
-                .ThenInclude(x => x.Rolls)
-                .Include(x => x.Abilities)
-                .ThenInclude(x => x.EffectTemplates)!
-                .ThenInclude(x => x.CounterTemplates)
-                .ThenInclude(x => x.RoundReminderTemplate)
-                .Include(x => x.Abilities)
-                .ThenInclude(x => x.EffectTemplates)!
-                .ThenInclude(x => x.RoundReminderTemplate)
-                .SingleOrDefault(x => x.Id == charId);
-
+                c = GetFullCharacter(user.ActiveCharacter.Id);
+            }
+            else
+            {
+                c = GetFullCharacter((int)charId);
+            }
             if (c == null)
             {
                 return NotFound("No character found!");
+            }
+
+            if (targets == null)
+            {
+                targets = user.DefaultTargetString;
             }
 
             return ExecuteAbility(c, shortcut, targets);
@@ -156,25 +154,6 @@ namespace brokenHeart.Controllers
             List<Character> targetChars = new List<Character>();
             if (!targets.IsNullOrEmpty())
             {
-                Combat? activeCombat = _context
-                    .Combats.Include(x => x.Entries)
-                    .ThenInclude(x => x.Character)
-                    .SingleOrDefault(x => x.Active);
-                if (activeCombat == null)
-                {
-                    return NotFound("No active combat found!");
-                }
-
-                List<Character> combatTargets = new List<Character>();
-                combatTargets = activeCombat
-                    .Entries.Where(x => x.Character != null)
-                    .Select(x => x.Character)
-                    .ToList()!;
-                if (combatTargets.Count() == 0)
-                {
-                    return NotFound("No potential targets in combat!");
-                }
-
                 List<Character> baseCharacters = GetBaseCharacters().ToList();
 
                 List<string> targetList = targets!.Split(' ').ToList();
@@ -198,6 +177,25 @@ namespace brokenHeart.Controllers
                     }
                     else
                     {
+                        Combat? activeCombat = _context
+                            .Combats.Include(x => x.Entries)
+                            .ThenInclude(x => x.Character)
+                            .SingleOrDefault(x => x.Active);
+                        if (activeCombat == null)
+                        {
+                            return NotFound("No active combat found!");
+                        }
+
+                        List<Character> combatTargets = new List<Character>();
+                        combatTargets = activeCombat
+                            .Entries.Where(x => x.Character != null)
+                            .Select(x => x.Character)
+                            .ToList()!;
+                        if (combatTargets.Count() == 0)
+                        {
+                            return NotFound("No potential targets in combat!");
+                        }
+
                         List<Character> fullCombatTargets = baseCharacters
                             .Where(x => combatTargets.Select(y => y.Id).Contains(x.Id))
                             .ToList();
@@ -256,7 +254,7 @@ namespace brokenHeart.Controllers
                         if (damage != null)
                         {
                             returnMessages.Add(
-                                new Message($"Damage - {damage.Result}", damage.Detail)
+                                new Message($"Damage: {damage.Result}", damage.Detail)
                             );
                         }
                     }
@@ -314,11 +312,11 @@ namespace brokenHeart.Controllers
                 }
                 else
                 {
-                    returnMessages.Add(new Message($"Self - {self.Result}", self.Detail));
+                    returnMessages.Add(new Message($"Self: {self.Result}", self.Detail));
 
                     if (damage != null)
                     {
-                        returnMessages.Add(new Message($"Damage - {damage.Result}", damage.Detail));
+                        returnMessages.Add(new Message($"Damage: {damage.Result}", damage.Detail));
                     }
                 }
             }
@@ -383,7 +381,7 @@ namespace brokenHeart.Controllers
                 RollResult rollResult = RollAuxiliary.CharRollString(roll.Instruction, c);
                 returnMessages.Add(
                     new Message(
-                        $"Additional Roll \"{roll.Name}\" - {rollResult.Result}",
+                        $"Additional Roll \"{roll.Name}\": {rollResult.Result}",
                         rollResult.Detail
                     )
                 );
@@ -392,6 +390,21 @@ namespace brokenHeart.Controllers
             _context.SaveChanges();
 
             return returnMessages;
+        }
+
+        private Character? GetFullCharacter(int id)
+        {
+            return GetBaseCharacters()
+                .Include(x => x.Abilities)
+                .ThenInclude(x => x.Rolls)
+                .Include(x => x.Abilities)
+                .ThenInclude(x => x.EffectTemplates)!
+                .ThenInclude(x => x.CounterTemplates)
+                .ThenInclude(x => x.RoundReminderTemplate)
+                .Include(x => x.Abilities)
+                .ThenInclude(x => x.EffectTemplates)!
+                .ThenInclude(x => x.RoundReminderTemplate)
+                .SingleOrDefault(x => x.Id == id);
         }
 
         private IQueryable<Character> GetBaseCharacters()

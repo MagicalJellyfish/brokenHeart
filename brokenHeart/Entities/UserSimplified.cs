@@ -1,5 +1,4 @@
 ﻿using System.Text.Json.Serialization;
-using brokenHeart.Entities.Characters;
 
 namespace brokenHeart.Entities
 {
@@ -17,6 +16,9 @@ namespace brokenHeart.Entities
         public int Id { get; set; }
         public string Username { get; set; }
         public ulong DiscordId { get; set; }
+
+        public string? DefaultAbilityString { get; set; }
+        public string? DefaultTargetString { get; set; }
 
         public virtual Character? ActiveCharacter { get; set; }
         public virtual ICollection<Character> Characters { get; set; } = new List<Character>();
