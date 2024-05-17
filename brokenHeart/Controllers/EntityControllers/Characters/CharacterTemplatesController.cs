@@ -179,43 +179,31 @@ namespace brokenHeart.Controllers.EntityControllers.Characters
             return character;
         }
 
+        // csharpier-ignore
         private IQueryable<CharacterTemplate> FullCharacterTemplates()
         {
-            return _context
-                .CharacterTemplates.Include(x => x.AbilityTemplates)
-                .ThenInclude(x => x.EffectTemplates)
-                .Include(x => x.AbilityTemplates)
-                .ThenInclude(x => x.Rolls)
+            return _context.CharacterTemplates
+                .Include(x => x.AbilityTemplates).ThenInclude(x => x.EffectTemplates)
+                .Include(x => x.AbilityTemplates).ThenInclude(x => x.Rolls)
+
                 .Include(x => x.RoundReminderTemplates)
-                .Include(x => x.CounterTemplates)
-                .ThenInclude(x => x.RoundReminderTemplate)
-                .Include(x => x.EffectTemplates)
-                .ThenInclude(x => x.CounterTemplates)
-                .ThenInclude(x => x.RoundReminderTemplate)
-                .Include(x => x.EffectTemplates)
-                .ThenInclude(x => x.EffectCounterTemplate)
-                .ThenInclude(x => x.RoundReminderTemplate)
-                .Include(x => x.EffectTemplates)
-                .ThenInclude(x => x.RoundReminderTemplate)
-                .Include(x => x.EffectTemplates)
-                .ThenInclude(x => x.StatIncreases)
-                .ThenInclude(x => x.Stat)
-                .Include(x => x.ItemTemplates)
-                .ThenInclude(x => x.CounterTemplates)
-                .ThenInclude(x => x.RoundReminderTemplate)
-                .Include(x => x.ItemTemplates)
-                .ThenInclude(x => x.RoundReminderTemplate)
-                .Include(x => x.ItemTemplates)
-                .ThenInclude(x => x.StatIncreases)
-                .ThenInclude(x => x.Stat)
-                .Include(x => x.TraitTemplates)
-                .ThenInclude(x => x.CounterTemplates)
-                .ThenInclude(x => x.RoundReminderTemplate)
-                .Include(x => x.TraitTemplates)
-                .ThenInclude(x => x.RoundReminderTemplate)
-                .Include(x => x.TraitTemplates)
-                .ThenInclude(x => x.StatIncreases)
-                .ThenInclude(x => x.Stat);
+
+                .Include(x => x.CounterTemplates).ThenInclude(x => x.RoundReminderTemplate)
+
+                .Include(x => x.EffectTemplates).ThenInclude(x => x.CounterTemplates).ThenInclude(x => x.RoundReminderTemplate)
+                .Include(x => x.EffectTemplates).ThenInclude(x => x.EffectCounterTemplate).ThenInclude(x => x.RoundReminderTemplate)
+                .Include(x => x.EffectTemplates).ThenInclude(x => x.RoundReminderTemplate)
+                .Include(x => x.EffectTemplates).ThenInclude(x => x.StatIncreases).ThenInclude(x => x.Stat)
+
+                .Include(x => x.ItemTemplates).ThenInclude(x => x.CounterTemplates).ThenInclude(x => x.RoundReminderTemplate)
+                .Include(x => x.ItemTemplates).ThenInclude(x => x.RoundReminderTemplate)
+                .Include(x => x.ItemTemplates).ThenInclude(x => x.StatIncreases).ThenInclude(x => x.Stat)
+                .Include(x => x.ItemTemplates).ThenInclude(x => x.AbilityTemplates).ThenInclude(x => x.EffectTemplates)
+                .Include(x => x.ItemTemplates).ThenInclude(x => x.AbilityTemplates).ThenInclude(x => x.Rolls)
+
+                .Include(x => x.TraitTemplates).ThenInclude(x => x.CounterTemplates).ThenInclude(x => x.RoundReminderTemplate)
+                .Include(x => x.TraitTemplates).ThenInclude(x => x.RoundReminderTemplate)
+                .Include(x => x.TraitTemplates).ThenInclude(x => x.StatIncreases).ThenInclude(x => x.Stat);
         }
     }
 }

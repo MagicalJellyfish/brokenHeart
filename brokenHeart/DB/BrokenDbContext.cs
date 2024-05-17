@@ -110,17 +110,16 @@ namespace brokenHeart.DB
                 {
                     try
                     {
+                        // csharpier-ignore
                         Character c = Characters
                             .Include(x => x.Stats)
-                            .Include(x => x.Items)
-                            .ThenInclude(x => x.StatIncreases)
-                            .ThenInclude(x => x.Stat)
-                            .Include(x => x.Traits)
-                            .ThenInclude(x => x.StatIncreases)
-                            .ThenInclude(x => x.Stat)
-                            .Include(x => x.Effects)
-                            .ThenInclude(x => x.StatIncreases)
-                            .ThenInclude(x => x.Stat)
+
+                            .Include(x => x.Items).ThenInclude(x => x.StatIncreases).ThenInclude(x => x.Stat)
+
+                            .Include(x => x.Traits).ThenInclude(x => x.StatIncreases).ThenInclude(x => x.Stat)
+
+                            .Include(x => x.Effects).ThenInclude(x => x.StatIncreases).ThenInclude(x => x.Stat)
+
                             .Single(x => x.Id == changedChar);
 
                         c.Update();

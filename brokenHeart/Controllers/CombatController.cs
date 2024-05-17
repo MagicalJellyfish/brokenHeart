@@ -261,29 +261,22 @@ namespace brokenHeart.Controllers
             {
                 string round = "Round: " + combat.Round + "\n";
                 string reminders = "Reminders: \n";
+                // csharpier-ignore
+                Character character = _context.Characters
+                    .Include(x => x.RoundReminders)
 
-                Character character = _context
-                    .Characters.Include(x => x.RoundReminders)
                     .Include(x => x.Counters)
                     .ThenInclude(x => x.RoundReminder)
-                    .Include(x => x.Items)
-                    .ThenInclude(x => x.RoundReminder)
-                    .Include(x => x.Items)
-                    .ThenInclude(x => x.Counters)
-                    .ThenInclude(x => x.RoundReminder)
-                    .Include(x => x.Effects)
-                    .ThenInclude(x => x.RoundReminder)
-                    .Include(x => x.Effects)
-                    .ThenInclude(x => x.Counters)
-                    .ThenInclude(x => x.RoundReminder)
-                    .Include(x => x.Effects)
-                    .ThenInclude(x => x.EffectCounter)
-                    .ThenInclude(x => x.RoundReminder)
-                    .Include(x => x.Traits)
-                    .ThenInclude(x => x.RoundReminder)
-                    .Include(x => x.Traits)
-                    .ThenInclude(x => x.Counters)
-                    .ThenInclude(x => x.RoundReminder)
+
+                    .Include(x => x.Items).ThenInclude(x => x.RoundReminder)
+                    .Include(x => x.Items).ThenInclude(x => x.Counters).ThenInclude(x => x.RoundReminder)
+
+                    .Include(x => x.Effects).ThenInclude(x => x.RoundReminder)
+                    .Include(x => x.Effects).ThenInclude(x => x.Counters).ThenInclude(x => x.RoundReminder)
+                    .Include(x => x.Effects).ThenInclude(x => x.EffectCounter).ThenInclude(x => x.RoundReminder)
+
+                    .Include(x => x.Traits).ThenInclude(x => x.RoundReminder)
+                    .Include(x => x.Traits).ThenInclude(x => x.Counters).ThenInclude(x => x.RoundReminder)
                     .SingleOrDefault(x =>
                         x.Id == combat.Entries.ElementAt(combat.CurrentTurn).Character.Id
                     )!;

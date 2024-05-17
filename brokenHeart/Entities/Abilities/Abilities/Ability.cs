@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 using brokenHeart.Entities.Effects;
+using brokenHeart.Entities.Items;
 
 namespace brokenHeart.Entities.Abilities.Abilities
 {
@@ -68,7 +69,12 @@ namespace brokenHeart.Entities.Abilities.Abilities
         public virtual ICollection<EffectTemplate>? EffectTemplates { get; set; } =
             new List<EffectTemplate>();
 
+        public int? ItemId { get; set; }
+        public Item? Item { get; set; }
+
         public int? CharacterId { get; set; }
         public Character? Character { get; set; }
+
+        public int ViewPosition { get; set; }
     }
 }

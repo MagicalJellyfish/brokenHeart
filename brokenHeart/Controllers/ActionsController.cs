@@ -137,7 +137,14 @@ namespace brokenHeart.Controllers
                 ability = c.Abilities.SingleOrDefault(x => x.Shortcut == shortcut);
                 if (ability == null)
                 {
-                    return NotFound($"No ability with shortcut \"{shortcut}\" found!");
+                    ability = c
+                        .Items.Select(x => x.Abilities.SingleOrDefault(y => y.Shortcut == shortcut))
+                        .SingleOrDefault(z => z != null);
+
+                    if (ability == null)
+                    {
+                        return NotFound($"No ability with shortcut \"{shortcut}\" found!");
+                    }
                 }
             }
             catch
@@ -392,35 +399,34 @@ namespace brokenHeart.Controllers
             return returnMessages;
         }
 
+        // csharpier-ignore
         private Character? GetFullCharacter(int id)
         {
             return GetBaseCharacters()
-                .Include(x => x.Abilities)
-                .ThenInclude(x => x.Rolls)
-                .Include(x => x.Abilities)
-                .ThenInclude(x => x.EffectTemplates)!
-                .ThenInclude(x => x.CounterTemplates)
-                .ThenInclude(x => x.RoundReminderTemplate)
-                .Include(x => x.Abilities)
-                .ThenInclude(x => x.EffectTemplates)!
-                .ThenInclude(x => x.RoundReminderTemplate)
+                .Include(x => x.Abilities).ThenInclude(x => x.Rolls)
+                .Include(x => x.Abilities).ThenInclude(x => x.EffectTemplates)!.ThenInclude(x => x.CounterTemplates).ThenInclude(x => x.RoundReminderTemplate)
+                .Include(x => x.Abilities).ThenInclude(x => x.EffectTemplates)!.ThenInclude(x => x.RoundReminderTemplate)
+
+                .Include(x => x.Items).ThenInclude(x => x.Abilities).ThenInclude(x => x.Rolls)
+                .Include(x => x.Items).ThenInclude(x => x.Abilities).ThenInclude(x => x.EffectTemplates)!.ThenInclude(x => x.CounterTemplates).ThenInclude(x => x.RoundReminderTemplate)
+                .Include(x => x.Items).ThenInclude(x => x.Abilities).ThenInclude(x => x.EffectTemplates)!.ThenInclude(x => x.RoundReminderTemplate)
                 .SingleOrDefault(x => x.Id == id);
         }
 
+        // csharpier-ignore
         private IQueryable<Character> GetBaseCharacters()
         {
-            return _context
-                .Characters.Include(x => x.Counters)
-                .Include(x => x.Items)
-                .ThenInclude(x => x.Counters)
-                .Include(x => x.Effects)
-                .ThenInclude(x => x.Counters)
-                .Include(x => x.Effects)
-                .ThenInclude(x => x.EffectCounter)
-                .Include(x => x.Traits)
-                .ThenInclude(x => x.Counters)
-                .Include(x => x.Stats)
-                .ThenInclude(x => x.Stat);
+            return _context.Characters
+                .Include(x => x.Counters)
+
+                .Include(x => x.Items).ThenInclude(x => x.Counters)
+
+                .Include(x => x.Effects).ThenInclude(x => x.Counters)
+                .Include(x => x.Effects).ThenInclude(x => x.EffectCounter)
+
+                .Include(x => x.Traits).ThenInclude(x => x.Counters)
+
+                .Include(x => x.Stats).ThenInclude(x => x.Stat);
         }
     }
 }

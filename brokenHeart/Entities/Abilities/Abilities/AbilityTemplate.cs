@@ -2,6 +2,7 @@
 using System.Text.Json.Serialization;
 using brokenHeart.Entities.Characters;
 using brokenHeart.Entities.Effects;
+using brokenHeart.Entities.Items;
 
 namespace brokenHeart.Entities.Abilities.Abilities
 {
@@ -56,6 +57,10 @@ namespace brokenHeart.Entities.Abilities.Abilities
         public ICollection<int>? EffectTemplatesIds { get; set; } = new List<int>();
         public virtual ICollection<EffectTemplate>? EffectTemplates { get; set; } =
             new List<EffectTemplate>();
+
+        [NotMapped]
+        public ICollection<int>? ItemTemplatesIds { get; set; } = new List<int>();
+        public ICollection<ItemTemplate>? ItemTemplates { get; set; } = new List<ItemTemplate>();
 
         [NotMapped]
         public ICollection<int> CharacterTemplatesIds { get; set; } = new List<int>();

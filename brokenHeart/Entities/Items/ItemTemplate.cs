@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
+using brokenHeart.Entities.Abilities.Abilities;
 using brokenHeart.Entities.Characters;
 using brokenHeart.Entities.Counters;
 using brokenHeart.Entities.RoundReminders;
@@ -24,6 +25,7 @@ namespace brokenHeart.Entities.Items
             string unit = "",
             List<StatValue>? statIncreases = null,
             List<CounterTemplate>? counterTemplates = null,
+            List<AbilityTemplate>? abilityTemplates = null,
             RoundReminderTemplate? reminderTemplate = null
         )
             : base(
@@ -41,10 +43,16 @@ namespace brokenHeart.Entities.Items
         {
             Amount = amount;
             Unit = unit;
+            AbilityTemplates = abilityTemplates ?? new List<AbilityTemplate>();
         }
 
         public int Amount { get; set; }
         public string Unit { get; set; }
+
+        [NotMapped]
+        public ICollection<int>? AbilityTemplatesIds { get; set; } = new List<int>();
+        public virtual ICollection<AbilityTemplate> AbilityTemplates { get; set; } =
+            new List<AbilityTemplate>();
 
         [NotMapped]
         public ICollection<int>? CharacterTemplatesIds { get; set; } = new List<int>();
@@ -63,6 +71,7 @@ namespace brokenHeart.Entities.Items
                 Evasion,
                 Amount,
                 Unit,
+                AbilityTemplates.Select(x => x.Instantiate()).ToList(),
                 StatIncreases.Select(x => x.Instantiate()).ToList(),
                 CounterTemplates.Select(x => x.Instantiate()).ToList(),
                 RoundReminderTemplate?.Instantiate()

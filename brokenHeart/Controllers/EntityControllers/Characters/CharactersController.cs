@@ -278,58 +278,40 @@ namespace brokenHeart.Controllers.EntityControllers.Characters
             return NoContent();
         }
 
+        // csharpier-ignore
         private IQueryable<Character> FullCharacters()
         {
-            return _context
-                .Characters.Include(x => x.Abilities)
-                .ThenInclude(x => x.EffectTemplates)
-                .Include(x => x.Abilities)
-                .ThenInclude(x => x.Rolls)
-                .Include(x => x.Stats)
-                .ThenInclude(x => x.Stat)
+            return _context.Characters
+                .Include(x => x.Abilities).ThenInclude(x => x.EffectTemplates)
+                .Include(x => x.Abilities).ThenInclude(x => x.Rolls)
+
+                .Include(x => x.Stats).ThenInclude(x => x.Stat)
+
                 .Include(x => x.RoundReminders)
-                .Include(x => x.Counters)
-                .ThenInclude(x => x.RoundReminder)
-                .Include(x => x.BodypartConditions)
-                .ThenInclude(x => x.Bodypart)
-                .Include(x => x.Effects)
-                .ThenInclude(x => x.Counters)
-                .ThenInclude(x => x.RoundReminder)
-                .Include(x => x.Effects)
-                .ThenInclude(x => x.EffectCounter)
-                .ThenInclude(x => x.RoundReminder)
-                .Include(x => x.Effects)
-                .ThenInclude(x => x.RoundReminder)
-                .Include(x => x.Effects)
-                .ThenInclude(x => x.StatIncreases)
-                .ThenInclude(x => x.Stat)
-                .Include(x => x.InjuryEffects)
-                .ThenInclude(x => x.Counters)
-                .ThenInclude(x => x.RoundReminder)
-                .Include(x => x.InjuryEffects)
-                .ThenInclude(x => x.EffectCounter)
-                .ThenInclude(x => x.RoundReminder)
-                .Include(x => x.InjuryEffects)
-                .ThenInclude(x => x.RoundReminder)
-                .Include(x => x.InjuryEffects)
-                .ThenInclude(x => x.StatIncreases)
-                .ThenInclude(x => x.Stat)
-                .Include(x => x.Items)
-                .ThenInclude(x => x.Counters)
-                .ThenInclude(x => x.RoundReminder)
-                .Include(x => x.Items)
-                .ThenInclude(x => x.RoundReminder)
-                .Include(x => x.Items)
-                .ThenInclude(x => x.StatIncreases)
-                .ThenInclude(x => x.Stat)
-                .Include(x => x.Traits)
-                .ThenInclude(x => x.Counters)
-                .ThenInclude(x => x.RoundReminder)
-                .Include(x => x.Traits)
-                .ThenInclude(x => x.RoundReminder)
-                .Include(x => x.Traits)
-                .ThenInclude(x => x.StatIncreases)
-                .ThenInclude(x => x.Stat);
+
+                .Include(x => x.Counters).ThenInclude(x => x.RoundReminder)
+
+                .Include(x => x.BodypartConditions).ThenInclude(x => x.Bodypart)
+
+                .Include(x => x.Effects).ThenInclude(x => x.Counters).ThenInclude(x => x.RoundReminder)
+                .Include(x => x.Effects).ThenInclude(x => x.EffectCounter).ThenInclude(x => x.RoundReminder)
+                .Include(x => x.Effects).ThenInclude(x => x.RoundReminder)
+                .Include(x => x.Effects).ThenInclude(x => x.StatIncreases).ThenInclude(x => x.Stat)
+
+                .Include(x => x.InjuryEffects).ThenInclude(x => x.Counters).ThenInclude(x => x.RoundReminder)
+                .Include(x => x.InjuryEffects).ThenInclude(x => x.EffectCounter).ThenInclude(x => x.RoundReminder)
+                .Include(x => x.InjuryEffects).ThenInclude(x => x.RoundReminder)
+                .Include(x => x.InjuryEffects).ThenInclude(x => x.StatIncreases).ThenInclude(x => x.Stat)
+
+                .Include(x => x.Items).ThenInclude(x => x.Counters).ThenInclude(x => x.RoundReminder)
+                .Include(x => x.Items).ThenInclude(x => x.RoundReminder)
+                .Include(x => x.Items).ThenInclude(x => x.StatIncreases).ThenInclude(x => x.Stat)
+                .Include(x => x.Items).ThenInclude(x => x.Abilities).ThenInclude(x => x.EffectTemplates)
+                .Include(x => x.Items).ThenInclude(x => x.Abilities).ThenInclude(x => x.Rolls)
+
+                .Include(x => x.Traits).ThenInclude(x => x.Counters).ThenInclude(x => x.RoundReminder)
+                .Include(x => x.Traits).ThenInclude(x => x.RoundReminder)
+                .Include(x => x.Traits).ThenInclude(x => x.StatIncreases).ThenInclude(x => x.Stat);
         }
     }
 }

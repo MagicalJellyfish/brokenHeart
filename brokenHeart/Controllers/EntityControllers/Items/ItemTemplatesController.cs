@@ -175,7 +175,8 @@ namespace brokenHeart.Controllers.EntityControllers.ItemTemplates
                 .Include(x => x.CounterTemplates)
                 .Include(x => x.RoundReminderTemplate)
                 .Include(x => x.StatIncreases)
-                .ThenInclude(x => x.Stat);
+                .ThenInclude(x => x.Stat)
+                .Include(x => x.AbilityTemplates);
         }
     }
 }
