@@ -343,7 +343,7 @@ namespace brokenHeart
             "Dying",
             3,
             "This counter indicates the number of rounds you are away from dying.",
-            true
+            false
         );
 
         public static async Task ValidateAsync(
