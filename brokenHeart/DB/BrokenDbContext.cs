@@ -11,6 +11,7 @@ using brokenHeart.Entities.Items;
 using brokenHeart.Entities.RoundReminders;
 using brokenHeart.Entities.Stats;
 using brokenHeart.Entities.Traits;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 
@@ -59,14 +60,14 @@ namespace brokenHeart.DB
 
         public BrokenDbContext(
             DbContextOptions<BrokenDbContext> options,
-            CharChangeObservable observable
+            IHubContext<SignalRHub> hubContext
         )
             : base(options)
         {
-            ccObservable = observable;
+            _hubContext = hubContext;
         }
 
-        private CharChangeObservable ccObservable;
+        private IHubContext<SignalRHub> _hubContext;
 
         public int SaveChangesSimple()
         {
@@ -125,7 +126,9 @@ namespace brokenHeart.DB
                         c.Update();
                         saveChanges += base.SaveChanges();
 
-                        ccObservable.Trigger(changedChar);
+                        _hubContext
+                            .Clients.Group($"charChanged/{changedChar}")
+                            .SendAsync($"charChanged/{changedChar}");
                     }
                     catch (Exception)
                     {

@@ -17,7 +17,11 @@ builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy =>
     {
-        policy.WithOrigins(builder.Configuration["CORS:Origin"]).AllowAnyHeader().AllowAnyMethod();
+        policy
+            .WithOrigins(builder.Configuration["CORS:Origin"])
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials();
     });
 });
 
@@ -37,6 +41,8 @@ builder
             .IgnoreCycles;
         options.JsonSerializerOptions.Converters.Add(new ByteArrayConverter());
     });
+
+builder.Services.AddSignalR();
 
 builder.Services.AddDbContext<BrokenDbContext>(options =>
     options.UseSqlite(
@@ -88,13 +94,25 @@ builder
                 Encoding.UTF8.GetBytes(builder.Configuration["JWT_Secret"])
             )
         };
+        options.Events = new JwtBearerEvents
+        {
+            OnMessageReceived = context =>
+            {
+                var accessToken = context.Request.Query["access_token"];
+
+                var path = context.HttpContext.Request.Path;
+                if (!string.IsNullOrEmpty(accessToken) && (path.StartsWithSegments("/signalr")))
+                {
+                    context.Token = accessToken;
+                }
+                return Task.CompletedTask;
+            }
+        };
     });
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
-builder.Services.AddSingleton<CharChangeObservable>();
 
 var app = builder.Build();
 
@@ -121,6 +139,7 @@ app.UseCors();
 app.UseAuthentication();
 app.UseAuthorization();
 
+app.MapHub<SignalRHub>("/signalr");
 app.MapControllers();
 
 await Constants.ValidateAsync(
