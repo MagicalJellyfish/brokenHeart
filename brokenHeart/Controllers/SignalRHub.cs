@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace brokenHeart.Controllers
 {
-    //[Authorize]
+    [Authorize]
     public class SignalRHub : Hub
     {
         private readonly BrokenDbContext _context;
@@ -20,7 +20,7 @@ namespace brokenHeart.Controllers
 
         public override Task OnConnectedAsync()
         {
-            if (Context.User.Identity.IsAuthenticated == false)
+            if (Context.UserIdentifier == "localhost")
             {
                 Groups.AddToGroupAsync(Context.ConnectionId, "brokenHand");
             }

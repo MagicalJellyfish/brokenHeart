@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using System.Text;
 using brokenHeart;
 using brokenHeart.Auth;
@@ -98,6 +99,32 @@ builder
         {
             OnMessageReceived = context =>
             {
+                var ip = context.Request.HttpContext.Connection.RemoteIpAddress.ToString();
+                if (ip == "127.0.0.1" || ip == "::1")
+                {
+                    var claims = new[]
+                    {
+                        new Claim(
+                            ClaimTypes.NameIdentifier,
+                            "localhost",
+                            ClaimValueTypes.String,
+                            context.Options.ClaimsIssuer
+                        ),
+                        new Claim(
+                            ClaimTypes.Name,
+                            "localhost",
+                            ClaimValueTypes.String,
+                            context.Options.ClaimsIssuer
+                        )
+                    };
+
+                    context.Principal = new ClaimsPrincipal(
+                        new ClaimsIdentity(claims, context.Scheme.Name)
+                    );
+                    context.Success();
+                    return Task.CompletedTask;
+                }
+
                 var accessToken = context.Request.Query["access_token"];
 
                 var path = context.HttpContext.Request.Path;
