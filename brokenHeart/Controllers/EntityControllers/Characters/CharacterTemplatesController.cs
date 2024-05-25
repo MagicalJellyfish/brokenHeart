@@ -188,6 +188,8 @@ namespace brokenHeart.Controllers.EntityControllers.Characters
 
                 .Include(x => x.RoundReminderTemplates)
 
+                .Include(x => x.Variables)
+
                 .Include(x => x.CounterTemplates).ThenInclude(x => x.RoundReminderTemplate)
 
                 .Include(x => x.EffectTemplates).ThenInclude(x => x.CounterTemplates).ThenInclude(x => x.RoundReminderTemplate)

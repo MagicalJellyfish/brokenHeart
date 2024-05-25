@@ -28,6 +28,7 @@ namespace brokenHeart.Entities
             decimal money = 0,
             string notes = "",
             string experience = "",
+            List<Variable>? variables = null,
             List<Item>? inventory = null,
             List<Trait>? traits = null,
             List<Effect>? effects = null,
@@ -46,6 +47,7 @@ namespace brokenHeart.Entities
             Notes = notes;
             Experience = experience;
             IsNPC = isNPC;
+            Variables = variables ?? new List<Variable>();
             Items = inventory ?? new List<Item>();
             Traits = traits ?? new List<Trait>();
             Effects = effects ?? new List<Effect>();
@@ -85,6 +87,10 @@ namespace brokenHeart.Entities
         public virtual ICollection<StatValue> Stats { get; private set; } = new List<StatValue>();
         public virtual ICollection<BodypartCondition> BodypartConditions { get; set; } =
             new List<BodypartCondition>();
+
+        [NotMapped]
+        public ICollection<int>? VariablesIds { get; set; } = new List<int>();
+        public virtual ICollection<Variable> Variables { get; set; } = new List<Variable>();
 
         [NotMapped]
         public ICollection<int>? AbilitiesIds { get; set; } = new List<int>();

@@ -289,6 +289,8 @@ namespace brokenHeart.Controllers.EntityControllers.Characters
 
                 .Include(x => x.RoundReminders)
 
+                .Include(x => x.Variables)
+
                 .Include(x => x.Counters).ThenInclude(x => x.RoundReminder)
 
                 .Include(x => x.BodypartConditions).ThenInclude(x => x.Bodypart)

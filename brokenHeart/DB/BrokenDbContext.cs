@@ -25,6 +25,7 @@ namespace brokenHeart.DB
         public DbSet<CharacterTemplate> CharacterTemplates { get; set; }
         public DbSet<Bodypart> Bodyparts { get; set; }
         public DbSet<BodypartCondition> BodypartConditions { get; set; }
+        public DbSet<Variable> Variables { get; set; }
 
         public DbSet<RoundReminder> RoundReminders { get; set; }
         public DbSet<RoundReminderTemplate> RoundReminderTemplates { get; set; }
@@ -241,6 +242,19 @@ namespace brokenHeart.DB
                 x.HasOne("brokenHeart.Entities.Modifier", "Modifier")
                     .WithMany("Counters")
                     .HasForeignKey("ModifierId")
+                    .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            modelBuilder.Entity<Variable>(x =>
+            {
+                x.HasOne("brokenHeart.Entities.Character", "Character")
+                    .WithMany("Variables")
+                    .HasForeignKey("CharacterId")
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                x.HasOne("brokenHeart.Entities.Characters.CharacterTemplate", "CharacterTemplate")
+                    .WithMany("Variables")
+                    .HasForeignKey("CharacterTemplateId")
                     .OnDelete(DeleteBehavior.Cascade);
             });
 

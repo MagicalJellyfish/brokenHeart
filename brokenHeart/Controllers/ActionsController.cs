@@ -417,6 +417,8 @@ namespace brokenHeart.Controllers
         private IQueryable<Character> GetBaseCharacters()
         {
             return _context.Characters
+                .Include(x => x.Variables)
+
                 .Include(x => x.Counters)
 
                 .Include(x => x.Items).ThenInclude(x => x.Counters)

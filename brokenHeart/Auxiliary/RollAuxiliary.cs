@@ -1,4 +1,5 @@
 ﻿using brokenHeart.Entities;
+using brokenHeart.Entities.Characters;
 using brokenHeart.Entities.Counters;
 using brokenHeart.Entities.Stats;
 
@@ -45,11 +46,27 @@ namespace brokenHeart.Auxiliary
                         if (counter != null)
                         {
                             output += counter.Value;
-                            i += (2 + counterName.Length);
+                            i += (3 + counterName.Length);
                         }
                         else
                         {
                             throw new Exception($"No counter found with name \"{counterName}\"");
+                        }
+                    }
+                    if (value.StartsWith("v:"))
+                    {
+                        string variableName = value.Substring(2);
+                        Variable? variable = c.Variables.SingleOrDefault(x =>
+                            x.Name.ToLower().Equals(variableName.ToLower())
+                        );
+                        if (variable != null)
+                        {
+                            output += variable.Value;
+                            i += (3 + variableName.Length);
+                        }
+                        else
+                        {
+                            throw new Exception($"No variable found with name \"{variableName}\"");
                         }
                     }
                     else

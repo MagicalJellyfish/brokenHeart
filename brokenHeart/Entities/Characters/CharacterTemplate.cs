@@ -58,6 +58,10 @@ namespace brokenHeart.Entities.Characters
         public string Experience { get; set; }
 
         [NotMapped]
+        public ICollection<int>? VariablesIds { get; set; } = new List<int>();
+        public virtual ICollection<Variable> Variables { get; set; } = new List<Variable>();
+
+        [NotMapped]
         public ICollection<int>? AbilityTemplatesIds { get; set; } = new List<int>();
         public virtual ICollection<AbilityTemplate> AbilityTemplates { get; set; } =
             new List<AbilityTemplate>();
@@ -105,6 +109,7 @@ namespace brokenHeart.Entities.Characters
                 Money,
                 Notes,
                 Experience,
+                Variables.Select(x => x.Instantiate()).ToList(),
                 ItemTemplates.Select(x => x.Instantiate()).ToList(),
                 TraitTemplates.Select(x => x.Instantiate()).ToList(),
                 EffectTemplates.Select(x => x.Instantiate()).ToList(),
