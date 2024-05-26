@@ -105,6 +105,10 @@ namespace brokenHeart.Auxiliary
 
         public static RollResult RollString(string input, string? original = null)
         {
+            bool critEvaluated = false;
+            bool criticalSuccess = false;
+            bool criticalFailure = false;
+
             input = input.Replace(" ", "");
 
             List<char> specialChars = new List<char> { 'd', '+', '-', '*', '/', '(', ')' };
@@ -203,6 +207,22 @@ namespace brokenHeart.Auxiliary
                     );
                     rolledString += rollReturn.Result;
                     detailString += rollReturn.Detail;
+
+                    if (!critEvaluated)
+                    {
+                        if (int.Parse(preD) == 1 && int.Parse(postD) == 20)
+                        {
+                            critEvaluated = true;
+                            if (rollReturn.Result == 20)
+                            {
+                                criticalSuccess = true;
+                            }
+                            if (rollReturn.Result == 1)
+                            {
+                                criticalFailure = true;
+                            }
+                        }
+                    }
                 }
             }
 
@@ -212,7 +232,23 @@ namespace brokenHeart.Auxiliary
             {
                 returnString += original + "\n= ";
             }
-            return new RollResult(result, returnString + $"{input}\n= {detailString}\n= {result}");
+
+            detailString += $"\n= {result}";
+
+            if (criticalSuccess)
+            {
+                detailString += "\nCritical Success!";
+            }
+            else if (criticalFailure)
+            {
+                detailString += "\nCritical Failure!";
+            }
+            return new RollResult(
+                result,
+                returnString + $"{input}\n= {detailString}",
+                criticalSuccess,
+                criticalFailure
+            );
         }
 
         private static int EvaluateString(string input)
