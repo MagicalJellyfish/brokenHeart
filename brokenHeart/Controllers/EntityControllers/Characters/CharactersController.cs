@@ -35,7 +35,8 @@ namespace brokenHeart.Controllers.EntityControllers.Characters
             }
 
             IEnumerable<Character> characters = _context
-                .Characters.Where(x => !x.IsNPC)
+                .Characters.Include(x => x.Image)
+                .Where(x => !x.IsNPC)
                 .Select(x => ApiAuxiliary.GetEntityPrepare(x) as Character)
                 .ToList();
 
@@ -53,7 +54,8 @@ namespace brokenHeart.Controllers.EntityControllers.Characters
             }
 
             IEnumerable<Character> characters = _context
-                .Characters.Where(x => x.IsNPC)
+                .Characters.Include(x => x.Image)
+                .Where(x => x.IsNPC)
                 .Select(x => ApiAuxiliary.GetEntityPrepare(x) as Character)
                 .ToList();
 
@@ -71,7 +73,8 @@ namespace brokenHeart.Controllers.EntityControllers.Characters
             }
 
             IEnumerable<Character> characters = _context
-                .Characters.Where(x => x.Owner.Username == username)
+                .Characters.Include(x => x.Image)
+                .Where(x => x.Owner.Username == username)
                 .Select(x => ApiAuxiliary.GetEntityPrepare(x) as Character)
                 .ToList();
 
@@ -282,6 +285,8 @@ namespace brokenHeart.Controllers.EntityControllers.Characters
         private IQueryable<Character> FullCharacters()
         {
             return _context.Characters
+                .Include(x => x.Image)
+
                 .Include(x => x.Abilities).ThenInclude(x => x.EffectTemplates)
                 .Include(x => x.Abilities).ThenInclude(x => x.Rolls)
 

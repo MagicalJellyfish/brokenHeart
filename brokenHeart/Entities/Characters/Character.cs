@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.Drawing;
 using System.Text.Json.Serialization;
 using brokenHeart.Entities.Abilities.Abilities;
 using brokenHeart.Entities.Characters;
@@ -123,7 +124,8 @@ namespace brokenHeart.Entities
         public virtual ICollection<RoundReminder> RoundReminders { get; set; } =
             new List<RoundReminder>();
 
-        public byte[]? Image { get; set; } = new byte[0];
+        public int ImageId { get; set; }
+        public CharacterImage Image { get; set; }
 
         public bool IsNPC { get; set; }
 

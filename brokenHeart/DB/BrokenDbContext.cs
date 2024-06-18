@@ -22,6 +22,7 @@ namespace brokenHeart.DB
         public DbSet<UserSimplified> UserSimplified { get; set; }
 
         public DbSet<Character> Characters { get; set; }
+        public DbSet<CharacterImage> CharacterImages { get; set; }
         public DbSet<CharacterTemplate> CharacterTemplates { get; set; }
         public DbSet<Bodypart> Bodyparts { get; set; }
         public DbSet<BodypartCondition> BodypartConditions { get; set; }
