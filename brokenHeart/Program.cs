@@ -100,7 +100,11 @@ builder
             OnMessageReceived = context =>
             {
                 var ip = context.Request.HttpContext.Connection.RemoteIpAddress.ToString();
-                if (ip == "127.0.0.1" || ip == "::1")
+                var originHeader = context
+                    .Request.Headers.SingleOrDefault(x => x.Key == "Origin")
+                    .Value.ToString();
+                //If requester is localhost and origin is not [...]4200 (Angular dev url)
+                if ((ip == "127.0.0.1" || ip == "::1") && !originHeader.EndsWith("4200"))
                 {
                     var claims = new[]
                     {
