@@ -36,8 +36,10 @@ namespace brokenHeart.Auxiliary
                     {
                         output += statValue.Value;
                         i += 4;
+                        break;
                     }
-                    else if (value.StartsWith("c:"))
+
+                    if (value.StartsWith("c:"))
                     {
                         string counterName = value.Substring(2);
                         Counter? counter = c.Counters.SingleOrDefault(x =>
@@ -47,12 +49,14 @@ namespace brokenHeart.Auxiliary
                         {
                             output += counter.Value;
                             i += (3 + counterName.Length);
+                            break;
                         }
                         else
                         {
                             throw new Exception($"No counter found with name \"{counterName}\"");
                         }
                     }
+
                     if (value.StartsWith("v:"))
                     {
                         string variableName = value.Substring(2);
@@ -63,39 +67,38 @@ namespace brokenHeart.Auxiliary
                         {
                             output += variable.Value;
                             i += (3 + variableName.Length);
+                            break;
                         }
                         else
                         {
                             throw new Exception($"No variable found with name \"{variableName}\"");
                         }
                     }
-                    else
+
+                    switch (value.ToLower())
                     {
-                        switch (value.ToLower())
-                        {
-                            case "hp":
-                                output += c.Hp;
-                                i += 3;
-                                break;
-                            case "arm":
-                                output += c.Armor;
-                                i += 4;
-                                break;
-                            case "eva":
-                                output += c.Evasion;
-                                i += 4;
-                                break;
-                            case "def":
-                                output += (c.Armor + c.Evasion);
-                                i += 4;
-                                break;
-                            case "mov":
-                                output += c.MovementSpeed;
-                                i += 4;
-                                break;
-                            default:
-                                throw new Exception($"No evaluation found for \"{value}\"");
-                        }
+                        case "hp":
+                            output += c.Hp;
+                            i += 3;
+                            break;
+                        case "arm":
+                            output += c.Armor;
+                            i += 4;
+                            break;
+                        case "eva":
+                            output += c.Evasion;
+                            i += 4;
+                            break;
+                        case "def":
+                            output += (c.Armor + c.Evasion);
+                            i += 4;
+                            break;
+                        case "mov":
+                            output += c.MovementSpeed;
+                            i += 4;
+                            break;
+                        default:
+                            throw new Exception($"No evaluation found for \"{value}\"");
                     }
                 }
             }
