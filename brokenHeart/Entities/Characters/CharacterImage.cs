@@ -2,6 +2,8 @@
 {
     public class CharacterImage
     {
+        public CharacterImage() { }
+
         public CharacterImage(int id, byte[]? bytes)
         {
             Id = id;

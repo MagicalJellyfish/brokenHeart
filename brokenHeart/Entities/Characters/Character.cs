@@ -125,7 +125,7 @@ namespace brokenHeart.Entities
             new List<RoundReminder>();
 
         public int ImageId { get; set; }
-        public CharacterImage Image { get; set; }
+        public CharacterImage Image { get; set; } = new CharacterImage();
 
         public bool IsNPC { get; set; }
 
