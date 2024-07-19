@@ -287,7 +287,7 @@ namespace brokenHeart.Controllers.EntityControllers.Characters
             return _context.Characters
                 .Include(x => x.Image)
 
-                .Include(x => x.Abilities).ThenInclude(x => x.EffectTemplates)
+                .Include(x => x.Abilities).ThenInclude(x => x.AppliedEffectTemplates)
                 .Include(x => x.Abilities).ThenInclude(x => x.Rolls)
 
                 .Include(x => x.Stats).ThenInclude(x => x.Stat)
@@ -313,7 +313,7 @@ namespace brokenHeart.Controllers.EntityControllers.Characters
                 .Include(x => x.Items).ThenInclude(x => x.Counters).ThenInclude(x => x.RoundReminder)
                 .Include(x => x.Items).ThenInclude(x => x.RoundReminder)
                 .Include(x => x.Items).ThenInclude(x => x.StatIncreases).ThenInclude(x => x.Stat)
-                .Include(x => x.Items).ThenInclude(x => x.Abilities).ThenInclude(x => x.EffectTemplates)
+                .Include(x => x.Items).ThenInclude(x => x.Abilities).ThenInclude(x => x.AppliedEffectTemplates)
                 .Include(x => x.Items).ThenInclude(x => x.Abilities).ThenInclude(x => x.Rolls)
 
                 .Include(x => x.Traits).ThenInclude(x => x.Counters).ThenInclude(x => x.RoundReminder)

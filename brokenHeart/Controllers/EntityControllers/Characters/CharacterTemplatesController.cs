@@ -183,7 +183,7 @@ namespace brokenHeart.Controllers.EntityControllers.Characters
         private IQueryable<CharacterTemplate> FullCharacterTemplates()
         {
             return _context.CharacterTemplates
-                .Include(x => x.AbilityTemplates).ThenInclude(x => x.EffectTemplates)
+                .Include(x => x.AbilityTemplates).ThenInclude(x => x.AppliedEffectTemplates)
                 .Include(x => x.AbilityTemplates).ThenInclude(x => x.Rolls)
 
                 .Include(x => x.RoundReminderTemplates)
@@ -200,7 +200,7 @@ namespace brokenHeart.Controllers.EntityControllers.Characters
                 .Include(x => x.ItemTemplates).ThenInclude(x => x.CounterTemplates).ThenInclude(x => x.RoundReminderTemplate)
                 .Include(x => x.ItemTemplates).ThenInclude(x => x.RoundReminderTemplate)
                 .Include(x => x.ItemTemplates).ThenInclude(x => x.StatIncreases).ThenInclude(x => x.Stat)
-                .Include(x => x.ItemTemplates).ThenInclude(x => x.AbilityTemplates).ThenInclude(x => x.EffectTemplates)
+                .Include(x => x.ItemTemplates).ThenInclude(x => x.AbilityTemplates).ThenInclude(x => x.AppliedEffectTemplates)
                 .Include(x => x.ItemTemplates).ThenInclude(x => x.AbilityTemplates).ThenInclude(x => x.Rolls)
 
                 .Include(x => x.TraitTemplates).ThenInclude(x => x.CounterTemplates).ThenInclude(x => x.RoundReminderTemplate)

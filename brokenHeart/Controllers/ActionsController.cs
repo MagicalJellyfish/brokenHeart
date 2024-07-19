@@ -298,11 +298,11 @@ namespace brokenHeart.Controllers
                                         $"\n\nDamage: {damage.Result}\n{damage.Detail}";
                                 }
 
-                                if (ability.EffectTemplates.Count > 0)
+                                if (ability.AppliedEffectTemplates.Count > 0)
                                 {
                                     message.Description += $"\n\nEffects: ";
                                 }
-                                foreach (EffectTemplate template in ability.EffectTemplates)
+                                foreach (EffectTemplate template in ability.AppliedEffectTemplates)
                                 {
                                     target.Effects.Add(template.Instantiate());
                                     message.Description += $"\"{template.Name}\" ";
@@ -339,17 +339,17 @@ namespace brokenHeart.Controllers
                     message.Title += $"{damage.Result} Damage ";
                 }
 
-                if (damage != null && ability.EffectTemplates.Count > 0)
+                if (damage != null && ability.AppliedEffectTemplates.Count > 0)
                 {
                     message.Title += "and ";
                 }
 
-                if (ability.EffectTemplates.Count > 0)
+                if (ability.AppliedEffectTemplates.Count > 0)
                 {
                     message.Title += "Effects ";
                 }
 
-                foreach (EffectTemplate template in ability.EffectTemplates)
+                foreach (EffectTemplate template in ability.AppliedEffectTemplates)
                 {
                     message.Title += $"\"{template.Name}\" ";
                     foreach (Character target in targetChars)
@@ -404,12 +404,12 @@ namespace brokenHeart.Controllers
         {
             return GetBaseCharacters()
                 .Include(x => x.Abilities).ThenInclude(x => x.Rolls)
-                .Include(x => x.Abilities).ThenInclude(x => x.EffectTemplates)!.ThenInclude(x => x.CounterTemplates).ThenInclude(x => x.RoundReminderTemplate)
-                .Include(x => x.Abilities).ThenInclude(x => x.EffectTemplates)!.ThenInclude(x => x.RoundReminderTemplate)
+                .Include(x => x.Abilities).ThenInclude(x => x.AppliedEffectTemplates)!.ThenInclude(x => x.CounterTemplates).ThenInclude(x => x.RoundReminderTemplate)
+                .Include(x => x.Abilities).ThenInclude(x => x.AppliedEffectTemplates)!.ThenInclude(x => x.RoundReminderTemplate)
 
                 .Include(x => x.Items).ThenInclude(x => x.Abilities).ThenInclude(x => x.Rolls)
-                .Include(x => x.Items).ThenInclude(x => x.Abilities).ThenInclude(x => x.EffectTemplates)!.ThenInclude(x => x.CounterTemplates).ThenInclude(x => x.RoundReminderTemplate)
-                .Include(x => x.Items).ThenInclude(x => x.Abilities).ThenInclude(x => x.EffectTemplates)!.ThenInclude(x => x.RoundReminderTemplate)
+                .Include(x => x.Items).ThenInclude(x => x.Abilities).ThenInclude(x => x.AppliedEffectTemplates)!.ThenInclude(x => x.CounterTemplates).ThenInclude(x => x.RoundReminderTemplate)
+                .Include(x => x.Items).ThenInclude(x => x.Abilities).ThenInclude(x => x.AppliedEffectTemplates)!.ThenInclude(x => x.RoundReminderTemplate)
                 .SingleOrDefault(x => x.Id == id);
         }
 

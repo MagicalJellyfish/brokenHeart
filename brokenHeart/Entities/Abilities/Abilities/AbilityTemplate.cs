@@ -21,7 +21,7 @@ namespace brokenHeart.Entities.Abilities.Abilities
             string? damage = null,
             string? range = null,
             ICollection<Roll>? rolls = null,
-            ICollection<EffectTemplate>? effectTemplates = null
+            ICollection<EffectTemplate>? appliedEffectTemplates = null
         )
         {
             Name = name;
@@ -33,7 +33,7 @@ namespace brokenHeart.Entities.Abilities.Abilities
             Damage = damage;
             Range = range;
             Rolls = rolls;
-            EffectTemplates = effectTemplates;
+            AppliedEffectTemplates = appliedEffectTemplates;
         }
 
         public int Id { get; set; }
@@ -54,8 +54,8 @@ namespace brokenHeart.Entities.Abilities.Abilities
         public ICollection<Roll>? Rolls { get; set; } = new List<Roll>();
 
         [NotMapped]
-        public ICollection<int>? EffectTemplatesIds { get; set; } = new List<int>();
-        public virtual ICollection<EffectTemplate>? EffectTemplates { get; set; } =
+        public ICollection<int>? AppliedEffectTemplatesIds { get; set; } = new List<int>();
+        public virtual ICollection<EffectTemplate> AppliedEffectTemplates { get; set; } =
             new List<EffectTemplate>();
 
         [NotMapped]
@@ -80,7 +80,7 @@ namespace brokenHeart.Entities.Abilities.Abilities
                 Damage,
                 Range,
                 Rolls.Select(x => x.Instantiate()).ToList(),
-                EffectTemplates
+                AppliedEffectTemplates
             );
         }
     }

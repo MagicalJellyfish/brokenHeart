@@ -141,7 +141,7 @@ namespace brokenHeart.Controllers.EntityControllers.Abilities
         {
             return _context
                 .Abilities.Include(x => x.Rolls)
-                .Include(x => x.EffectTemplates)
+                .Include(x => x.AppliedEffectTemplates)
                 .Include(x => x.Character);
         }
     }

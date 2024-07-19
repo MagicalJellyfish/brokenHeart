@@ -64,12 +64,12 @@ namespace brokenHeart.Entities.Effects
             new List<CharacterTemplate>();
 
         [NotMapped]
-        public ICollection<int>? AbilitiesIds { get; set; } = new List<int>();
-        public virtual ICollection<Ability> Abilities { get; set; } = new List<Ability>();
+        public ICollection<int>? ApplyingAbilitiesIds { get; set; } = new List<int>();
+        public virtual ICollection<Ability> ApplyingAbilities { get; set; } = new List<Ability>();
 
         [NotMapped]
-        public ICollection<int>? AbilityTemplatesIds { get; set; } = new List<int>();
-        public virtual ICollection<AbilityTemplate> AbilityTemplates { get; set; } =
+        public ICollection<int>? ApplyingAbilityTemplatesIds { get; set; } = new List<int>();
+        public virtual ICollection<AbilityTemplate> ApplyingAbilityTemplates { get; set; } =
             new List<AbilityTemplate>();
 
         public Effect Instantiate()
