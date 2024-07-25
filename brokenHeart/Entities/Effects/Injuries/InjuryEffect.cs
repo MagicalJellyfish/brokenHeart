@@ -1,4 +1,5 @@
 ﻿using System.Text.Json.Serialization;
+using brokenHeart.Entities.Abilities.Abilities;
 using brokenHeart.Entities.Characters;
 using brokenHeart.Entities.Counters;
 using brokenHeart.Entities.RoundReminders;
@@ -25,6 +26,7 @@ namespace brokenHeart.Entities.Effects.Injuries
             string hp = "",
             int maxTempHp = 0,
             List<StatValue>? statIncreases = null,
+            List<Ability>? abilities = null,
             List<Counter>? counters = null,
             RoundReminder? reminder = null,
             EffectCounter? effectCounter = null
@@ -41,6 +43,7 @@ namespace brokenHeart.Entities.Effects.Injuries
                 hp,
                 maxTempHp,
                 statIncreases,
+                abilities,
                 counters,
                 reminder,
                 effectCounter

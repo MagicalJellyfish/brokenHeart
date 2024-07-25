@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
+using brokenHeart.Entities.Abilities.Abilities;
 using brokenHeart.Entities.Counters;
 using brokenHeart.Entities.RoundReminders;
 using brokenHeart.Entities.Stats;
@@ -20,6 +21,7 @@ namespace brokenHeart.Entities
             int armor = 0,
             int evasion = 0,
             List<StatValue>? statIncrease = null,
+            List<AbilityTemplate>? abilityTemplates = null,
             List<CounterTemplate>? counterTemplates = null,
             RoundReminderTemplate? reminderTemplate = null
         )
@@ -32,6 +34,7 @@ namespace brokenHeart.Entities
             Armor = armor;
             Evasion = evasion;
             StatIncreases = statIncrease ?? new List<StatValue>();
+            AbilityTemplates = abilityTemplates ?? new List<AbilityTemplate>();
             CounterTemplates = counterTemplates ?? new List<CounterTemplate>();
             RoundReminderTemplate = reminderTemplate;
         }
@@ -53,6 +56,11 @@ namespace brokenHeart.Entities
         public ICollection<int>? CounterTemplatesIds { get; set; } = new List<int>();
         public virtual ICollection<CounterTemplate> CounterTemplates { get; set; } =
             new List<CounterTemplate>();
+
+        [NotMapped]
+        public ICollection<int>? AbilityTemplatesIds { get; set; } = new List<int>();
+        public virtual ICollection<AbilityTemplate> AbilityTemplates { get; set; } =
+            new List<AbilityTemplate>();
 
         public int? RoundReminderTemplateId { get; set; }
         public virtual RoundReminderTemplate? RoundReminderTemplate { get; set; }

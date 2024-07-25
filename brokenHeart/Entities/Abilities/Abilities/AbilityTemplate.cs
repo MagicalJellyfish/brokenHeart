@@ -59,8 +59,9 @@ namespace brokenHeart.Entities.Abilities.Abilities
             new List<EffectTemplate>();
 
         [NotMapped]
-        public ICollection<int>? ItemTemplatesIds { get; set; } = new List<int>();
-        public ICollection<ItemTemplate>? ItemTemplates { get; set; } = new List<ItemTemplate>();
+        public ICollection<int>? ModifierTemplatesIds { get; set; } = new List<int>();
+        public virtual ICollection<ModifierTemplate> ModifierTemplates { get; set; } =
+            new List<ModifierTemplate>();
 
         [NotMapped]
         public ICollection<int> CharacterTemplatesIds { get; set; } = new List<int>();

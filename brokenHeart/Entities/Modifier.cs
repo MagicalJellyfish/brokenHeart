@@ -20,7 +20,8 @@ namespace brokenHeart.Entities
             int movementSpeed = 0,
             int armor = 0,
             int evasion = 0,
-            List<StatValue>? statIncrease = null, /*List<Ability>? abilities = null,*/
+            List<StatValue>? statIncrease = null,
+            List<Ability>? abilities = null,
             List<Counter>? counters = null,
             RoundReminder? roundReminder = null
         )
@@ -33,7 +34,7 @@ namespace brokenHeart.Entities
             Armor = armor;
             Evasion = evasion;
             StatIncreases = statIncrease ?? new List<StatValue>();
-            //Abilities = abilities ?? new List<Ability>();
+            Abilities = abilities ?? new List<Ability>();
             Counters = counters ?? new List<Counter>();
             RoundReminder = roundReminder;
 
@@ -56,6 +57,10 @@ namespace brokenHeart.Entities
         [NotMapped]
         public ICollection<int>? CountersIds { get; set; } = new List<int>();
         public virtual ICollection<Counter> Counters { get; set; } = new List<Counter>();
+
+        [NotMapped]
+        public ICollection<int>? AbilitiesIds { get; set; } = new List<int>();
+        public virtual ICollection<Ability> Abilities { get; set; } = new List<Ability>();
 
         public virtual RoundReminder? RoundReminder { get; set; }
 

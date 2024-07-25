@@ -69,8 +69,8 @@ namespace brokenHeart.Entities.Abilities.Abilities
         public virtual ICollection<EffectTemplate>? AppliedEffectTemplates { get; set; } =
             new List<EffectTemplate>();
 
-        public int? ItemId { get; set; }
-        public Item? Item { get; set; }
+        public int? ModifierId { get; set; }
+        public Modifier? Modifier { get; set; }
 
         public int? CharacterId { get; set; }
         public Character? Character { get; set; }

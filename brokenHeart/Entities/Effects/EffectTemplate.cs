@@ -25,6 +25,7 @@ namespace brokenHeart.Entities.Effects
             string hp = "",
             int maxTempHp = 0,
             List<StatValue>? statIncreases = null,
+            List<AbilityTemplate>? abilityTemplates = null,
             List<CounterTemplate>? counterTemplates = null,
             EffectCounterTemplate? effectCounterTemplate = null,
             RoundReminderTemplate? reminderTemplate = null
@@ -38,6 +39,7 @@ namespace brokenHeart.Entities.Effects
                 armor,
                 evasion,
                 statIncreases,
+                abilityTemplates,
                 counterTemplates,
                 reminderTemplate
             )
@@ -86,6 +88,7 @@ namespace brokenHeart.Entities.Effects
                 Hp,
                 MaxTempHp,
                 StatIncreases.Select(x => x.Instantiate()).ToList(),
+                AbilityTemplates.Select(x => x.Instantiate()).ToList(),
                 CounterTemplates.Select(x => x.Instantiate()).ToList(),
                 RoundReminderTemplate?.Instantiate(),
                 EffectCounterTemplate?.Instantiate()

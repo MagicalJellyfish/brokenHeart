@@ -20,6 +20,7 @@ namespace brokenHeart.Entities.Traits
             int armor,
             int evasion,
             List<StatValue> statIncreases,
+            List<Ability> abilities,
             List<Counter> counters,
             RoundReminder? roundReminder = null
         )
@@ -32,6 +33,7 @@ namespace brokenHeart.Entities.Traits
                 armor,
                 evasion,
                 statIncreases,
+                abilities,
                 counters,
                 roundReminder
             )

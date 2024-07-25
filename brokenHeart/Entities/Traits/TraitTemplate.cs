@@ -22,6 +22,7 @@ namespace brokenHeart.Entities.Traits
             int armor = 0,
             int evasion = 0,
             List<StatValue>? statIncreases = null,
+            List<AbilityTemplate>? abilityTemplates = null,
             List<CounterTemplate>? counterTemplates = null,
             RoundReminderTemplate? reminderTemplate = null
         )
@@ -34,6 +35,7 @@ namespace brokenHeart.Entities.Traits
                 armor,
                 evasion,
                 statIncreases,
+                abilityTemplates,
                 counterTemplates,
                 reminderTemplate
             ) { }
@@ -54,6 +56,7 @@ namespace brokenHeart.Entities.Traits
                 Armor,
                 Evasion,
                 StatIncreases.Select(x => x.Instantiate()).ToList(),
+                AbilityTemplates.Select(x => x.Instantiate()).ToList(),
                 CounterTemplates.Select(x => x.Instantiate()).ToList(),
                 RoundReminderTemplate?.Instantiate()
             );

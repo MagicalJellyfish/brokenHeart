@@ -24,8 +24,8 @@ namespace brokenHeart.Entities.Items
             int amount = 1,
             string unit = "",
             List<StatValue>? statIncreases = null,
-            List<CounterTemplate>? counterTemplates = null,
             List<AbilityTemplate>? abilityTemplates = null,
+            List<CounterTemplate>? counterTemplates = null,
             RoundReminderTemplate? reminderTemplate = null
         )
             : base(
@@ -37,6 +37,7 @@ namespace brokenHeart.Entities.Items
                 armor,
                 evasion,
                 statIncreases,
+                abilityTemplates,
                 counterTemplates,
                 reminderTemplate
             )
@@ -48,11 +49,6 @@ namespace brokenHeart.Entities.Items
 
         public int Amount { get; set; }
         public string Unit { get; set; }
-
-        [NotMapped]
-        public ICollection<int>? AbilityTemplatesIds { get; set; } = new List<int>();
-        public virtual ICollection<AbilityTemplate> AbilityTemplates { get; set; } =
-            new List<AbilityTemplate>();
 
         [NotMapped]
         public ICollection<int>? CharacterTemplatesIds { get; set; } = new List<int>();
@@ -71,8 +67,8 @@ namespace brokenHeart.Entities.Items
                 Evasion,
                 Amount,
                 Unit,
-                AbilityTemplates.Select(x => x.Instantiate()).ToList(),
                 StatIncreases.Select(x => x.Instantiate()).ToList(),
+                AbilityTemplates.Select(x => x.Instantiate()).ToList(),
                 CounterTemplates.Select(x => x.Instantiate()).ToList(),
                 RoundReminderTemplate?.Instantiate()
             );
