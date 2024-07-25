@@ -180,8 +180,8 @@ namespace brokenHeart.Controllers.EntityControllers.RoundReminderTemplates
                 return NotFound();
             }
 
-            RoundReminderTemplate roundReminderTemplate =
-                await _context.RoundReminderTemplates.FindAsync(id);
+            RoundReminderTemplate roundReminderTemplate = FullRoundReminderTemplates()
+                .Single(x => x.Id == id);
 
             if (roundReminderTemplate == null)
             {

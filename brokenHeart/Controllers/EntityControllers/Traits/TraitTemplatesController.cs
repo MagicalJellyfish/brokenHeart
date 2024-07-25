@@ -163,7 +163,7 @@ namespace brokenHeart.Controllers.EntityControllers.TraitTemplates
                 return NotFound();
             }
 
-            TraitTemplate traitTemplate = await _context.TraitTemplates.FindAsync(id);
+            TraitTemplate traitTemplate = FullTraitTemplates().Single(x => x.Id == id);
 
             if (traitTemplate == null)
             {

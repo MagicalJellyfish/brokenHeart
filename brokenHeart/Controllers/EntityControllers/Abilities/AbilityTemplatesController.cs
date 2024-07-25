@@ -162,7 +162,7 @@ namespace brokenHeart.Controllers.EntityControllers.Abilities
                 return NotFound();
             }
 
-            AbilityTemplate abilityTemplate = await _context.AbilityTemplates.FindAsync(id);
+            AbilityTemplate abilityTemplate = FullAbilityTemplates().Single(x => x.Id == id);
 
             if (abilityTemplate == null)
             {

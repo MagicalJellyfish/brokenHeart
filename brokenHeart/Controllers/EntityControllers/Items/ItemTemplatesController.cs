@@ -156,7 +156,7 @@ namespace brokenHeart.Controllers.EntityControllers.ItemTemplates
                 return NotFound();
             }
 
-            ItemTemplate itemTemplate = await _context.ItemTemplates.FindAsync(id);
+            ItemTemplate itemTemplate = FullItemTemplates().Single(x => x.Id == id);
 
             if (itemTemplate == null)
             {

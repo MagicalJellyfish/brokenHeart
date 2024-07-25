@@ -175,8 +175,8 @@ namespace brokenHeart.Controllers.EntityControllers.EffectCounterTemplates
                 return NotFound();
             }
 
-            EffectCounterTemplate effectCounterTemplate =
-                await _context.EffectCounterTemplates.FindAsync(id);
+            EffectCounterTemplate effectCounterTemplate = FullEffectCounterTemplates()
+                .Single(x => x.Id == id);
 
             if (effectCounterTemplate == null)
             {

@@ -170,7 +170,7 @@ namespace brokenHeart.Controllers.EntityControllers.CounterTemplates
                 return NotFound();
             }
 
-            CounterTemplate counterTemplate = await _context.CounterTemplates.FindAsync(id);
+            CounterTemplate counterTemplate = FullCounterTemplates().Single(x => x.Id == id);
 
             if (counterTemplate == null)
             {
