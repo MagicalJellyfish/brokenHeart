@@ -49,44 +49,42 @@ namespace brokenHeart
             //Injuries
             public static readonly InjuryEffectTemplate HeadMinor = new InjuryEffectTemplate(
                 "Minor Injury: Head",
-                "Subtract 1 from ability checks or saves.",
+                "Subtract 1 from ability checks and attack rolls.",
                 "Until treated",
                 Head.Id,
                 InjuryLevel.Minor,
-                "Minor damage to your head leave you slightly confused and off balance.",
-                reminderTemplate: new RoundReminderTemplate("-1 on ability checks & saves")
+                "Minor damage to your head leaves you slightly confused and off balance.",
+                reminderTemplate: new RoundReminderTemplate("-1 on ability checks and attack rolls")
             );
             public static readonly InjuryEffectTemplate HeadMedium = new InjuryEffectTemplate(
                 "Medium Injury: Head",
-                "Roll and subtract 1d4 from Dexterity, Intelligence and Instinct checks and saves.",
+                "Roll and subtract 1d4 from Dexterity, Intelligence and Instinct checks.",
                 "Until treated",
                 Head.Id,
                 InjuryLevel.Medium,
-                "A slight concussion causes you to be unable to properly focus on motor skills and thoughts while your reaction time increases.",
+                "A slight concussion causes you to be unable to properly focus on motor skills and thoughts while your reaction time decreases.",
                 reminderTemplate: new RoundReminderTemplate("-1d4 on DEX, INT and INS")
             );
             public static readonly InjuryEffectTemplate HeadMajor = new InjuryEffectTemplate(
                 "Major Injury: Head",
-                "You fall prone, and roll a perseverance check at the end of every turn. On 10 or less, you fall prone again.",
+                "You fall prone, and roll an INS check DC 10 at the end of every turn, falling prone again on failure.",
                 "Until treated",
                 Head.Id,
                 InjuryLevel.Major,
                 "Major head trauma throws you way off balance.",
                 reminderTemplate: new RoundReminderTemplate(
-                    "Roll perseverance 10 or fall prone at the end of every turn"
+                    "Roll INS 10 or fall prone at the end of every turn"
                 )
             );
 
             public static readonly InjuryEffectTemplate TorsoMinor = new InjuryEffectTemplate(
                 "Minor Injury: Torso",
-                "Extensive movement requires a Perseverance check.",
+                "Extensive movement requires an INS check DC 10.",
                 "Until treated",
                 Torso.Id,
                 InjuryLevel.Minor,
-                "Minor damage to your torso area cause you to require great effort to perform extensive actions, both physically and mentally.",
-                reminderTemplate: new RoundReminderTemplate(
-                    "Perseverance check for extensive movement"
-                )
+                "Minor damage to your torso area causes you to require great effort to perform extensive actions, both physically and mentally.",
+                reminderTemplate: new RoundReminderTemplate("INS check 10 for extensive movement")
             );
             public static readonly InjuryEffectTemplate TorsoMedium = new InjuryEffectTemplate(
                 "Medium Injury: Torso",
@@ -94,7 +92,7 @@ namespace brokenHeart
                 "Until treated",
                 Torso.Id,
                 InjuryLevel.Medium,
-                "Stretching too much will cause already present injuries to rip even further.",
+                "Stretching will cause already present injuries to rip even further.",
                 reminderTemplate: new RoundReminderTemplate("Extensive movement deals 2d4 damage")
             );
             public static readonly InjuryEffectTemplate TorsoMajor = new InjuryEffectTemplate(
@@ -120,25 +118,25 @@ namespace brokenHeart
 
             public static readonly InjuryEffectTemplate LeftLegMinor = new InjuryEffectTemplate(
                 "Minor Injury: Left Leg",
-                "Subtract 2 from ability checks or saves when using the affected leg. Dashing requires a perseverance check, "
+                "Subtract 2 from ability checks when using the affected leg. Dashing requires an INS check DC 10, "
                     + "failure results in halving dash distance.",
                 "Until treated",
                 LegL.Id,
                 InjuryLevel.Minor,
                 "The pain from a light injury or the effects of having been hit in an unfortunate spot makes straining actions difficult.",
                 reminderTemplate: new RoundReminderTemplate(
-                    "-2 on ability checks & saves on this leg, perseverance check for dash"
+                    "-2 on ability checks on this leg, INS check 10 for dash"
                 )
             );
             public static readonly InjuryEffectTemplate LeftLegMedium = new InjuryEffectTemplate(
                 "Medium Injury: Left Leg",
-                "Actions reliant on stability require a balance check. Moving more than half your movement speed requires a perseverance check.",
+                "Actions reliant on stability require a DEX check DC 10. Moving more than half your movement speed requires an INS check DC 10.",
                 "Until treated",
                 LegL.Id,
                 InjuryLevel.Medium,
                 "Large cuts or a chipped bone throw you slightly off balance and make heavy impact severly uncomfortable.",
                 reminderTemplate: new RoundReminderTemplate(
-                    "Balance check for unstable actions, moving more than half your speed requires a Perseverance check"
+                    "DEX check 10 for unstable actions, INS check 10 for moving more than half your speed"
                 )
             );
             public static readonly InjuryEffectTemplate LeftLegMajor = new InjuryEffectTemplate(
@@ -147,44 +145,41 @@ namespace brokenHeart
                 "Until treated",
                 LegL.Id,
                 InjuryLevel.Major,
-                "A broken bone or profuse bleeding leaves your legs weak and unstable, making even walking difficult. "
-                    + "With two majorly affected legs you might as well crawl.",
+                "A broken bone or profuse bleeding leaves your legs weak and unstable, making even walking difficult.",
                 reminderTemplate: new RoundReminderTemplate("Half movement speed per leg")
             );
             public static readonly InjuryEffectTemplate LeftLegDismember = new InjuryEffectTemplate(
                 "Dismemberment Injury: Left Leg",
-                "You lose the affected leg. Usually your best movement option is to crawl. "
-                    + "You take 1d10 of damage at the end of every turn while the wound is not cared for.",
+                "You lose the affected leg. You take 1d10 of damage at the end of every turn while the wound is not cared for.",
                 "Until treated",
                 LegL.Id,
                 InjuryLevel.Dismember,
-                "Your leg is battered beyond saving or removed outright. You can try to balance on one leg, "
-                    + "though your best movement option is crawling at this point. Additionally, the heavy damage sustained now causes further continuous damage.",
+                "Your leg is battered beyond saving or removed outright. Additionally, the heavy damage sustained now causes further continuous damage.",
                 reminderTemplate: new RoundReminderTemplate("Missing affected leg, heavy bleeding"),
                 hp: "-1d10"
             );
 
             public static readonly InjuryEffectTemplate RightLegMinor = new InjuryEffectTemplate(
                 "Minor Injury: Right Leg",
-                "Subtract 2 from ability checks or saves when using the affected leg. Dashing requires a perseverance check, "
+                "Subtract 2 from ability checks when using the affected leg. Dashing requires an INS check DC 10, "
                     + "failure results in halving dash distance.",
                 "Until treated",
                 LegR.Id,
                 InjuryLevel.Minor,
                 "The pain from a light injury or the effects of having been hit in an unfortunate spot makes straining actions difficult.",
                 reminderTemplate: new RoundReminderTemplate(
-                    "-2 on ability checks & saves on this leg, perseverance check for dash"
+                    "-2 on ability checks on this leg, INS check 10 for dash"
                 )
             );
             public static readonly InjuryEffectTemplate RightLegMedium = new InjuryEffectTemplate(
                 "Medium Injury: Right Leg",
-                "Actions reliant on stability require a balance check. Moving more than half your movement speed requires a perseverance check.",
+                "Actions reliant on stability require a DEX check DC 10. Moving more than half your movement speed requires an INS check DC 10.",
                 "Until treated",
                 LegR.Id,
                 InjuryLevel.Medium,
                 "Large cuts or a chipped bone throw you slightly off balance and make heavy impact severly uncomfortable.",
                 reminderTemplate: new RoundReminderTemplate(
-                    "Balance check for unstable actions, moving more than half your speed requires a Perseverance check"
+                    "DEX check 10 for unstable actions, INS check 10 for moving more than half your speed"
                 )
             );
             public static readonly InjuryEffectTemplate RightLegMajor = new InjuryEffectTemplate(
@@ -193,20 +188,17 @@ namespace brokenHeart
                 "Until treated",
                 LegR.Id,
                 InjuryLevel.Major,
-                "A broken bone or profuse bleeding leaves your legs weak and unstable, making even walking difficult. "
-                    + "With two majorly affected legs you might as well crawl.",
+                "A broken bone or profuse bleeding leaves your legs weak and unstable, making even walking difficult.",
                 reminderTemplate: new RoundReminderTemplate("Half movement speed per leg")
             );
             public static readonly InjuryEffectTemplate RightLegDismember =
                 new InjuryEffectTemplate(
                     "Dismemberment Injury: Right Leg",
-                    "You lose the affected leg. Usually your best movement option is to crawl. "
-                        + "You take 1d10 of damage at the end of every turn while the wound is not cared for.",
+                    "You lose the affected leg. You take 1d10 of damage at the end of every turn while the wound is not cared for.",
                     "Until treated",
                     LegR.Id,
                     InjuryLevel.Dismember,
-                    "Your leg is battered beyond saving or removed outright. You can try to balance on one leg, "
-                        + "though your best movement option is crawling at this point. Additionally, the heavy damage sustained now causes further continuous damage.",
+                    "Your leg is battered beyond saving or removed outright. Additionally, the heavy damage sustained now causes further continuous damage.",
                     reminderTemplate: new RoundReminderTemplate(
                         "Missing affected leg, heavy bleeding"
                     ),
@@ -215,25 +207,23 @@ namespace brokenHeart
 
             public static readonly InjuryEffectTemplate LeftArmMinor = new InjuryEffectTemplate(
                 "Minor Injury: Left Arm",
-                "Subtract 2 from ability checks or saves using the affected arm.",
+                "Subtract 2 from ability checks using the affected arm.",
                 "Until treated",
                 ArmL.Id,
                 InjuryLevel.Minor,
                 "You have received a bad bruise, a cut or a similar injury. The pain this causes or the location of the injury prevents you from using "
-                    + "your arm at full strength",
-                reminderTemplate: new RoundReminderTemplate(
-                    "-2 on ability checks & saves on this arm."
-                )
+                    + "your arm at full strength.",
+                reminderTemplate: new RoundReminderTemplate("-2 on ability checks on this arm.")
             );
             public static readonly InjuryEffectTemplate LeftArmMedium = new InjuryEffectTemplate(
                 "Medium Injury: Left Arm",
-                "Grappling, heavy pulling/pushing/lifting or similar actions using the affected arm require a Perseverance check.",
+                "Straining actions using the affected arm require an INS check DC 10.",
                 "Until treated",
                 ArmL.Id,
                 InjuryLevel.Medium,
                 "Pain and tissue damage causes you difficulty to complete actions heavily straining on the injured arm",
                 reminderTemplate: new RoundReminderTemplate(
-                    "Straining actions on this arm require a Perseverance check"
+                    "Straining actions on this arm require INS check 10"
                 )
             );
             public static readonly InjuryEffectTemplate LeftArmMajor = new InjuryEffectTemplate(
@@ -263,25 +253,23 @@ namespace brokenHeart
 
             public static readonly InjuryEffectTemplate RightArmMinor = new InjuryEffectTemplate(
                 "Minor Injury: Right Arm",
-                "Subtract 2 from ability checks or saves using the affected arm.",
+                "Subtract 2 from ability checks using the affected arm.",
                 "Until treated",
                 ArmR.Id,
                 InjuryLevel.Minor,
                 "You have received a bad bruise, a cut or a similar injury. The pain this causes or the location of the injury prevents you from using "
-                    + "your arm at full strength",
-                reminderTemplate: new RoundReminderTemplate(
-                    "-2 on ability checks & saves on this arm."
-                )
+                    + "your arm at full strength.",
+                reminderTemplate: new RoundReminderTemplate("-2 on ability checks on this arm.")
             );
             public static readonly InjuryEffectTemplate RightArmMedium = new InjuryEffectTemplate(
                 "Medium Injury: Right Arm",
-                "Grappling, heavy pulling/pushing/lifting or similar actions using the affected arm require a Perseverance check.",
+                "Straining actions using the affected arm require an INS check DC 10.",
                 "Until treated",
                 ArmR.Id,
                 InjuryLevel.Medium,
                 "Pain and tissue damage causes you difficulty to complete actions heavily straining on the injured arm",
                 reminderTemplate: new RoundReminderTemplate(
-                    "Straining actions on this arm require a Perseverance check"
+                    "Straining actions on this arm require INS check 10"
                 )
             );
             public static readonly InjuryEffectTemplate RightArmMajor = new InjuryEffectTemplate(
