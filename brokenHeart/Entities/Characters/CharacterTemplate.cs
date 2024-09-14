@@ -113,6 +113,7 @@ namespace brokenHeart.Entities.Characters
                 ItemTemplates.Select(x => x.Instantiate()).ToList(),
                 TraitTemplates.Select(x => x.Instantiate()).ToList(),
                 EffectTemplates.Select(x => x.Instantiate()).ToList(),
+                AbilityTemplates.Select(x => x.Instantiate()).ToList(),
                 isNPC: IsNPC
             );
         }

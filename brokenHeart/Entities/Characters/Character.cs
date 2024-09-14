@@ -33,6 +33,7 @@ namespace brokenHeart.Entities
             List<Item>? inventory = null,
             List<Trait>? traits = null,
             List<Effect>? effects = null,
+            List<Ability>? abilities = null,
             int? hp = null,
             bool isNPC = false
         )
@@ -52,6 +53,7 @@ namespace brokenHeart.Entities
             Items = inventory ?? new List<Item>();
             Traits = traits ?? new List<Trait>();
             Effects = effects ?? new List<Effect>();
+            Abilities = abilities ?? new List<Ability>();
         }
 
         public int Id { get; set; }
