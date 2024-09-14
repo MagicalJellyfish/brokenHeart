@@ -74,7 +74,7 @@ namespace brokenHeart.Controllers.EntityControllers.Characters
 
             IEnumerable<Character> characters = _context
                 .Characters.Include(x => x.Image)
-                .Where(x => x.Owner.Username == username)
+                .Where(x => x.Owner.Username == username && !x.IsNPC)
                 .Select(x => ApiAuxiliary.GetEntityPrepare(x) as Character)
                 .ToList();
 
