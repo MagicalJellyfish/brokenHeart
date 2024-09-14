@@ -34,7 +34,7 @@ namespace brokenHeart.Entities.Effects.Injuries
             : base(
                 name,
                 @abstract,
-                description,
+                duration,
                 description,
                 maxHp,
                 movementSpeed,
