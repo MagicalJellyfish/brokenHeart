@@ -20,6 +20,8 @@ namespace brokenHeart.Entities.Abilities.Abilities
             string? target = null,
             string? damage = null,
             string? range = null,
+            int? maxUses = null,
+            ReplenishType replenishType = ReplenishType.None,
             ICollection<Roll>? rolls = null,
             ICollection<EffectTemplate>? appliedEffectTemplates = null
         )
@@ -33,6 +35,10 @@ namespace brokenHeart.Entities.Abilities.Abilities
             Damage = damage;
             Range = range;
             Rolls = rolls;
+
+            MaxUses = maxUses;
+            ReplenishType = replenishType;
+
             AppliedEffectTemplates = appliedEffectTemplates;
         }
 
@@ -48,6 +54,9 @@ namespace brokenHeart.Entities.Abilities.Abilities
         public string? Damage { get; set; }
 
         public string? Range { get; set; }
+
+        public int? MaxUses { get; set; }
+        public ReplenishType ReplenishType { get; set; }
 
         [NotMapped]
         public ICollection<int>? RollsIds { get; set; } = new List<int>();
@@ -80,6 +89,8 @@ namespace brokenHeart.Entities.Abilities.Abilities
                 Target,
                 Damage,
                 Range,
+                MaxUses,
+                ReplenishType,
                 Rolls.Select(x => x.Instantiate()).ToList(),
                 AppliedEffectTemplates
             );

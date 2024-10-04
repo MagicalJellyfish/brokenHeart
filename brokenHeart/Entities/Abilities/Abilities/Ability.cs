@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 using brokenHeart.Entities.Effects;
-using brokenHeart.Entities.Items;
 
 namespace brokenHeart.Entities.Abilities.Abilities
 {
@@ -20,6 +19,8 @@ namespace brokenHeart.Entities.Abilities.Abilities
             string? target = null,
             string? damage = null,
             string? range = null,
+            int? maxUses = null,
+            ReplenishType replenishType = ReplenishType.None,
             ICollection<Roll>? rolls = null,
             ICollection<EffectTemplate>? appliedEffectTemplates = null
         )
@@ -42,6 +43,11 @@ namespace brokenHeart.Entities.Abilities.Abilities
             Target = target;
             Damage = damage;
             Range = range;
+
+            Uses = maxUses;
+            MaxUses = maxUses;
+            ReplenishType = replenishType;
+
             Rolls = rolls;
             AppliedEffectTemplates = appliedEffectTemplates;
         }
@@ -59,6 +65,10 @@ namespace brokenHeart.Entities.Abilities.Abilities
         public string? Damage { get; set; }
 
         public string? Range { get; set; }
+
+        public int? Uses { get; set; }
+        public int? MaxUses { get; set; }
+        public ReplenishType ReplenishType { get; set; }
 
         [NotMapped]
         public ICollection<int>? RollsIds { get; set; } = new List<int>();

@@ -251,34 +251,94 @@ namespace brokenHeart.Controllers.EntityControllers.Characters
                 return BadRequest();
             }
 
-            List<Effect> effects = character.Effects.ToList();
-            effects.RemoveAll(x => character.InjuryEffects.Contains(x));
-            character.Effects = effects;
-
+            List<BodypartCondition> conditions = new List<BodypartCondition>();
             foreach (var operation in patchDocument.Operations)
             {
                 BodypartCondition bpCon = character.BodypartConditions.SingleOrDefault(x =>
                     x.BodypartId == int.Parse(operation.path[1..])
                 );
                 InjuryLevel injury = (InjuryLevel)(long)operation.value;
+                bpCon.InjuryLevel = injury;
 
+                conditions.Add(bpCon);
+            }
+            UpdateAppliedInjuryEffects(character, conditions);
+
+            _context.SaveChanges();
+
+            return NoContent();
+        }
+
+        [HttpPost("ShortRest/{id}")]
+        [Authorize]
+        public async Task<IActionResult> ShortRest(int id)
+        {
+            Character character = FullCharacters().Single(x => x.Id == id);
+
+            if (character == null)
+            {
+                return BadRequest();
+            }
+
+            character.ShortRest();
+            _context.SaveChanges();
+
+            return NoContent();
+        }
+
+        [HttpPost("LongRest/{id}")]
+        [Authorize]
+        public async Task<IActionResult> LongRest(int id)
+        {
+            Character character = FullCharacters().Single(x => x.Id == id);
+
+            if (character == null)
+            {
+                return BadRequest();
+            }
+
+            character.LongRest();
+
+            List<BodypartCondition> conditions = character.BodypartConditions.ToList();
+            foreach (BodypartCondition condition in conditions)
+            {
+                if (
+                    condition.InjuryLevel > InjuryLevel.None
+                    && condition.InjuryLevel < InjuryLevel.Dismember
+                )
+                {
+                    condition.InjuryLevel -= 1;
+                }
+            }
+            UpdateAppliedInjuryEffects(character, conditions);
+
+            _context.SaveChanges();
+
+            return NoContent();
+        }
+
+        private void UpdateAppliedInjuryEffects(
+            Character character,
+            List<BodypartCondition> conditions
+        )
+        {
+            List<Effect> effects = character.Effects.ToList();
+            effects.RemoveAll(x => character.InjuryEffects.Contains(x));
+            character.Effects = effects;
+
+            foreach (BodypartCondition condition in conditions)
+            {
                 foreach (InjuryEffect injuryEffect in character.InjuryEffects)
                 {
                     if (
-                        injuryEffect.BodypartId == bpCon.BodypartId
-                        && injuryEffect.InjuryLevel <= injury
+                        injuryEffect.BodypartId == condition.BodypartId
+                        && injuryEffect.InjuryLevel <= condition.InjuryLevel
                     )
                     {
                         character.Effects.Add(injuryEffect);
                     }
                 }
-
-                bpCon.InjuryLevel = injury;
             }
-
-            _context.SaveChanges();
-
-            return NoContent();
         }
 
         // csharpier-ignore

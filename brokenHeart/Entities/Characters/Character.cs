@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.Drawing;
 using System.Text.Json.Serialization;
 using brokenHeart.Entities.Abilities.Abilities;
 using brokenHeart.Entities.Characters;
@@ -216,6 +215,45 @@ namespace brokenHeart.Entities
             foreach (StatValue statIncrease in modifier.StatIncreases)
             {
                 Stats.Single(x => statIncrease.StatId == x.StatId).Value += statIncrease.Value;
+            }
+        }
+
+        public void ShortRest()
+        {
+            AbilityReplenish(ReplenishType.ShortRest);
+        }
+
+        public void LongRest()
+        {
+            if (Hp < MaxHp)
+            {
+                if (Hp > (MaxHp / 2))
+                {
+                    Hp = MaxHp;
+                }
+                else
+                {
+                    Hp += (MaxHp / 2);
+                }
+            }
+
+            AbilityReplenish(ReplenishType.LongRest);
+        }
+
+        private void AbilityReplenish(ReplenishType replenishType)
+        {
+            List<Ability> allAbilities = Abilities
+                .Concat(Traits.SelectMany(x => x.Abilities))
+                .Concat(Items.SelectMany(x => x.Abilities))
+                .Concat(Effects.SelectMany(x => x.Abilities))
+                .ToList();
+
+            foreach (Ability ability in allAbilities)
+            {
+                if (ability.ReplenishType <= replenishType)
+                {
+                    ability.Uses = ability.MaxUses;
+                }
             }
         }
 
