@@ -69,6 +69,9 @@ namespace brokenHeart.Entities
         //in €
         public decimal Money { get; set; }
 
+        // Custom Currency
+        public int C { get; set; }
+
         public int MaxHp { get; set; }
 
         public int Hp { get; set; }
