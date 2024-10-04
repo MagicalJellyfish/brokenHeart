@@ -67,24 +67,24 @@ namespace brokenHeart
             );
             public static readonly InjuryEffectTemplate HeadMajor = new InjuryEffectTemplate(
                 "Major Injury: Head",
-                "You fall prone, and roll an INS check DC 10 at the end of every turn, falling prone again on failure.",
+                "You fall prone, and roll a CON check DC 10 at the end of every turn, falling prone again on failure.",
                 "Until treated",
                 Head.Id,
                 InjuryLevel.Major,
                 "Major head trauma throws you way off balance.",
                 reminderTemplate: new RoundReminderTemplate(
-                    "Roll INS 10 or fall prone at the end of every turn"
+                    "Roll CON 10 or fall prone at the end of every turn"
                 )
             );
 
             public static readonly InjuryEffectTemplate TorsoMinor = new InjuryEffectTemplate(
                 "Minor Injury: Torso",
-                "Extensive movement requires an INS check DC 10.",
+                "Extensive movement requires a CON check DC 10.",
                 "Until treated",
                 Torso.Id,
                 InjuryLevel.Minor,
                 "Minor damage to your torso area causes you to require great effort to perform extensive actions, both physically and mentally.",
-                reminderTemplate: new RoundReminderTemplate("INS check 10 for extensive movement")
+                reminderTemplate: new RoundReminderTemplate("CON check 10 for extensive movement")
             );
             public static readonly InjuryEffectTemplate TorsoMedium = new InjuryEffectTemplate(
                 "Medium Injury: Torso",
@@ -118,25 +118,25 @@ namespace brokenHeart
 
             public static readonly InjuryEffectTemplate LeftLegMinor = new InjuryEffectTemplate(
                 "Minor Injury: Left Leg",
-                "Subtract 2 from ability checks when using the affected leg. Dashing requires an INS check DC 10, "
+                "Subtract 2 from ability checks when using the affected leg. Dashing requires a CON check DC 10, "
                     + "failure results in halving dash distance.",
                 "Until treated",
                 LegL.Id,
                 InjuryLevel.Minor,
                 "The pain from a light injury or the effects of having been hit in an unfortunate spot makes straining actions difficult.",
                 reminderTemplate: new RoundReminderTemplate(
-                    "-2 on ability checks on this leg, INS check 10 for dash"
+                    "-2 on ability checks on this leg, CON check 10 for dash"
                 )
             );
             public static readonly InjuryEffectTemplate LeftLegMedium = new InjuryEffectTemplate(
                 "Medium Injury: Left Leg",
-                "Actions reliant on stability require a DEX check DC 10. Moving more than half your movement speed requires an INS check DC 10.",
+                "Actions reliant on stability require a DEX check DC 10. Moving more than half your movement speed requires a CON check DC 10.",
                 "Until treated",
                 LegL.Id,
                 InjuryLevel.Medium,
                 "Large cuts or a chipped bone throw you slightly off balance and make heavy impact severly uncomfortable.",
                 reminderTemplate: new RoundReminderTemplate(
-                    "DEX check 10 for unstable actions, INS check 10 for moving more than half your speed"
+                    "DEX check 10 for unstable actions, CON check 10 for moving more than half your speed"
                 )
             );
             public static readonly InjuryEffectTemplate LeftLegMajor = new InjuryEffectTemplate(
@@ -161,25 +161,25 @@ namespace brokenHeart
 
             public static readonly InjuryEffectTemplate RightLegMinor = new InjuryEffectTemplate(
                 "Minor Injury: Right Leg",
-                "Subtract 2 from ability checks when using the affected leg. Dashing requires an INS check DC 10, "
+                "Subtract 2 from ability checks when using the affected leg. Dashing requires a CON check DC 10, "
                     + "failure results in halving dash distance.",
                 "Until treated",
                 LegR.Id,
                 InjuryLevel.Minor,
                 "The pain from a light injury or the effects of having been hit in an unfortunate spot makes straining actions difficult.",
                 reminderTemplate: new RoundReminderTemplate(
-                    "-2 on ability checks on this leg, INS check 10 for dash"
+                    "-2 on ability checks on this leg, CON check 10 for dash"
                 )
             );
             public static readonly InjuryEffectTemplate RightLegMedium = new InjuryEffectTemplate(
                 "Medium Injury: Right Leg",
-                "Actions reliant on stability require a DEX check DC 10. Moving more than half your movement speed requires an INS check DC 10.",
+                "Actions reliant on stability require a DEX check DC 10. Moving more than half your movement speed requires a CON check DC 10.",
                 "Until treated",
                 LegR.Id,
                 InjuryLevel.Medium,
                 "Large cuts or a chipped bone throw you slightly off balance and make heavy impact severly uncomfortable.",
                 reminderTemplate: new RoundReminderTemplate(
-                    "DEX check 10 for unstable actions, INS check 10 for moving more than half your speed"
+                    "DEX check 10 for unstable actions, CON check 10 for moving more than half your speed"
                 )
             );
             public static readonly InjuryEffectTemplate RightLegMajor = new InjuryEffectTemplate(
@@ -217,13 +217,13 @@ namespace brokenHeart
             );
             public static readonly InjuryEffectTemplate LeftArmMedium = new InjuryEffectTemplate(
                 "Medium Injury: Left Arm",
-                "Straining actions using the affected arm require an INS check DC 10.",
+                "Straining actions using the affected arm require a CON check DC 10.",
                 "Until treated",
                 ArmL.Id,
                 InjuryLevel.Medium,
                 "Pain and tissue damage causes you difficulty to complete actions heavily straining on the injured arm",
                 reminderTemplate: new RoundReminderTemplate(
-                    "Straining actions on this arm require INS check 10"
+                    "Straining actions on this arm require CON check 10"
                 )
             );
             public static readonly InjuryEffectTemplate LeftArmMajor = new InjuryEffectTemplate(
@@ -263,13 +263,13 @@ namespace brokenHeart
             );
             public static readonly InjuryEffectTemplate RightArmMedium = new InjuryEffectTemplate(
                 "Medium Injury: Right Arm",
-                "Straining actions using the affected arm require an INS check DC 10.",
+                "Straining actions using the affected arm require a CON check DC 10.",
                 "Until treated",
                 ArmR.Id,
                 InjuryLevel.Medium,
                 "Pain and tissue damage causes you difficulty to complete actions heavily straining on the injured arm",
                 reminderTemplate: new RoundReminderTemplate(
-                    "Straining actions on this arm require INS check 10"
+                    "Straining actions on this arm require CON check 10"
                 )
             );
             public static readonly InjuryEffectTemplate RightArmMajor = new InjuryEffectTemplate(

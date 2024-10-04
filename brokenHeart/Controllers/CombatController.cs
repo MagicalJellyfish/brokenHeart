@@ -141,7 +141,7 @@ namespace brokenHeart.Controllers
             {
                 initRoll =
                     RollAuxiliary.Roll(1, 20).Result
-                    + character.Stats.Single(x => x.Stat!.Id == Constants.Stats.Dex.Id).Value;
+                    + character.Stats.Single(x => x.Stat!.Id == Constants.Stats.Ins.Id).Value;
             }
 
             CombatEntry ce = new CombatEntry(character, (int)initRoll, shortcut);
