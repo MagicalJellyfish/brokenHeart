@@ -304,6 +304,8 @@ namespace brokenHeart.Controllers.EntityControllers.Characters
                 .Include(x => x.Effects).ThenInclude(x => x.EffectCounter).ThenInclude(x => x.RoundReminder)
                 .Include(x => x.Effects).ThenInclude(x => x.RoundReminder)
                 .Include(x => x.Effects).ThenInclude(x => x.StatIncreases).ThenInclude(x => x.Stat)
+                .Include(x => x.Effects).ThenInclude(x => x.Abilities).ThenInclude(x => x.AppliedEffectTemplates)
+                .Include(x => x.Effects).ThenInclude(x => x.Abilities).ThenInclude(x => x.Rolls)
 
                 .Include(x => x.InjuryEffects).ThenInclude(x => x.Counters).ThenInclude(x => x.RoundReminder)
                 .Include(x => x.InjuryEffects).ThenInclude(x => x.EffectCounter).ThenInclude(x => x.RoundReminder)
@@ -318,7 +320,9 @@ namespace brokenHeart.Controllers.EntityControllers.Characters
 
                 .Include(x => x.Traits).ThenInclude(x => x.Counters).ThenInclude(x => x.RoundReminder)
                 .Include(x => x.Traits).ThenInclude(x => x.RoundReminder)
-                .Include(x => x.Traits).ThenInclude(x => x.StatIncreases).ThenInclude(x => x.Stat);
+                .Include(x => x.Traits).ThenInclude(x => x.StatIncreases).ThenInclude(x => x.Stat)
+                .Include(x => x.Traits).ThenInclude(x => x.Abilities).ThenInclude(x => x.AppliedEffectTemplates)
+                .Include(x => x.Traits).ThenInclude(x => x.Abilities).ThenInclude(x => x.Rolls);
         }
     }
 }

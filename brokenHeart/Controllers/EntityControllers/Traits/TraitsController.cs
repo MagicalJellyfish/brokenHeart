@@ -1,6 +1,5 @@
 using brokenHeart.Auxiliary;
 using brokenHeart.DB;
-using brokenHeart.Entities.Effects;
 using brokenHeart.Entities.Traits;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
@@ -141,7 +140,8 @@ namespace brokenHeart.Controllers.EntityControllers.Traits
                 .Traits.Include(x => x.Counters)
                 .Include(x => x.RoundReminder)
                 .Include(x => x.StatIncreases)
-                .ThenInclude(x => x.Stat);
+                .ThenInclude(x => x.Stat)
+                .Include(x => x.Abilities);
         }
     }
 }

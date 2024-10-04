@@ -149,7 +149,8 @@ namespace brokenHeart.Controllers.EntityControllers.Effects
                 .Include(x => x.EffectCounter)
                 .Include(x => x.RoundReminder)
                 .Include(x => x.StatIncreases)
-                .ThenInclude(x => x.Stat);
+                .ThenInclude(x => x.Stat)
+                .Include(x => x.Abilities);
         }
     }
 }
