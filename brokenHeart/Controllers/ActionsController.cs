@@ -338,58 +338,71 @@ namespace brokenHeart.Controllers
             }
             else
             {
-                Message message = new Message("Applied ", "");
-                if (damage != null)
+                if (damage != null || ability.AppliedEffectTemplates.Count != 0)
                 {
-                    foreach (Character target in targetChars)
+                    Message message = new Message("Applied ", "");
+                    if (damage != null)
                     {
-                        target.Hp -= damage.Result;
-                    }
-                    message.Title += $"{damage.Result} Damage ";
-                }
-
-                if (damage != null && ability.AppliedEffectTemplates.Count > 0)
-                {
-                    message.Title += "and ";
-                }
-
-                if (ability.AppliedEffectTemplates.Count > 0)
-                {
-                    message.Title += "Effects ";
-                }
-
-                foreach (EffectTemplate template in ability.AppliedEffectTemplates)
-                {
-                    message.Title += $"\"{template.Name}\" ";
-                    foreach (Character target in targetChars)
-                    {
-                        target.Effects.Add(template.Instantiate());
-                    }
-                }
-
-                message.Title += "to all targets!";
-                message.Description += $"Damage:\n{damage.Detail}\n";
-                message.Description += "\nTargets:\n";
-                foreach (Character target in targetChars)
-                {
-                    message.Description += $"\"{target.Name}\" (Id {target.Id}), ";
-                }
-                message.Description = message.Description[..^2];
-
-                bool firstDownMessage = true;
-                foreach (Character target in targetChars)
-                {
-                    if (target.Hp <= 0)
-                    {
-                        if (firstDownMessage)
+                        foreach (Character target in targetChars)
                         {
-                            firstDownMessage = false;
-                            message.Description += "\n";
+                            target.Hp -= damage.Result;
                         }
-                        message.Description += $"\n\"{target.Name}\" (Id {target.Id}) is at 0 HP!";
+                        message.Title += $"{damage.Result} Damage ";
                     }
+
+                    if (damage != null && ability.AppliedEffectTemplates.Count > 0)
+                    {
+                        message.Title += "and ";
+                    }
+
+                    if (ability.AppliedEffectTemplates.Count > 0)
+                    {
+                        message.Title += "Effects ";
+                    }
+
+                    foreach (EffectTemplate template in ability.AppliedEffectTemplates)
+                    {
+                        message.Title += $"\"{template.Name}\" ";
+                        foreach (Character target in targetChars)
+                        {
+                            target.Effects.Add(template.Instantiate());
+                        }
+                    }
+
+                    message.Title += "to all targets!";
+                    message.Description += $"Damage:\n{damage.Detail}\n";
+                    message.Description += "\nTargets:\n";
+                    foreach (Character target in targetChars)
+                    {
+                        message.Description += $"\"{target.Name}\" (Id {target.Id}), ";
+                    }
+                    message.Description = message.Description[..^2];
+
+                    bool firstDownMessage = true;
+                    foreach (Character target in targetChars)
+                    {
+                        if (target.Hp <= 0)
+                        {
+                            if (firstDownMessage)
+                            {
+                                firstDownMessage = false;
+                                message.Description += "\n";
+                            }
+                            message.Description +=
+                                $"\n\"{target.Name}\" (Id {target.Id}) is at 0 HP!";
+                        }
+                    }
+                    returnMessages.Add(message);
                 }
-                returnMessages.Add(message);
+                else
+                {
+                    Message message = new Message(
+                        "Executed ability!",
+                        $"Executed ability {ability.Name}!"
+                    );
+
+                    returnMessages.Add(message);
+                }
             }
 
             foreach (Roll roll in ability.Rolls!)
