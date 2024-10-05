@@ -36,7 +36,7 @@ namespace brokenHeart.Auxiliary
                     {
                         output += statValue.Value;
                         i += 4;
-                        break;
+                        continue;
                     }
 
                     if (value.StartsWith("c:"))
@@ -49,7 +49,7 @@ namespace brokenHeart.Auxiliary
                         {
                             output += counter.Value;
                             i += (3 + counterName.Length);
-                            break;
+                            continue;
                         }
                         else
                         {
@@ -67,7 +67,7 @@ namespace brokenHeart.Auxiliary
                         {
                             output += variable.Value;
                             i += (3 + variableName.Length);
-                            break;
+                            continue;
                         }
                         else
                         {
