@@ -1,5 +1,4 @@
-﻿using System;
-using brokenHeart.Auxiliary;
+﻿using brokenHeart.Auxiliary;
 using brokenHeart.DB;
 using brokenHeart.Entities;
 using brokenHeart.Entities.Abilities;
@@ -156,6 +155,16 @@ namespace brokenHeart.Controllers
                 }
 
                 return BadRequest($"Shortcuts of abilities {conflictList[..1]} are conflicting!");
+            }
+
+            if (ability.Uses != null)
+            {
+                if (ability.Uses == 0)
+                {
+                    return BadRequest("Cannot use ability which has 0 uses left!");
+                }
+
+                ability.Uses -= 1;
             }
 
             List<Character> targetChars = new List<Character>();

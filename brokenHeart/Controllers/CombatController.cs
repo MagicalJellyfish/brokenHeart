@@ -1,6 +1,7 @@
 ﻿using brokenHeart.Auxiliary;
 using brokenHeart.DB;
 using brokenHeart.Entities;
+using brokenHeart.Entities.Abilities.Abilities;
 using brokenHeart.Entities.Combat;
 using brokenHeart.Entities.Effects;
 using brokenHeart.Entities.RoundReminders;
@@ -263,25 +264,43 @@ namespace brokenHeart.Controllers
                 string reminders = "Reminders: \n";
                 // csharpier-ignore
                 Character character = _context.Characters
+                    .Include(x => x.Abilities)
+
                     .Include(x => x.RoundReminders)
 
                     .Include(x => x.Counters)
                     .ThenInclude(x => x.RoundReminder)
 
                     .Include(x => x.Items).ThenInclude(x => x.RoundReminder)
+                    .Include(x => x.Items).ThenInclude(x => x.Abilities)
                     .Include(x => x.Items).ThenInclude(x => x.Counters).ThenInclude(x => x.RoundReminder)
 
                     .Include(x => x.Effects).ThenInclude(x => x.RoundReminder)
+                    .Include(x => x.Effects).ThenInclude(x => x.Abilities)
                     .Include(x => x.Effects).ThenInclude(x => x.Counters).ThenInclude(x => x.RoundReminder)
                     .Include(x => x.Effects).ThenInclude(x => x.EffectCounter).ThenInclude(x => x.RoundReminder)
 
                     .Include(x => x.Traits).ThenInclude(x => x.RoundReminder)
+                    .Include(x => x.Traits).ThenInclude(x => x.Abilities)
                     .Include(x => x.Traits).ThenInclude(x => x.Counters).ThenInclude(x => x.RoundReminder)
                     .SingleOrDefault(x =>
                         x.Id == combat.Entries.ElementAt(combat.CurrentTurn).Character.Id
                     )!;
 
                 string title = "It is " + character.Name + "'s turn! \n";
+
+                List<Ability> abilities = character
+                    .Abilities.Concat(character.Items.SelectMany(x => x.Abilities))
+                    .Concat(character.Effects.SelectMany(x => x.Abilities))
+                    .Concat(character.Traits.SelectMany(x => x.Abilities))
+                    .ToList();
+                foreach (Ability ability in abilities)
+                {
+                    if (ability.ReplenishType == ReplenishType.CombatRound)
+                    {
+                        ability.Uses = ability.MaxUses;
+                    }
+                }
 
                 string counters = "";
                 foreach (var counter in character.GetAllCounters())
