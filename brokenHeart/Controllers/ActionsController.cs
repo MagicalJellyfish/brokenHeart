@@ -73,7 +73,10 @@ namespace brokenHeart.Controllers
             ulong discordId,
             int? charId,
             string? shortcut,
-            string? targets
+            string? targets,
+            string? selfModifier,
+            string? targetModifier,
+            string? damageModifier
         )
         {
             UserSimplified? user = _context
@@ -121,13 +124,23 @@ namespace brokenHeart.Controllers
                 targets = user.DefaultTargetString;
             }
 
-            return ExecuteAbility(c, shortcut, targets);
+            return ExecuteAbility(
+                c,
+                shortcut,
+                targets,
+                selfModifier,
+                targetModifier,
+                damageModifier
+            );
         }
 
         private ActionResult<List<Message>> ExecuteAbility(
             Character c,
             string shortcut,
-            string? targets
+            string? targets,
+            string? selfModifer,
+            string? targetModifier,
+            string? damageModifier
         )
         {
             Ability? ability;
@@ -239,19 +252,37 @@ namespace brokenHeart.Controllers
             RollResult? damage = null;
             if (!ability.Damage.IsNullOrEmpty())
             {
-                damage = RollAuxiliary.CharRollString(ability.Damage!, c);
+                string damageString = ability.Damage!;
+                if (damageModifier != null)
+                {
+                    damageString += damageModifier;
+                }
+
+                damage = RollAuxiliary.CharRollString(damageString, c);
             }
 
             List<Message> returnMessages = new List<Message>();
             if (!ability.Self.IsNullOrEmpty())
             {
-                RollResult self = RollAuxiliary.CharRollString(ability.Self!, c);
+                string selfString = ability.Self!;
+                if (selfModifer != null)
+                {
+                    selfString += selfModifer;
+                }
+
+                RollResult self = RollAuxiliary.CharRollString(selfString, c);
 
                 if (!ability.Target.IsNullOrEmpty())
                 {
                     if (ability.TargetType == TargetType.Self)
                     {
-                        RollResult target = RollAuxiliary.CharRollString(ability.Target!, c);
+                        string targetString = ability.Target!;
+                        if (targetModifier != null)
+                        {
+                            targetString += targetModifier;
+                        }
+
+                        RollResult target = RollAuxiliary.CharRollString(targetString, c);
 
                         string color = "Red";
                         if (EvaluateHit(self, target))
@@ -278,8 +309,14 @@ namespace brokenHeart.Controllers
                     {
                         foreach (Character target in targetChars)
                         {
+                            string targetString = ability.Target!;
+                            if (targetModifier != null)
+                            {
+                                targetString += targetModifier;
+                            }
+
                             RollResult targetRoll = RollAuxiliary.CharRollString(
-                                ability.Target!,
+                                targetString,
                                 target
                             );
 
