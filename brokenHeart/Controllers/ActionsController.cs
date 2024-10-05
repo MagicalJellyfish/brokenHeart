@@ -254,7 +254,7 @@ namespace brokenHeart.Controllers
                         RollResult target = RollAuxiliary.CharRollString(ability.Target!, c);
 
                         string color = "Red";
-                        if (self.Result >= target.Result)
+                        if (EvaluateHit(self, target))
                         {
                             color = "Green";
                         }
@@ -288,7 +288,8 @@ namespace brokenHeart.Controllers
                                 $"Roll:\n{self.Detail}\n\nAgainst:\n{targetRoll.Detail}",
                                 "Red"
                             );
-                            if (self.Result >= targetRoll.Result)
+
+                            if (EvaluateHit(self, targetRoll))
                             {
                                 message.Color = "Green";
 
@@ -296,10 +297,7 @@ namespace brokenHeart.Controllers
                                 {
                                     message.Title += "\nApply Injury if relevant";
                                 }
-                            }
 
-                            if (self.Result >= targetRoll.Result)
-                            {
                                 if (damage != null)
                                 {
                                     target.Hp -= damage.Result;
@@ -419,6 +417,23 @@ namespace brokenHeart.Controllers
             _context.SaveChanges();
 
             return returnMessages;
+        }
+
+        private bool EvaluateHit(RollResult self, RollResult target)
+        {
+            if (
+                !self.CriticalFailure
+                && (
+                    self.Result >= target.Result
+                    || self.CriticalSuccess && !target.CriticalSuccess
+                    || target.CriticalFailure
+                )
+            )
+            {
+                return true;
+            }
+
+            return false;
         }
 
         // csharpier-ignore
