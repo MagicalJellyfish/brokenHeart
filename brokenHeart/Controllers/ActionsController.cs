@@ -143,26 +143,25 @@ namespace brokenHeart.Controllers
             string? damageModifier
         )
         {
+            List<Ability> allAbilities = new List<Ability>();
+            allAbilities.AddRange(c.Abilities);
+            allAbilities.AddRange(c.Items.SelectMany(x => x.Abilities));
+            allAbilities.AddRange(c.Traits.SelectMany(x => x.Abilities));
+            allAbilities.AddRange(c.Effects.SelectMany(x => x.Abilities));
+
             Ability? ability;
             try
             {
-                ability = c.Abilities.SingleOrDefault(x => x.Shortcut == shortcut);
+                ability = allAbilities.SingleOrDefault(x => x.Shortcut == shortcut);
                 if (ability == null)
                 {
-                    ability = c
-                        .Items.Select(x => x.Abilities.SingleOrDefault(y => y.Shortcut == shortcut))
-                        .SingleOrDefault(z => z != null);
-
-                    if (ability == null)
-                    {
-                        return NotFound($"No ability with shortcut \"{shortcut}\" found!");
-                    }
+                    return NotFound($"No ability with shortcut \"{shortcut}\" found!");
                 }
             }
             catch
             {
                 string conflictList = "";
-                foreach (var conflictingAbility in c.Abilities.Where(x => x.Shortcut == shortcut))
+                foreach (var conflictingAbility in allAbilities.Where(x => x.Shortcut == shortcut))
                 {
                     conflictList += $"{conflictingAbility.Name}, ";
                 }
@@ -484,6 +483,14 @@ namespace brokenHeart.Controllers
                 .Include(x => x.Items).ThenInclude(x => x.Abilities).ThenInclude(x => x.Rolls)
                 .Include(x => x.Items).ThenInclude(x => x.Abilities).ThenInclude(x => x.AppliedEffectTemplates)!.ThenInclude(x => x.CounterTemplates).ThenInclude(x => x.RoundReminderTemplate)
                 .Include(x => x.Items).ThenInclude(x => x.Abilities).ThenInclude(x => x.AppliedEffectTemplates)!.ThenInclude(x => x.RoundReminderTemplate)
+
+                .Include(x => x.Traits).ThenInclude(x => x.Abilities).ThenInclude(x => x.Rolls)
+                .Include(x => x.Traits).ThenInclude(x => x.Abilities).ThenInclude(x => x.AppliedEffectTemplates)!.ThenInclude(x => x.CounterTemplates).ThenInclude(x => x.RoundReminderTemplate)
+                .Include(x => x.Traits).ThenInclude(x => x.Abilities).ThenInclude(x => x.AppliedEffectTemplates)!.ThenInclude(x => x.RoundReminderTemplate)
+
+                .Include(x => x.Effects).ThenInclude(x => x.Abilities).ThenInclude(x => x.Rolls)
+                .Include(x => x.Effects).ThenInclude(x => x.Abilities).ThenInclude(x => x.AppliedEffectTemplates)!.ThenInclude(x => x.CounterTemplates).ThenInclude(x => x.RoundReminderTemplate)
+                .Include(x => x.Effects).ThenInclude(x => x.Abilities).ThenInclude(x => x.AppliedEffectTemplates)!.ThenInclude(x => x.RoundReminderTemplate)
                 .SingleOrDefault(x => x.Id == id);
         }
 
