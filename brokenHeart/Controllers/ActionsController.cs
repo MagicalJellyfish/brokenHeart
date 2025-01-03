@@ -152,7 +152,9 @@ namespace brokenHeart.Controllers
             Ability? ability;
             try
             {
-                ability = allAbilities.SingleOrDefault(x => x.Shortcut == shortcut);
+                ability = allAbilities.SingleOrDefault(x =>
+                    x.Shortcut.ToLower() == shortcut.ToLower()
+                );
                 if (ability == null)
                 {
                     return NotFound($"No ability with shortcut \"{shortcut}\" found!");
