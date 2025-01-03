@@ -8,16 +8,8 @@ namespace brokenHeart.Auxiliary
     public class RollAuxiliary
     {
         private static Random rnd = new Random();
-        private static List<char> specialChars = new List<char>
-        {
-            'd',
-            '+',
-            '-',
-            '*',
-            '/',
-            '(',
-            ')'
-        };
+        private static List<char> operators = new List<char> { '+', '-', '*', '/', '(', ')' };
+        private static List<char> specialChars = new List<char>(operators) { 'd' };
 
         public enum KeepType
         {
@@ -28,8 +20,6 @@ namespace brokenHeart.Auxiliary
 
         public static RollResult CharRollString(string input, Character c)
         {
-            List<char> operators = new List<char> { '+', '-', '*', '/', '(', ')' };
-
             string output = "";
             for (int i = 0; i < input.Length; i++)
             {
@@ -111,6 +101,7 @@ namespace brokenHeart.Auxiliary
 
                     switch (value.ToLower())
                     {
+                        //Character variables
                         case "hp":
                             output += c.Hp;
                             i += 1;
@@ -131,8 +122,8 @@ namespace brokenHeart.Auxiliary
                             output += c.MovementSpeed;
                             i += 2;
                             break;
+                        //If nothing fits, it was probably 'd' for dice
                         default:
-                            //If nothing fits, it was probably 'd' for dice
                             output += input[i];
                             break;
                     }
@@ -190,7 +181,7 @@ namespace brokenHeart.Auxiliary
                     int post;
                     for (post = i + 1; post < input.Length; post++)
                     {
-                        if (specialChars.Contains(input[post]))
+                        if (operators.Contains(input[post]))
                         {
                             break;
                         }
@@ -223,6 +214,29 @@ namespace brokenHeart.Auxiliary
                                 i = postKeep;
                             }
 
+                            break;
+                        }
+                        else if (
+                            input.Substring(post).StartsWith("adv")
+                            || input.Substring(post).StartsWith("dis")
+                        )
+                        {
+                            foundK = true;
+
+                            switch (input[post..(post + 3)])
+                            {
+                                case "adv":
+                                    keepType = KeepType.Highest;
+                                    break;
+                                case "dis":
+                                    keepType = KeepType.Lowest;
+                                    break;
+                            }
+
+                            keepNum = preD;
+                            preD = (int.Parse(preD) * 2).ToString();
+
+                            i = post + 2;
                             break;
                         }
                         else
