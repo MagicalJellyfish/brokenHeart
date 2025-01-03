@@ -8,6 +8,16 @@ namespace brokenHeart.Auxiliary
     public class RollAuxiliary
     {
         private static Random rnd = new Random();
+        private static List<char> specialChars = new List<char>
+        {
+            'd',
+            '+',
+            '-',
+            '*',
+            '/',
+            '(',
+            ')'
+        };
 
         public enum KeepType
         {
@@ -18,16 +28,40 @@ namespace brokenHeart.Auxiliary
 
         public static RollResult CharRollString(string input, Character c)
         {
+            List<char> operators = new List<char> { '+', '-', '*', '/', '(', ')' };
+
             string output = "";
             for (int i = 0; i < input.Length; i++)
             {
-                if (input[i] != '[')
+                if (operators.Contains(input[i]) || int.TryParse(input[i].ToString(), out _))
                 {
                     output += input[i];
                 }
                 else
                 {
-                    string value = input[(i + 1)..].Split(']').First();
+                    string value = "";
+                    if (input[i] != '[')
+                    {
+                        int end;
+                        for (end = 0; end < input.Length - i; end++)
+                        {
+                            if (
+                                operators.Contains(input[i + end])
+                                || int.TryParse(input[i + end].ToString(), out _)
+                            )
+                            {
+                                break;
+                            }
+                        }
+
+                        value = input[i..(i + end)];
+                    }
+                    //Legacy functionality required putting variables in square brackets f.e. 1d20+[DEX]
+                    else
+                    {
+                        value = input[(i + 1)..].Split(']').First();
+                        i += 2;
+                    }
 
                     StatValue? statValue = c.Stats.SingleOrDefault(x =>
                         x.Stat.Name.ToLower().StartsWith(value.ToLower())
@@ -35,7 +69,7 @@ namespace brokenHeart.Auxiliary
                     if (statValue != null)
                     {
                         output += statValue.Value;
-                        i += 4;
+                        i += 2;
                         continue;
                     }
 
@@ -48,7 +82,7 @@ namespace brokenHeart.Auxiliary
                         if (counter != null)
                         {
                             output += counter.Value;
-                            i += (3 + counterName.Length);
+                            i += (1 + counterName.Length);
                             continue;
                         }
                         else
@@ -66,7 +100,7 @@ namespace brokenHeart.Auxiliary
                         if (variable != null)
                         {
                             output += variable.Value;
-                            i += (3 + variableName.Length);
+                            i += (1 + variableName.Length);
                             continue;
                         }
                         else
@@ -79,26 +113,28 @@ namespace brokenHeart.Auxiliary
                     {
                         case "hp":
                             output += c.Hp;
-                            i += 3;
+                            i += 1;
                             break;
                         case "arm":
                             output += c.Armor;
-                            i += 4;
+                            i += 2;
                             break;
                         case "eva":
                             output += c.Evasion;
-                            i += 4;
+                            i += 2;
                             break;
                         case "def":
                             output += (c.Armor + c.Evasion);
-                            i += 4;
+                            i += 2;
                             break;
                         case "mov":
                             output += c.MovementSpeed;
-                            i += 4;
+                            i += 2;
                             break;
                         default:
-                            throw new Exception($"No evaluation found for \"{value}\"");
+                            //If nothing fits, it was probably 'd' for dice
+                            output += input[i];
+                            break;
                     }
                 }
             }
@@ -113,8 +149,6 @@ namespace brokenHeart.Auxiliary
             bool criticalFailure = false;
 
             input = input.Replace(" ", "");
-
-            List<char> specialChars = new List<char> { 'd', '+', '-', '*', '/', '(', ')' };
 
             string detailString = "";
             string rolledString = "";
