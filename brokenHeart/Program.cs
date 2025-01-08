@@ -8,7 +8,6 @@ using brokenHeart.DB;
 using brokenHeart.JSON;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.HttpOverrides;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
@@ -55,19 +54,7 @@ builder.Services.AddDbContext<AuthDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("AuthConnection"))
 );
 
-builder
-    .Services.AddIdentity<ApplicationUser, IdentityRole>()
-    .AddEntityFrameworkStores<AuthDbContext>()
-    .AddDefaultTokenProviders();
-
-builder.Services.Configure<IdentityOptions>(options =>
-{
-    options.Password.RequireNonAlphanumeric = false;
-});
-builder.Services.Configure<PasswordHasherOptions>(options =>
-{
-    options.IterationCount = 300_000;
-});
+builder.Services.AddHostedService<TokenCleanupBService>();
 
 builder
     .Services.AddAuthentication(options =>
@@ -82,15 +69,14 @@ builder
         options.RequireHttpsMetadata = false;
         options.TokenValidationParameters = new TokenValidationParameters()
         {
-            ValidateIssuer = false,
+            ValidateIssuer = true,
             ValidIssuer = builder.Configuration["JWT:ValidIssuer"],
 
-            ValidateAudience = false,
+            ValidateAudience = true,
             ValidAudience = builder.Configuration["JWT:ValidAudience"],
 
             ValidateIssuerSigningKey = true,
             ValidateLifetime = true,
-            ClockSkew = TimeSpan.Zero,
             IssuerSigningKey = new SymmetricSecurityKey(
                 Encoding.UTF8.GetBytes(builder.Configuration["JWT_Secret"])
             )
@@ -175,8 +161,7 @@ app.MapControllers();
 
 await Constants.ValidateAsync(
     app.Services.CreateScope().ServiceProvider.GetRequiredService<BrokenDbContext>(),
-    app.Services.CreateScope().ServiceProvider.GetRequiredService<AuthDbContext>(),
-    app.Services.CreateScope().ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>()
+    app.Services.CreateScope().ServiceProvider.GetRequiredService<AuthDbContext>()
 );
 
 app.Run();

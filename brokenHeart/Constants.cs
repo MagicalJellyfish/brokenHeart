@@ -1,15 +1,11 @@
-﻿using System.Security.Policy;
-using brokenHeart.Auth;
-using brokenHeart.Auth.DB;
+﻿using brokenHeart.Auth.DB;
+using brokenHeart.Auth.Entities;
 using brokenHeart.DB;
-using brokenHeart.Entities;
 using brokenHeart.Entities.Characters;
 using brokenHeart.Entities.Counters;
-using brokenHeart.Entities.Effects;
 using brokenHeart.Entities.Effects.Injuries;
 using brokenHeart.Entities.RoundReminders;
 using brokenHeart.Entities.Stats;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace brokenHeart
@@ -336,8 +332,7 @@ namespace brokenHeart
 
         public static async Task ValidateAsync(
             BrokenDbContext _dbContext,
-            AuthDbContext _authContext,
-            RoleManager<IdentityRole> roleManager
+            AuthDbContext _authContext
         )
         {
             //Validate Stats
@@ -381,24 +376,15 @@ namespace brokenHeart
                 _dbContext.CounterTemplates.Add(Dying);
             }
 
-            foreach (ApplicationUser user in _authContext.Users)
+            foreach (User user in _authContext.Users)
             {
                 if (
-                    !(_dbContext.UserSimplified.Where(x => x.Username == user.UserName).Count() > 0)
+                    !(_dbContext.UserSimplified.Where(x => x.Username == user.Username).Count() > 0)
                 )
                 {
                     _dbContext.UserSimplified.Add(
-                        new Entities.UserSimplified(user.UserName, user.DiscordId)
+                        new Entities.UserSimplified(user.Username, user.DiscordId)
                     );
-                }
-            }
-
-            List<string> roles = new List<string>() { UserRoles.User, UserRoles.Admin };
-            foreach (string role in roles)
-            {
-                if (!await roleManager.RoleExistsAsync(role))
-                {
-                    await roleManager.CreateAsync(new IdentityRole(role));
                 }
             }
 

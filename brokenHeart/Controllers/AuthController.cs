@@ -3,13 +3,15 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using brokenHeart.Auth;
+using brokenHeart.Auth.DB;
+using brokenHeart.Auth.Entities;
 using brokenHeart.DB;
 using brokenHeart.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
 namespace brokenHeart.Controllers
@@ -18,26 +20,23 @@ namespace brokenHeart.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
-        private readonly UserManager<ApplicationUser> _userManager;
-        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly AuthDbContext _context;
         private readonly IConfiguration _configuration;
         private readonly BrokenDbContext _brokenDbContext;
 
         public AuthController(
-            UserManager<ApplicationUser> userManager,
-            RoleManager<IdentityRole> roleManager,
+            AuthDbContext context,
             IConfiguration configuration,
             BrokenDbContext brokenDbContext
         )
         {
-            _userManager = userManager;
-            _roleManager = roleManager;
+            _context = context;
             _configuration = configuration;
             _brokenDbContext = brokenDbContext;
         }
 
         [HttpPost("register")]
-        public async Task<ActionResult> Register(RegistrationModel registerModel)
+        public async Task<ActionResult> Register(RegistrationModel registrationModel)
         {
             bool registrationTokenValid = false;
             List<string> lines = System.IO.File.ReadAllLines("Auth/registrations.txt").ToList();
@@ -47,7 +46,7 @@ namespace brokenHeart.Controllers
             {
                 string convertedRegistrationToken = Convert.ToBase64String(
                     KeyDerivation.Pbkdf2(
-                        password: registerModel.RegistrationToken,
+                        password: registrationModel.RegistrationToken,
                         salt: Convert.FromBase64String(_configuration["Registration_Salt"]),
                         prf: KeyDerivationPrf.HMACSHA512,
                         iterationCount: 300000,
@@ -70,35 +69,38 @@ namespace brokenHeart.Controllers
                 return Unauthorized("Registration token invalid");
             }
 
-            var userExists = await _userManager.FindByNameAsync(registerModel.Username);
+            bool userExists = _context.Users.Any(x =>
+                x.Username.ToLower() == registrationModel.Username.ToLower()
+            );
 
-            if (userExists != null)
+            if (userExists)
             {
-                return BadRequest("User already exists!");
+                return BadRequest("User already exists");
             }
 
-            ApplicationUser user =
+            User user =
                 new()
                 {
-                    SecurityStamp = Guid.NewGuid().ToString(),
-                    UserName = registerModel.Username,
-                    DiscordId = (ulong)registerModel.DiscordId
+                    Username = registrationModel.Username,
+                    DiscordId = registrationModel.DiscordId,
+                    Salt = Convert.ToBase64String(RandomNumberGenerator.GetBytes(128 / 8))
                 };
 
-            var createUserResult = await _userManager.CreateAsync(user, registerModel.Password);
-
-            if (!createUserResult.Succeeded)
+            ExecutionResult result = AuthFunctions.ValidatePasswordConstraints(
+                registrationModel.Password
+            );
+            if (!result.Succeeded)
             {
-                return BadRequest(
-                    "User creation failed! " + createUserResult.Errors.First().Description
-                );
+                return BadRequest(result.Message);
             }
 
-            string role = UserRoles.User;
-            await _userManager.AddToRoleAsync(user, role);
+            user.HashedPassword = AuthFunctions.HashPassword(registrationModel.Password, user.Salt);
+
+            _context.Users.Add(user);
+            _context.SaveChanges();
 
             _brokenDbContext.UserSimplified.Add(
-                new UserSimplified(registerModel.Username, (ulong)registerModel.DiscordId)
+                new UserSimplified(registrationModel.Username, registrationModel.DiscordId)
             );
             _brokenDbContext.SaveChanges();
 
@@ -110,55 +112,55 @@ namespace brokenHeart.Controllers
         [HttpPost("login")]
         public async Task<ActionResult> Login(LoginModel loginModel)
         {
-            var user = await _userManager.FindByNameAsync(loginModel.Username);
+            User user = _context
+                .Users.Include(x => x.Tokens)
+                .Single(x => x.Username.ToLower() == loginModel.Username.ToLower());
 
             if (user == null)
             {
                 return Unauthorized("Invalid username");
             }
 
-            if (!await _userManager.CheckPasswordAsync(user, loginModel.Password))
+            if (!AuthFunctions.VerifyPassword(user.HashedPassword, loginModel.Password, user.Salt))
             {
                 return Unauthorized("Invalid password");
             }
 
-            var userRoles = await _userManager.GetRolesAsync(user);
-
-            var authClaims = new List<Claim>
+            List<Claim> authClaims = new List<Claim>
             {
-                new Claim(ClaimTypes.Name, user.UserName),
+                new Claim(ClaimTypes.Name, user.Username),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
             };
 
-            foreach (var userRole in userRoles)
-            {
-                authClaims.Add(new Claim(ClaimTypes.Role, userRole));
-            }
-
-            var token = GenerateAccessToken(authClaims);
-            var refreshToken = GenerateRefreshToken();
-
+            JwtSecurityToken accessToken = GenerateAccessToken(authClaims);
+            string writtenAccessToken = new JwtSecurityTokenHandler().WriteToken(accessToken);
+            string refreshToken = GenerateRefreshToken();
             int.TryParse(
                 _configuration["JWT:RefreshTokenValidityInDays"],
                 out int refreshTokenValidityInDays
             );
 
-            user.RefreshToken = refreshToken;
-            user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(refreshTokenValidityInDays);
+            Token token = new Token()
+            {
+                AccessToken = writtenAccessToken,
+                RefreshToken = refreshToken,
+                RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(refreshTokenValidityInDays)
+            };
 
-            await _userManager.UpdateAsync(user);
+            user.Tokens.Add(token);
+            _context.SaveChanges();
 
             return Ok(
                 new
                 {
-                    Username = user.UserName,
-                    AccessToken = new JwtSecurityTokenHandler().WriteToken(token),
+                    Username = user.Username,
+                    AccessToken = token.AccessToken,
                     AccessTokenExpiration = (
-                        (DateTimeOffset)token.ValidTo
+                        (DateTimeOffset)accessToken.ValidTo
                     ).ToUnixTimeMilliseconds(),
                     RefreshToken = refreshToken,
                     RefreshTokenExpiration = (
-                        (DateTimeOffset)user.RefreshTokenExpiryTime
+                        (DateTimeOffset)token.RefreshTokenExpiryTime
                     ).ToUnixTimeMilliseconds()
                 }
             );
@@ -168,17 +170,25 @@ namespace brokenHeart.Controllers
         [Authorize]
         public async Task<ActionResult> Logout()
         {
-            var user = await _userManager.FindByNameAsync(User.Identity.Name);
+            User user = _context
+                .Users.Include(x => x.Tokens)
+                .Single(x => x.Username.ToLower() == User.Identity.Name.ToLower());
 
-            user.RefreshToken = null;
+            Token token = user.Tokens.Single(x =>
+                x.AccessToken
+                == Request.Headers.Single(y => y.Key == "Authorization").Value.Single().Substring(7)
+            );
+
+            _context.Tokens.Remove(token);
+            _context.SaveChanges();
 
             return Ok();
         }
 
         [HttpPost("refresh-token")]
-        public async Task<IActionResult> RefreshToken(TokenModel tokenModel)
+        public async Task<IActionResult> RefreshToken(RefreshModel tokenModel)
         {
-            if (tokenModel is null)
+            if (tokenModel == null)
             {
                 return BadRequest("Invalid client request");
             }
@@ -186,49 +196,67 @@ namespace brokenHeart.Controllers
             string? accessToken = tokenModel.AccessToken;
             string? refreshToken = tokenModel.RefreshToken;
 
-            var principal = GetPrincipalFromExpiredToken(accessToken);
+            ClaimsPrincipal principal = GetPrincipalFromExpiredToken(accessToken);
             if (principal == null)
             {
                 return BadRequest("Invalid access token or refresh token");
             }
 
-            var user = await _userManager.FindByNameAsync(principal.Identity.Name);
+            User user = _context
+                .Users.Include(x => x.Tokens)
+                .Single(x => x.Username.ToLower() == principal.Identity.Name.ToLower());
 
-            if (user == null || user.RefreshTokenExpiryTime <= DateTime.Now)
+            if (user == null)
             {
-                return BadRequest("Invalid access token or refresh token");
+                return BadRequest("Invalid access token");
             }
 
-            if (refreshToken != user.RefreshToken)
+            Token dbToken = user.Tokens.Single(x => x.AccessToken == accessToken);
+
+            if (refreshToken != dbToken.RefreshToken)
             {
-                user.RefreshToken = null;
+                _context.Tokens.Remove(dbToken);
+                _context.SaveChanges();
                 return BadRequest("Invalid refresh token");
             }
 
-            var newAccessToken = GenerateAccessToken(principal.Claims.ToList());
-            var newRefreshToken = GenerateRefreshToken();
+            if (
+                user.Tokens.Single(x =>
+                    x.AccessToken == tokenModel.AccessToken
+                ).RefreshTokenExpiryTime <= DateTime.Now
+            )
+            {
+                _context.Tokens.Remove(dbToken);
+                return BadRequest("Refresh token expired");
+            }
+
+            JwtSecurityToken newAccessToken = GenerateAccessToken(principal.Claims.ToList());
+            string writtenNewAccessToken = new JwtSecurityTokenHandler().WriteToken(newAccessToken);
+            string newRefreshToken = GenerateRefreshToken();
 
             int.TryParse(
                 _configuration["JWT:RefreshTokenValidityInDays"],
                 out int refreshTokenValidityInDays
             );
 
-            user.RefreshToken = newRefreshToken;
-            user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(refreshTokenValidityInDays);
+            dbToken.AccessToken = writtenNewAccessToken;
+            dbToken.RefreshToken = newRefreshToken;
+            dbToken.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(refreshTokenValidityInDays);
 
-            await _userManager.UpdateAsync(user);
+            _context.Tokens.Update(dbToken);
+            _context.SaveChanges();
 
             return new ObjectResult(
                 new
                 {
-                    Username = user.UserName,
-                    AccessToken = new JwtSecurityTokenHandler().WriteToken(newAccessToken),
+                    Username = user.Username,
+                    AccessToken = writtenNewAccessToken,
                     AccessTokenExpiration = (
                         (DateTimeOffset)newAccessToken.ValidTo
                     ).ToUnixTimeMilliseconds(),
                     RefreshToken = newRefreshToken,
                     RefreshTokenExpiration = (
-                        (DateTimeOffset)user.RefreshTokenExpiryTime
+                        (DateTimeOffset)dbToken.RefreshTokenExpiryTime
                     ).ToUnixTimeMilliseconds()
                 }
             );
@@ -238,7 +266,9 @@ namespace brokenHeart.Controllers
         [Authorize]
         public async Task<ActionResult<object>> GetId()
         {
-            var user = await _userManager.FindByNameAsync(User.Identity.Name);
+            var user = _context.Users.Single(x =>
+                x.Username.ToLower() == User.Identity.Name.ToLower()
+            );
 
             if (user == null)
             {
@@ -252,7 +282,9 @@ namespace brokenHeart.Controllers
         [Authorize]
         public async Task<ActionResult> ChangeId(ulong discordId)
         {
-            var user = await _userManager.FindByNameAsync(User.Identity.Name);
+            var user = _context.Users.Single(x =>
+                x.Username.ToLower() == User.Identity.Name.ToLower()
+            );
 
             if (user == null)
             {
@@ -260,10 +292,11 @@ namespace brokenHeart.Controllers
             }
 
             user.DiscordId = discordId;
-            await _userManager.UpdateAsync(user);
+            _context.Users.Update(user);
+            _context.SaveChanges();
 
             UserSimplified userSimple = _brokenDbContext.UserSimplified.Single(x =>
-                x.Username == user.UserName
+                x.Username == user.Username
             );
             userSimple.DiscordId = discordId;
             _brokenDbContext.SaveChanges();
@@ -271,95 +304,13 @@ namespace brokenHeart.Controllers
             return NoContent();
         }
 
-        [HttpPatch("roles/{name}")]
-        [Authorize(Roles = UserRoles.Admin)]
-        public async Task<ActionResult> EditRoles(string name, IEnumerable<string> roles)
-        {
-            var user = await _userManager.FindByNameAsync(name);
-
-            if (user == null)
-            {
-                return NotFound("User not found!");
-            }
-
-            IEnumerable<string> appliedRoles = await _userManager.GetRolesAsync(user);
-
-            foreach (var role in roles)
-            {
-                if (!await _roleManager.RoleExistsAsync(role))
-                {
-                    return NotFound("Role does not exist!");
-                }
-
-                if (appliedRoles.Contains(role))
-                {
-                    break;
-                }
-
-                await _userManager.AddToRoleAsync(user, role);
-            }
-
-            foreach (string appliedRole in appliedRoles)
-            {
-                if (!roles.Contains(appliedRole))
-                {
-                    await _userManager.RemoveFromRoleAsync(user, appliedRole);
-                }
-            }
-
-            return Ok();
-        }
-
-        [HttpGet("users")]
-        [Authorize(Roles = UserRoles.Admin)]
-        public async Task<ActionResult> GetUsers()
-        {
-            try
-            {
-                var users = _userManager.Users;
-
-                if (users == null)
-                {
-                    return BadRequest("No users found!");
-                }
-
-                return Ok(users.Select(x => x.UserName));
-            }
-            catch (Exception)
-            {
-                return StatusCode(500);
-            }
-        }
-
-        [HttpGet("roles/{name}")]
-        [Authorize(Roles = UserRoles.Admin)]
-        public async Task<ActionResult> GetRoles(string name)
-        {
-            try
-            {
-                var user = await _userManager.FindByNameAsync(name);
-
-                if (user == null)
-                {
-                    return BadRequest("User not found!");
-                }
-
-                return Ok(await _userManager.GetRolesAsync(user));
-            }
-            catch (Exception _)
-            {
-                return StatusCode(500);
-            }
-        }
-
         private JwtSecurityToken GenerateAccessToken(List<Claim> authClaims)
         {
             var authSigningKey = new SymmetricSecurityKey(
                 Encoding.UTF8.GetBytes(_configuration["JWT_Secret"])
             );
-            int.TryParse(
-                _configuration["JWT:AccessTokenValidityInMinutes"],
-                out int tokenValidityInMinutes
+            int tokenValidityInMinutes = int.Parse(
+                _configuration["JWT:AccessTokenValidityInMinutes"]
             );
 
             var token = new JwtSecurityToken(
@@ -388,8 +339,10 @@ namespace brokenHeart.Controllers
         {
             var tokenValidationParameters = new TokenValidationParameters
             {
-                ValidateAudience = false,
-                ValidateIssuer = false,
+                ValidateIssuer = true,
+                ValidIssuer = _configuration["JWT:ValidIssuer"],
+                ValidateAudience = true,
+                ValidAudience = _configuration["JWT:ValidAudience"],
                 ValidateIssuerSigningKey = true,
                 IssuerSigningKey = new SymmetricSecurityKey(
                     Encoding.UTF8.GetBytes(_configuration["JWT_Secret"])
