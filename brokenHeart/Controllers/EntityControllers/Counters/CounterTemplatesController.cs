@@ -1,8 +1,8 @@
 using System.Diagnostics.Metrics;
 using brokenHeart.Auxiliary;
+using brokenHeart.Database.DAO.Counters;
+using brokenHeart.Database.DAO.RoundReminders;
 using brokenHeart.DB;
-using brokenHeart.Entities.Counters;
-using brokenHeart.Entities.RoundReminders;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.JsonPatch.Operations;

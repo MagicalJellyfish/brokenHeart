@@ -1,7 +1,7 @@
 using System.Diagnostics.Metrics;
 using brokenHeart.Auxiliary;
+using brokenHeart.Database.DAO.Counters;
 using brokenHeart.DB;
-using brokenHeart.Entities.Counters;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.JsonPatch.Operations;

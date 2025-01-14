@@ -1,6 +1,6 @@
 ﻿using brokenHeart.Auxiliary;
+using brokenHeart.Database.DAO;
 using brokenHeart.DB;
-using brokenHeart.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
@@ -16,6 +16,13 @@ namespace brokenHeart.Controllers
             : base()
         {
             _context = context;
+
+            context.CharacterChanged += SendCharacterUpdate;
+        }
+
+        public void SendCharacterUpdate(object? sender, int changedChar)
+        {
+            Clients.Group($"charChanged/{changedChar}").SendAsync($"charChanged/{changedChar}");
         }
 
         public override Task OnConnectedAsync()

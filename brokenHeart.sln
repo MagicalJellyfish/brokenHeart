@@ -4,11 +4,19 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 17.3.32811.315
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "brokenHeart", "brokenHeart\brokenHeart.csproj", "{65BAEB66-8C7D-42EB-9C4A-DE3F348B6F48}"
+	ProjectSection(ProjectDependencies) = postProject
+		{61C909FD-88EC-43DF-B3D1-C8BE87B3A96A} = {61C909FD-88EC-43DF-B3D1-C8BE87B3A96A}
+		{91AE7BF2-8ECC-4E3D-BF29-EE6F6A4B0421} = {91AE7BF2-8ECC-4E3D-BF29-EE6F6A4B0421}
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{194C4B95-05BF-4268-AB8C-636257BAA4F6}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
 	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "brokenHeart.Database", "brokenHeart.Database\brokenHeart.Database.csproj", "{91AE7BF2-8ECC-4E3D-BF29-EE6F6A4B0421}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "brokenHeart.Authentication", "brokenHeart.Authentication\brokenHeart.Authentication.csproj", "{4396E47F-BB4A-4C0A-86ED-9AA68C35CE45}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -20,6 +28,14 @@ Global
 		{65BAEB66-8C7D-42EB-9C4A-DE3F348B6F48}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{65BAEB66-8C7D-42EB-9C4A-DE3F348B6F48}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{65BAEB66-8C7D-42EB-9C4A-DE3F348B6F48}.Release|Any CPU.Build.0 = Release|Any CPU
+		{91AE7BF2-8ECC-4E3D-BF29-EE6F6A4B0421}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{91AE7BF2-8ECC-4E3D-BF29-EE6F6A4B0421}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{91AE7BF2-8ECC-4E3D-BF29-EE6F6A4B0421}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{91AE7BF2-8ECC-4E3D-BF29-EE6F6A4B0421}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4396E47F-BB4A-4C0A-86ED-9AA68C35CE45}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4396E47F-BB4A-4C0A-86ED-9AA68C35CE45}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4396E47F-BB4A-4C0A-86ED-9AA68C35CE45}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4396E47F-BB4A-4C0A-86ED-9AA68C35CE45}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
