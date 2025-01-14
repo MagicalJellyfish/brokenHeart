@@ -1,11 +1,12 @@
 ﻿using brokenHeart.Auth.DB;
 using brokenHeart.Auth.Entities;
+using brokenHeart.Database.DAO;
+using brokenHeart.Database.DAO.Characters;
+using brokenHeart.Database.DAO.Counters;
+using brokenHeart.Database.DAO.Modifiers.Effects.Injuries;
+using brokenHeart.Database.DAO.RoundReminders;
+using brokenHeart.Database.DAO.Stats;
 using brokenHeart.DB;
-using brokenHeart.Entities.Characters;
-using brokenHeart.Entities.Counters;
-using brokenHeart.Entities.Effects.Injuries;
-using brokenHeart.Entities.RoundReminders;
-using brokenHeart.Entities.Stats;
 using Microsoft.EntityFrameworkCore;
 
 namespace brokenHeart
@@ -383,7 +384,7 @@ namespace brokenHeart
                 )
                 {
                     _dbContext.UserSimplified.Add(
-                        new Entities.UserSimplified(user.Username, user.DiscordId)
+                        new UserSimplified(user.Username, user.DiscordId)
                     );
                 }
             }

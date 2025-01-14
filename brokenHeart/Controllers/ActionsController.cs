@@ -1,10 +1,10 @@
 ﻿using brokenHeart.Auxiliary;
+using brokenHeart.Database.DAO;
+using brokenHeart.Database.DAO.Abilities;
+using brokenHeart.Database.DAO.Abilities.Abilities;
+using brokenHeart.Database.DAO.Combat;
+using brokenHeart.Database.DAO.Modifiers.Effects;
 using brokenHeart.DB;
-using brokenHeart.Entities;
-using brokenHeart.Entities.Abilities;
-using brokenHeart.Entities.Abilities.Abilities;
-using brokenHeart.Entities.Combat;
-using brokenHeart.Entities.Effects;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;

@@ -1,7 +1,7 @@
-﻿using brokenHeart.Entities;
-using brokenHeart.Entities.Characters;
-using brokenHeart.Entities.Counters;
-using brokenHeart.Entities.Stats;
+﻿using brokenHeart.Database.DAO;
+using brokenHeart.Database.DAO.Characters;
+using brokenHeart.Database.DAO.Counters;
+using brokenHeart.Database.DAO.Stats;
 
 namespace brokenHeart.Auxiliary
 {

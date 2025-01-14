@@ -1,10 +1,10 @@
 ﻿using brokenHeart.Auxiliary;
+using brokenHeart.Database.DAO;
+using brokenHeart.Database.DAO.Characters;
+using brokenHeart.Database.DAO.Modifiers.Effects;
+using brokenHeart.Database.DAO.Modifiers.Effects.Injuries;
+using brokenHeart.Database.DAO.Stats;
 using brokenHeart.DB;
-using brokenHeart.Entities;
-using brokenHeart.Entities.Characters;
-using brokenHeart.Entities.Effects;
-using brokenHeart.Entities.Effects.Injuries;
-using brokenHeart.Entities.Stats;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.JsonPatch.Operations;

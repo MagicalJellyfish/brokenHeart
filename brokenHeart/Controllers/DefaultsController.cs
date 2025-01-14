@@ -1,6 +1,6 @@
 ﻿using brokenHeart.Auxiliary;
+using brokenHeart.Database.DAO;
 using brokenHeart.DB;
-using brokenHeart.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 

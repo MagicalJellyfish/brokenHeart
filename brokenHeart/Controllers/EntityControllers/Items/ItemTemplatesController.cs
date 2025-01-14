@@ -1,7 +1,7 @@
 using brokenHeart.Auxiliary;
+using brokenHeart.Database.DAO.Modifiers.Items;
+using brokenHeart.Database.DAO.RoundReminders;
 using brokenHeart.DB;
-using brokenHeart.Entities.Items;
-using brokenHeart.Entities.RoundReminders;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.JsonPatch.Operations;

@@ -1,6 +1,6 @@
 using brokenHeart.Auxiliary;
+using brokenHeart.Database.DAO.Modifiers.Traits;
 using brokenHeart.DB;
-using brokenHeart.Entities.Traits;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.JsonPatch.Operations;
