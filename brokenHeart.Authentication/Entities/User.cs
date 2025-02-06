@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace brokenHeart.Auth.Entities
+namespace brokenHeart.Authentication.Entities
 {
     public class User
     {

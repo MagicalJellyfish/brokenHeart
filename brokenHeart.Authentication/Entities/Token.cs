@@ -1,4 +1,4 @@
-﻿namespace brokenHeart.Auth.Entities
+﻿namespace brokenHeart.Authentication.Entities
 {
     public class Token
     {

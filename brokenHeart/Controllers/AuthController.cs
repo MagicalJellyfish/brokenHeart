@@ -2,9 +2,11 @@
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
-using brokenHeart.Auth;
-using brokenHeart.Auth.DB;
-using brokenHeart.Auth.Entities;
+using brokenHeart.Authentication;
+using brokenHeart.Authentication.DB;
+using brokenHeart.Authentication.Entities;
+using brokenHeart.Authentication.Models;
+using brokenHeart.Authentication.Services;
 using brokenHeart.Database.DAO;
 using brokenHeart.DB;
 using Microsoft.AspNetCore.Authorization;
@@ -23,16 +25,19 @@ namespace brokenHeart.Controllers
         private readonly AuthDbContext _context;
         private readonly IConfiguration _configuration;
         private readonly BrokenDbContext _brokenDbContext;
+        private readonly IPasswordService _passwordService;
 
         public AuthController(
             AuthDbContext context,
             IConfiguration configuration,
-            BrokenDbContext brokenDbContext
+            BrokenDbContext brokenDbContext,
+            IPasswordService passwordService
         )
         {
             _context = context;
             _configuration = configuration;
             _brokenDbContext = brokenDbContext;
+            _passwordService = passwordService;
         }
 
         [HttpPost("register")]
@@ -86,7 +91,7 @@ namespace brokenHeart.Controllers
                     Salt = Convert.ToBase64String(RandomNumberGenerator.GetBytes(128 / 8))
                 };
 
-            ExecutionResult result = AuthFunctions.ValidatePasswordConstraints(
+            ExecutionResult result = _passwordService.ValidatePasswordConstraints(
                 registrationModel.Password
             );
             if (!result.Succeeded)
@@ -94,7 +99,10 @@ namespace brokenHeart.Controllers
                 return BadRequest(result.Message);
             }
 
-            user.HashedPassword = AuthFunctions.HashPassword(registrationModel.Password, user.Salt);
+            user.HashedPassword = _passwordService.HashPassword(
+                registrationModel.Password,
+                user.Salt
+            );
 
             _context.Users.Add(user);
             _context.SaveChanges();
@@ -121,7 +129,13 @@ namespace brokenHeart.Controllers
                 return Unauthorized("Invalid username");
             }
 
-            if (!AuthFunctions.VerifyPassword(user.HashedPassword, loginModel.Password, user.Salt))
+            if (
+                !_passwordService.VerifyPassword(
+                    user.HashedPassword,
+                    loginModel.Password,
+                    user.Salt
+                )
+            )
             {
                 return Unauthorized("Invalid password");
             }

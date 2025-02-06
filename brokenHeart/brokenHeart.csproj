@@ -31,10 +31,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Auth\DB\Migrations\" />
-  </ItemGroup>
-
-  <ItemGroup>
+    <ProjectReference Include="..\brokenHeart.Authentication\brokenHeart.Authentication.csproj" />
     <ProjectReference Include="..\brokenHeart.Database\brokenHeart.Database.csproj" />
   </ItemGroup>
 

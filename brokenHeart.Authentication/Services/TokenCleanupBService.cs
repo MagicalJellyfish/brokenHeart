@@ -1,5 +1,7 @@
-﻿using brokenHeart.Auth.DB;
-using brokenHeart.Auth.Entities;
+﻿using brokenHeart.Authentication.DB;
+using brokenHeart.Authentication.Entities;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 namespace brokenHeart.Auth
 {

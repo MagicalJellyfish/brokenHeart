@@ -2,7 +2,7 @@ using System.Security.Claims;
 using System.Text;
 using brokenHeart;
 using brokenHeart.Auth;
-using brokenHeart.Auth.DB;
+using brokenHeart.Authentication.DB;
 using brokenHeart.Controllers;
 using brokenHeart.DB;
 using brokenHeart.JSON;

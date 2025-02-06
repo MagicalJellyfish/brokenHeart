@@ -1,7 +1,7 @@
-﻿using brokenHeart.Auth.Entities;
+﻿using brokenHeart.Authentication.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace brokenHeart.Auth.DB
+namespace brokenHeart.Authentication.DB
 {
     public class AuthDbContext : DbContext
     {
