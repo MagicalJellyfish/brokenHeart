@@ -367,5 +367,4 @@ FodyWeavers.xsd
 *.db*
 
 #Migrations
-/brokenHeart/Auth/DB/Migrations
-/brokenHeart/DB/Migrations
+/brokenHeart.*/DB/Migrations
