@@ -43,7 +43,7 @@ namespace brokenHeart.Authentication.Services
                 };
             }
 
-            return new ExecutionResult();
+            return new ExecutionResult() { StatusCode = System.Net.HttpStatusCode.OK };
         }
 
         public string HashPassword(string password, string salt)

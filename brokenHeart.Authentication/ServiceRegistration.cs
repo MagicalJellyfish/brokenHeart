@@ -8,6 +8,8 @@ namespace brokenHeart.Authentication
         public static void RegisterServices(IServiceCollection serviceCollection)
         {
             serviceCollection.AddScoped<IPasswordService, PasswordService>();
+            serviceCollection.AddScoped<IAuthenticationService, AuthenticationService>();
+            serviceCollection.AddScoped<ITokenService, TokenService>();
         }
     }
 }
