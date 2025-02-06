@@ -1,10 +1,11 @@
-﻿using Microsoft.AspNetCore.Cryptography.KeyDerivation;
+﻿using brokenHeart.Models;
+using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 
-namespace brokenHeart.Auth
+namespace brokenHeart.Authentication.Services
 {
-    public static class AuthFunctions
+    public class PasswordService : IPasswordService
     {
-        public static ExecutionResult ValidatePasswordConstraints(string password)
+        public ExecutionResult ValidatePasswordConstraints(string password)
         {
             if (password.Length < 6)
             {
@@ -45,7 +46,7 @@ namespace brokenHeart.Auth
             return new ExecutionResult();
         }
 
-        public static string HashPassword(string password, string salt)
+        public string HashPassword(string password, string salt)
         {
             byte[] saltBytes = Convert.FromBase64String(salt);
 
@@ -60,7 +61,7 @@ namespace brokenHeart.Auth
             );
         }
 
-        public static bool VerifyPassword(string hashedPassword, string givenPassword, string salt)
+        public bool VerifyPassword(string hashedPassword, string givenPassword, string salt)
         {
             string hashedGivenPassword = HashPassword(givenPassword, salt);
 

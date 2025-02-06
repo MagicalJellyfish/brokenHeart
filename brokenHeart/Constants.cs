@@ -1,5 +1,5 @@
-﻿using brokenHeart.Auth.DB;
-using brokenHeart.Auth.Entities;
+﻿using brokenHeart.Authentication.DB;
+using brokenHeart.Authentication.Entities;
 using brokenHeart.Database.DAO;
 using brokenHeart.Database.DAO.Characters;
 using brokenHeart.Database.DAO.Counters;
