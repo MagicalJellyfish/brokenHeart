@@ -1,6 +1,6 @@
-﻿using brokenHeart.Auxiliary;
-using brokenHeart.Database.DAO.Abilities;
+﻿using brokenHeart.Database.DAO.Abilities;
 using brokenHeart.DB;
+using brokenHeart.Services.Endpoints;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.JsonPatch.Operations;
@@ -14,10 +14,15 @@ namespace brokenHeart.Controllers.EntityControllers.Rolls
     public class RollsController : ControllerBase
     {
         private readonly BrokenDbContext _context;
+        private readonly IEndpointEntityService _endpointEntityService;
 
-        public RollsController(BrokenDbContext context)
+        public RollsController(
+            BrokenDbContext context,
+            IEndpointEntityService endpointEntityService
+        )
         {
             _context = context;
+            _endpointEntityService = endpointEntityService;
         }
 
         // GET: api/Rolls
@@ -31,7 +36,7 @@ namespace brokenHeart.Controllers.EntityControllers.Rolls
             }
 
             IEnumerable<Roll> rolls = FullRolls()
-                .Select(x => ApiAuxiliary.GetEntityPrepare(x) as Roll)
+                .Select(x => _endpointEntityService.GetEntityPrepare(x) as Roll)
                 .ToList();
 
             return Ok(rolls);
@@ -47,7 +52,7 @@ namespace brokenHeart.Controllers.EntityControllers.Rolls
                 return NotFound();
             }
 
-            Roll roll = ApiAuxiliary.GetEntityPrepare(
+            Roll roll = _endpointEntityService.GetEntityPrepare(
                 await FullRolls().FirstOrDefaultAsync(x => x.Id == id)
             );
 
@@ -85,7 +90,7 @@ namespace brokenHeart.Controllers.EntityControllers.Rolls
 
             try
             {
-                ApiAuxiliary.PatchEntity(_context, typeof(Roll), roll, operations);
+                _endpointEntityService.PatchEntity(_context, typeof(Roll), roll, operations);
             }
             catch (Exception)
             {
@@ -108,7 +113,7 @@ namespace brokenHeart.Controllers.EntityControllers.Rolls
                 return Problem("Entity set 'BrokenDbContext.Rolls'  is null.");
             }
 
-            Roll returnRoll = ApiAuxiliary.PostEntity(_context, typeof(Roll), roll);
+            Roll returnRoll = _endpointEntityService.PostEntity(_context, typeof(Roll), roll);
 
             return CreatedAtAction("GetRoll", new { id = returnRoll.Id }, returnRoll);
         }

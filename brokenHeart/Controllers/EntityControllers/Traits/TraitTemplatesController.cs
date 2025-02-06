@@ -1,6 +1,6 @@
-using brokenHeart.Auxiliary;
 using brokenHeart.Database.DAO.Modifiers.Traits;
 using brokenHeart.DB;
+using brokenHeart.Services.Endpoints;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.JsonPatch.Operations;
@@ -14,10 +14,15 @@ namespace brokenHeart.Controllers.EntityControllers.TraitTemplates
     public class TraitTemplatesController : ControllerBase
     {
         private readonly BrokenDbContext _context;
+        private readonly IEndpointEntityService _endpointEntityService;
 
-        public TraitTemplatesController(BrokenDbContext context)
+        public TraitTemplatesController(
+            BrokenDbContext context,
+            IEndpointEntityService endpointEntityService
+        )
         {
             _context = context;
+            _endpointEntityService = endpointEntityService;
         }
 
         // GET: api/TraitTemplates
@@ -31,7 +36,7 @@ namespace brokenHeart.Controllers.EntityControllers.TraitTemplates
             }
 
             IEnumerable<TraitTemplate> traitTemplates = FullTraitTemplates()
-                .Select(x => ApiAuxiliary.GetEntityPrepare(x) as TraitTemplate)
+                .Select(x => _endpointEntityService.GetEntityPrepare(x) as TraitTemplate)
                 .ToList();
 
             return Ok(traitTemplates);
@@ -47,7 +52,7 @@ namespace brokenHeart.Controllers.EntityControllers.TraitTemplates
                 return NotFound();
             }
 
-            TraitTemplate traitTemplate = ApiAuxiliary.GetEntityPrepare(
+            TraitTemplate traitTemplate = _endpointEntityService.GetEntityPrepare(
                 await FullTraitTemplates().FirstOrDefaultAsync(x => x.Id == id)
             );
 
@@ -88,7 +93,7 @@ namespace brokenHeart.Controllers.EntityControllers.TraitTemplates
 
             try
             {
-                ApiAuxiliary.PatchEntity(
+                _endpointEntityService.PatchEntity(
                     _context,
                     typeof(TraitTemplate),
                     traitTemplate,
@@ -118,7 +123,7 @@ namespace brokenHeart.Controllers.EntityControllers.TraitTemplates
                 return Problem("Entity set 'BrokenDbContext.TraitTemplates'  is null.");
             }
 
-            TraitTemplate returnTraitTemplate = ApiAuxiliary.PostEntity(
+            TraitTemplate returnTraitTemplate = _endpointEntityService.PostEntity(
                 _context,
                 typeof(TraitTemplate),
                 traitTemplate

@@ -121,7 +121,7 @@ namespace brokenHeart.DB
                         c.Update();
                         saveChanges += base.SaveChanges();
 
-                        CharacterChanged.Invoke(this, changedChar);
+                        CharacterChanged?.Invoke(this, changedChar);
                     }
                     catch (Exception)
                     {

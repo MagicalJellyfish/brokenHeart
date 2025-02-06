@@ -1,6 +1,6 @@
-﻿using brokenHeart.Auxiliary;
-using brokenHeart.Database.DAO.Abilities.Abilities;
+﻿using brokenHeart.Database.DAO.Abilities.Abilities;
 using brokenHeart.DB;
+using brokenHeart.Services.Endpoints;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.JsonPatch.Operations;
@@ -14,10 +14,15 @@ namespace brokenHeart.Controllers.EntityControllers.Abilities
     public class AbilitiesController : ControllerBase
     {
         private readonly BrokenDbContext _context;
+        private readonly IEndpointEntityService _endpointEntityService;
 
-        public AbilitiesController(BrokenDbContext context)
+        public AbilitiesController(
+            BrokenDbContext context,
+            IEndpointEntityService endpointEntityService
+        )
         {
             _context = context;
+            _endpointEntityService = endpointEntityService;
         }
 
         // GET: api/Abilities
@@ -31,7 +36,7 @@ namespace brokenHeart.Controllers.EntityControllers.Abilities
             }
 
             IEnumerable<Ability> abilities = FullAbilities()
-                .Select(x => ApiAuxiliary.GetEntityPrepare(x) as Ability)
+                .Select(x => _endpointEntityService.GetEntityPrepare(x) as Ability)
                 .ToList();
 
             return Ok(abilities);
@@ -47,7 +52,7 @@ namespace brokenHeart.Controllers.EntityControllers.Abilities
                 return NotFound();
             }
 
-            Ability ability = ApiAuxiliary.GetEntityPrepare(
+            Ability ability = _endpointEntityService.GetEntityPrepare(
                 await FullAbilities().FirstOrDefaultAsync(x => x.Id == id)
             );
 
@@ -88,7 +93,7 @@ namespace brokenHeart.Controllers.EntityControllers.Abilities
 
             try
             {
-                ApiAuxiliary.PatchEntity(_context, typeof(Ability), ability, operations);
+                _endpointEntityService.PatchEntity(_context, typeof(Ability), ability, operations);
             }
             catch (Exception)
             {
@@ -111,7 +116,11 @@ namespace brokenHeart.Controllers.EntityControllers.Abilities
                 return Problem("Entity set 'BrokenDbContext.Abilities'  is null.");
             }
 
-            Ability returnAbility = ApiAuxiliary.PostEntity(_context, typeof(Ability), ability);
+            Ability returnAbility = _endpointEntityService.PostEntity(
+                _context,
+                typeof(Ability),
+                ability
+            );
 
             return CreatedAtAction("GetAbility", new { id = returnAbility.Id }, returnAbility);
         }

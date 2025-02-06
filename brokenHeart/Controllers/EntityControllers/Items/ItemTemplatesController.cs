@@ -1,7 +1,7 @@
-using brokenHeart.Auxiliary;
 using brokenHeart.Database.DAO.Modifiers.Items;
 using brokenHeart.Database.DAO.RoundReminders;
 using brokenHeart.DB;
+using brokenHeart.Services.Endpoints;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.JsonPatch.Operations;
@@ -15,10 +15,15 @@ namespace brokenHeart.Controllers.EntityControllers.ItemTemplates
     public class ItemTemplatesController : ControllerBase
     {
         private readonly BrokenDbContext _context;
+        private readonly IEndpointEntityService _endpointEntityService;
 
-        public ItemTemplatesController(BrokenDbContext context)
+        public ItemTemplatesController(
+            BrokenDbContext context,
+            IEndpointEntityService endpointEntityService
+        )
         {
             _context = context;
+            _endpointEntityService = endpointEntityService;
         }
 
         // GET: api/ItemTemplates
@@ -32,7 +37,7 @@ namespace brokenHeart.Controllers.EntityControllers.ItemTemplates
             }
 
             IEnumerable<ItemTemplate> itemTemplates = FullItemTemplates()
-                .Select(x => ApiAuxiliary.GetEntityPrepare(x) as ItemTemplate)
+                .Select(x => _endpointEntityService.GetEntityPrepare(x) as ItemTemplate)
                 .ToList();
 
             return Ok(itemTemplates);
@@ -48,7 +53,7 @@ namespace brokenHeart.Controllers.EntityControllers.ItemTemplates
                 return NotFound();
             }
 
-            ItemTemplate itemTemplate = ApiAuxiliary.GetEntityPrepare(
+            ItemTemplate itemTemplate = _endpointEntityService.GetEntityPrepare(
                 await FullItemTemplates().FirstOrDefaultAsync(x => x.Id == id)
             );
 
@@ -89,7 +94,12 @@ namespace brokenHeart.Controllers.EntityControllers.ItemTemplates
 
             try
             {
-                ApiAuxiliary.PatchEntity(_context, typeof(ItemTemplate), itemTemplate, operations);
+                _endpointEntityService.PatchEntity(
+                    _context,
+                    typeof(ItemTemplate),
+                    itemTemplate,
+                    operations
+                );
             }
             catch (Exception)
             {
@@ -112,7 +122,7 @@ namespace brokenHeart.Controllers.EntityControllers.ItemTemplates
                 return Problem("Entity set 'BrokenDbContext.ItemTemplates'  is null.");
             }
 
-            ItemTemplate returnItemTemplate = ApiAuxiliary.PostEntity(
+            ItemTemplate returnItemTemplate = _endpointEntityService.PostEntity(
                 _context,
                 typeof(ItemTemplate),
                 itemTemplate

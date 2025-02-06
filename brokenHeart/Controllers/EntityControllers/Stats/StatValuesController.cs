@@ -1,7 +1,6 @@
-using brokenHeart.Auxiliary;
-using brokenHeart.Database.DAO.Effects;
 using brokenHeart.Database.DAO.Stats;
 using brokenHeart.DB;
+using brokenHeart.Services.Endpoints;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.JsonPatch.Operations;
@@ -15,10 +14,15 @@ namespace brokenHeart.Controllers.EntityControllers.StatValues
     public class StatValuesController : ControllerBase
     {
         private readonly BrokenDbContext _context;
+        private readonly IEndpointEntityService _endpointEntityService;
 
-        public StatValuesController(BrokenDbContext context)
+        public StatValuesController(
+            BrokenDbContext context,
+            IEndpointEntityService endpointEntityService
+        )
         {
             _context = context;
+            _endpointEntityService = endpointEntityService;
         }
 
         // GET: api/StatValues
@@ -32,7 +36,7 @@ namespace brokenHeart.Controllers.EntityControllers.StatValues
             }
 
             IEnumerable<StatValue> statValues = FullStatValues()
-                .Select(x => ApiAuxiliary.GetEntityPrepare(x) as StatValue)
+                .Select(x => _endpointEntityService.GetEntityPrepare(x) as StatValue)
                 .ToList();
 
             return Ok(statValues);
@@ -48,7 +52,7 @@ namespace brokenHeart.Controllers.EntityControllers.StatValues
                 return NotFound();
             }
 
-            StatValue statValue = ApiAuxiliary.GetEntityPrepare(
+            StatValue statValue = _endpointEntityService.GetEntityPrepare(
                 await FullStatValues().FirstOrDefaultAsync(x => x.Id == id)
             );
 
@@ -89,7 +93,12 @@ namespace brokenHeart.Controllers.EntityControllers.StatValues
 
             try
             {
-                ApiAuxiliary.PatchEntity(_context, typeof(StatValue), statValue, operations);
+                _endpointEntityService.PatchEntity(
+                    _context,
+                    typeof(StatValue),
+                    statValue,
+                    operations
+                );
             }
             catch (Exception)
             {
@@ -112,7 +121,7 @@ namespace brokenHeart.Controllers.EntityControllers.StatValues
                 return Problem("Entity set 'BrokenDbContext.StatValues'  is null.");
             }
 
-            StatValue returnStatValue = ApiAuxiliary.PostEntity(
+            StatValue returnStatValue = _endpointEntityService.PostEntity(
                 _context,
                 typeof(StatValue),
                 statValue

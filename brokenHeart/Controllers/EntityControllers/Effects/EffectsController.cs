@@ -1,6 +1,6 @@
-using brokenHeart.Auxiliary;
 using brokenHeart.Database.DAO.Modifiers.Effects;
 using brokenHeart.DB;
+using brokenHeart.Services.Endpoints;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.JsonPatch.Operations;
@@ -14,10 +14,15 @@ namespace brokenHeart.Controllers.EntityControllers.Effects
     public class EffectsController : ControllerBase
     {
         private readonly BrokenDbContext _context;
+        private readonly IEndpointEntityService _endpointEntityService;
 
-        public EffectsController(BrokenDbContext context)
+        public EffectsController(
+            BrokenDbContext context,
+            IEndpointEntityService endpointEntityService
+        )
         {
             _context = context;
+            _endpointEntityService = endpointEntityService;
         }
 
         // GET: api/Effects
@@ -31,7 +36,7 @@ namespace brokenHeart.Controllers.EntityControllers.Effects
             }
 
             IEnumerable<Effect> effects = FullEffects()
-                .Select(x => ApiAuxiliary.GetEntityPrepare(x) as Effect)
+                .Select(x => _endpointEntityService.GetEntityPrepare(x) as Effect)
                 .ToList();
 
             return Ok(effects);
@@ -47,7 +52,7 @@ namespace brokenHeart.Controllers.EntityControllers.Effects
                 return NotFound();
             }
 
-            Effect effect = ApiAuxiliary.GetEntityPrepare(
+            Effect effect = _endpointEntityService.GetEntityPrepare(
                 await FullEffects().FirstOrDefaultAsync(x => x.Id == id)
             );
 
@@ -88,7 +93,7 @@ namespace brokenHeart.Controllers.EntityControllers.Effects
 
             try
             {
-                ApiAuxiliary.PatchEntity(_context, typeof(Effect), effect, operations);
+                _endpointEntityService.PatchEntity(_context, typeof(Effect), effect, operations);
             }
             catch (Exception)
             {
@@ -111,7 +116,11 @@ namespace brokenHeart.Controllers.EntityControllers.Effects
                 return Problem("Entity set 'BrokenDbContext.Effects'  is null.");
             }
 
-            Effect returnEffect = ApiAuxiliary.PostEntity(_context, typeof(Effect), effect);
+            Effect returnEffect = _endpointEntityService.PostEntity(
+                _context,
+                typeof(Effect),
+                effect
+            );
 
             return CreatedAtAction("GetEffect", new { id = returnEffect.Id }, returnEffect);
         }

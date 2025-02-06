@@ -2,13 +2,13 @@
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
-using brokenHeart.Authentication;
 using brokenHeart.Authentication.DB;
 using brokenHeart.Authentication.Entities;
 using brokenHeart.Authentication.Models;
 using brokenHeart.Authentication.Services;
 using brokenHeart.Database.DAO;
 using brokenHeart.DB;
+using brokenHeart.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.AspNetCore.Mvc;

@@ -1,10 +1,8 @@
-﻿using brokenHeart.Auxiliary;
-using brokenHeart.Database.DAO;
-using brokenHeart.Database.DAO.Characters;
+﻿using brokenHeart.Database.DAO.Characters;
 using brokenHeart.Database.DAO.Stats;
 using brokenHeart.DB;
+using brokenHeart.Services.Endpoints;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
 namespace brokenHeart.Controllers.EntityControllers
@@ -14,10 +12,15 @@ namespace brokenHeart.Controllers.EntityControllers
     public class ConstantsController : ControllerBase
     {
         private readonly BrokenDbContext _context;
+        private readonly IEndpointEntityService _endpointEntityService;
 
-        public ConstantsController(BrokenDbContext context)
+        public ConstantsController(
+            BrokenDbContext context,
+            IEndpointEntityService endpointEntityService
+        )
         {
             _context = context;
+            _endpointEntityService = endpointEntityService;
         }
 
         // GET: api/Constants/Stats
@@ -31,7 +34,7 @@ namespace brokenHeart.Controllers.EntityControllers
             }
 
             IEnumerable<Stat> stats = _context
-                .Stats.Select(x => ApiAuxiliary.GetEntityPrepare(x) as Stat)
+                .Stats.Select(x => _endpointEntityService.GetEntityPrepare(x) as Stat)
                 .ToList();
 
             return Ok(stats);
@@ -48,7 +51,7 @@ namespace brokenHeart.Controllers.EntityControllers
             }
 
             IEnumerable<Bodypart> bodyparts = _context
-                .Bodyparts.Select(x => ApiAuxiliary.GetEntityPrepare(x) as Bodypart)
+                .Bodyparts.Select(x => _endpointEntityService.GetEntityPrepare(x) as Bodypart)
                 .ToList();
 
             return Ok(bodyparts);

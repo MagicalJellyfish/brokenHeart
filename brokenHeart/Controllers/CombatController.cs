@@ -1,10 +1,13 @@
-﻿using brokenHeart.Auxiliary;
-using brokenHeart.Database.DAO;
+﻿using brokenHeart.Database.DAO;
 using brokenHeart.Database.DAO.Abilities.Abilities;
 using brokenHeart.Database.DAO.Combat;
 using brokenHeart.Database.DAO.Modifiers.Effects;
 using brokenHeart.Database.DAO.RoundReminders;
 using brokenHeart.DB;
+using brokenHeart.Models.brokenHand;
+using brokenHeart.Models.Rolling;
+using brokenHeart.Services.Endpoints;
+using brokenHeart.Services.Rolling;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -17,10 +20,12 @@ namespace brokenHeart.Controllers
     public class CombatController : ControllerBase
     {
         private readonly BrokenDbContext _context;
+        private readonly IRollService _rollService;
 
-        public CombatController(BrokenDbContext brokenDbContext)
+        public CombatController(BrokenDbContext brokenDbContext, IRollService rollService)
         {
             _context = brokenDbContext;
+            _rollService = rollService;
         }
 
         [HttpGet]
@@ -141,7 +146,7 @@ namespace brokenHeart.Controllers
             if (initRoll == null)
             {
                 initRoll =
-                    RollAuxiliary.Roll(1, 20).Result
+                    _rollService.Roll(1, 20).Result
                     + character.Stats.Single(x => x.Stat!.Id == Constants.Stats.Ins.Id).Value;
             }
 
@@ -321,7 +326,7 @@ namespace brokenHeart.Controllers
                 {
                     if (!effect.Hp.IsNullOrEmpty())
                     {
-                        RollResult result = RollAuxiliary.CharRollString(effect.Hp, character);
+                        RollResult result = _rollService.CharRollString(effect.Hp, character);
                         effects +=
                             $"Your HP is changed by ({result.Detail}) {result.Result} from Effect \"{effect.Name}\"!\n";
                         character.Hp += result.Result;

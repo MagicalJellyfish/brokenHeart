@@ -1,6 +1,6 @@
-using brokenHeart.Auxiliary;
 using brokenHeart.Database.DAO.Modifiers.Traits;
 using brokenHeart.DB;
+using brokenHeart.Services.Endpoints;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.JsonPatch.Operations;
@@ -14,10 +14,15 @@ namespace brokenHeart.Controllers.EntityControllers.Traits
     public class TraitsController : ControllerBase
     {
         private readonly BrokenDbContext _context;
+        private readonly IEndpointEntityService _endpointEntityService;
 
-        public TraitsController(BrokenDbContext context)
+        public TraitsController(
+            BrokenDbContext context,
+            IEndpointEntityService endpointEntityService
+        )
         {
             _context = context;
+            _endpointEntityService = endpointEntityService;
         }
 
         // GET: api/Traits
@@ -31,7 +36,7 @@ namespace brokenHeart.Controllers.EntityControllers.Traits
             }
 
             IEnumerable<Trait> traits = FullTraits()
-                .Select(x => ApiAuxiliary.GetEntityPrepare(x) as Trait)
+                .Select(x => _endpointEntityService.GetEntityPrepare(x) as Trait)
                 .ToList();
 
             return Ok(traits);
@@ -47,7 +52,7 @@ namespace brokenHeart.Controllers.EntityControllers.Traits
                 return NotFound();
             }
 
-            Trait trait = ApiAuxiliary.GetEntityPrepare(
+            Trait trait = _endpointEntityService.GetEntityPrepare(
                 await FullTraits().FirstOrDefaultAsync(x => x.Id == id)
             );
 
@@ -85,7 +90,7 @@ namespace brokenHeart.Controllers.EntityControllers.Traits
 
             try
             {
-                ApiAuxiliary.PatchEntity(_context, typeof(Trait), trait, operations);
+                _endpointEntityService.PatchEntity(_context, typeof(Trait), trait, operations);
             }
             catch (Exception)
             {
@@ -108,7 +113,7 @@ namespace brokenHeart.Controllers.EntityControllers.Traits
                 return Problem("Entity set 'BrokenDbContext.Traits'  is null.");
             }
 
-            Trait returnTrait = ApiAuxiliary.PostEntity(_context, typeof(Trait), trait);
+            Trait returnTrait = _endpointEntityService.PostEntity(_context, typeof(Trait), trait);
 
             return CreatedAtAction("GetTrait", new { id = returnTrait.Id }, returnTrait);
         }

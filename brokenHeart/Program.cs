@@ -3,9 +3,9 @@ using System.Text;
 using brokenHeart;
 using brokenHeart.Auth;
 using brokenHeart.Authentication.DB;
-using brokenHeart.Controllers;
 using brokenHeart.DB;
 using brokenHeart.JSON;
+using brokenHeart.Services.SignalR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
@@ -46,6 +46,7 @@ static void RegisterServices(IServiceCollection serviceCollection)
     serviceCollection.AddHostedService<TokenCleanupBService>();
 
     brokenHeart.Authentication.ServiceRegistration.RegisterServices(serviceCollection);
+    brokenHeart.Services.ServiceRegistration.RegisterServices(serviceCollection);
 }
 
 static void AddCors(WebApplicationBuilder builder)

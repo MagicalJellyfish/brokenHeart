@@ -1,7 +1,7 @@
-﻿using brokenHeart.Auxiliary;
-using brokenHeart.Database.DAO;
+﻿using brokenHeart.Database.DAO;
 using brokenHeart.Database.DAO.Characters;
 using brokenHeart.DB;
+using brokenHeart.Services.Endpoints;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.JsonPatch.Operations;
@@ -15,10 +15,15 @@ namespace brokenHeart.Controllers.EntityControllers.Characters
     public class CharacterTemplatesController : ControllerBase
     {
         private readonly BrokenDbContext _context;
+        private readonly IEndpointEntityService _endpointEntityService;
 
-        public CharacterTemplatesController(BrokenDbContext context)
+        public CharacterTemplatesController(
+            BrokenDbContext context,
+            IEndpointEntityService endpointEntityService
+        )
         {
             _context = context;
+            _endpointEntityService = endpointEntityService;
         }
 
         // GET: api/CharacterTemplates/
@@ -33,7 +38,7 @@ namespace brokenHeart.Controllers.EntityControllers.Characters
 
             IEnumerable<CharacterTemplate> characterTemplates = _context
                 .CharacterTemplates.Select(x =>
-                    ApiAuxiliary.GetEntityPrepare(x) as CharacterTemplate
+                    _endpointEntityService.GetEntityPrepare(x) as CharacterTemplate
                 )
                 .ToList();
 
@@ -50,7 +55,7 @@ namespace brokenHeart.Controllers.EntityControllers.Characters
                 return NotFound();
             }
 
-            CharacterTemplate characterTemplate = ApiAuxiliary.GetEntityPrepare(
+            CharacterTemplate characterTemplate = _endpointEntityService.GetEntityPrepare(
                 await FullCharacterTemplates().FirstOrDefaultAsync(x => x.Id == id)
             );
 
@@ -91,7 +96,7 @@ namespace brokenHeart.Controllers.EntityControllers.Characters
 
             try
             {
-                ApiAuxiliary.PatchEntity(
+                _endpointEntityService.PatchEntity(
                     _context,
                     typeof(CharacterTemplate),
                     characterTemplate,
@@ -121,7 +126,7 @@ namespace brokenHeart.Controllers.EntityControllers.Characters
                 return Problem("Entity set 'BrokenDbContext.CharacterTemplates'  is null.");
             }
 
-            CharacterTemplate returnCharacterTemplate = ApiAuxiliary.PostEntity(
+            CharacterTemplate returnCharacterTemplate = _endpointEntityService.PostEntity(
                 _context,
                 typeof(CharacterTemplate),
                 characterTemplate

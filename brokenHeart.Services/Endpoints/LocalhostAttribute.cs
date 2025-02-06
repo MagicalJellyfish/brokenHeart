@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
-namespace brokenHeart.Auxiliary
+namespace brokenHeart.Services.Endpoints
 {
     public class LocalhostAttribute : ActionFilterAttribute
     {

@@ -1,8 +1,8 @@
-using brokenHeart.Auxiliary;
 using brokenHeart.Database.DAO.Modifiers.Effects;
 using brokenHeart.Database.DAO.Modifiers.Items;
 using brokenHeart.Database.DAO.Modifiers.Traits;
 using brokenHeart.DB;
+using brokenHeart.Services.Endpoints;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.JsonPatch.Operations;
@@ -16,10 +16,15 @@ namespace brokenHeart.Controllers.EntityControllers.Items
     public class ItemsController : ControllerBase
     {
         private readonly BrokenDbContext _context;
+        private readonly IEndpointEntityService _endpointEntityService;
 
-        public ItemsController(BrokenDbContext context)
+        public ItemsController(
+            BrokenDbContext context,
+            IEndpointEntityService endpointEntityService
+        )
         {
             _context = context;
+            _endpointEntityService = endpointEntityService;
         }
 
         // GET: api/Items
@@ -33,7 +38,7 @@ namespace brokenHeart.Controllers.EntityControllers.Items
             }
 
             IEnumerable<Item> items = FullItems()
-                .Select(x => ApiAuxiliary.GetEntityPrepare(x) as Item)
+                .Select(x => _endpointEntityService.GetEntityPrepare(x) as Item)
                 .ToList();
 
             return Ok(items);
@@ -49,7 +54,7 @@ namespace brokenHeart.Controllers.EntityControllers.Items
                 return NotFound();
             }
 
-            Item item = ApiAuxiliary.GetEntityPrepare(
+            Item item = _endpointEntityService.GetEntityPrepare(
                 await FullItems().FirstOrDefaultAsync(x => x.Id == id)
             );
 
@@ -87,7 +92,7 @@ namespace brokenHeart.Controllers.EntityControllers.Items
 
             try
             {
-                ApiAuxiliary.PatchEntity(_context, typeof(Item), item, operations);
+                _endpointEntityService.PatchEntity(_context, typeof(Item), item, operations);
             }
             catch (Exception)
             {
@@ -110,7 +115,7 @@ namespace brokenHeart.Controllers.EntityControllers.Items
                 return Problem("Entity set 'BrokenDbContext.Items'  is null.");
             }
 
-            Item returnItem = ApiAuxiliary.PostEntity(_context, typeof(Item), item);
+            Item returnItem = _endpointEntityService.PostEntity(_context, typeof(Item), item);
 
             return CreatedAtAction("GetItem", new { id = returnItem.Id }, returnItem);
         }

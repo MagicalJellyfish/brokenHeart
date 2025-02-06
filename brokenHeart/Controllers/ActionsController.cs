@@ -1,10 +1,13 @@
-﻿using brokenHeart.Auxiliary;
-using brokenHeart.Database.DAO;
+﻿using brokenHeart.Database.DAO;
 using brokenHeart.Database.DAO.Abilities;
 using brokenHeart.Database.DAO.Abilities.Abilities;
 using brokenHeart.Database.DAO.Combat;
 using brokenHeart.Database.DAO.Modifiers.Effects;
 using brokenHeart.DB;
+using brokenHeart.Models.brokenHand;
+using brokenHeart.Models.Rolling;
+using brokenHeart.Services.Endpoints;
+using brokenHeart.Services.Rolling;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -17,16 +20,18 @@ namespace brokenHeart.Controllers
     public class ActionsController : ControllerBase
     {
         private readonly BrokenDbContext _context;
+        private readonly IRollService _rollService;
 
-        public ActionsController(BrokenDbContext brokenDbContext)
+        public ActionsController(BrokenDbContext brokenDbContext, IRollService rollService)
         {
             _context = brokenDbContext;
+            _rollService = rollService;
         }
 
         [HttpGet("roll")]
         public async Task<ActionResult<RollResult>> Roll(string rollString)
         {
-            return RollAuxiliary.RollString(rollString);
+            return _rollService.RollString(rollString);
         }
 
         [HttpGet("rollChar/{id}")]
@@ -39,7 +44,7 @@ namespace brokenHeart.Controllers
                 return NotFound("No character found!");
             }
 
-            return RollAuxiliary.CharRollString(rollString, c);
+            return _rollService.CharRollString(rollString, c);
         }
 
         [HttpGet("rollActiveChar/{discordId}")]
@@ -62,7 +67,7 @@ namespace brokenHeart.Controllers
                 return NotFound("No active character!");
             }
 
-            return RollAuxiliary.CharRollString(
+            return _rollService.CharRollString(
                 rollString,
                 GetBaseCharacters().Single(x => x.Id == user.ActiveCharacter.Id)
             );
@@ -259,7 +264,7 @@ namespace brokenHeart.Controllers
                     damageString += damageModifier;
                 }
 
-                damage = RollAuxiliary.CharRollString(damageString, c);
+                damage = _rollService.CharRollString(damageString, c);
             }
 
             List<Message> returnMessages = new List<Message>();
@@ -271,7 +276,7 @@ namespace brokenHeart.Controllers
                     selfString += selfModifer;
                 }
 
-                RollResult self = RollAuxiliary.CharRollString(selfString, c);
+                RollResult self = _rollService.CharRollString(selfString, c);
 
                 if (!ability.Target.IsNullOrEmpty())
                 {
@@ -283,7 +288,7 @@ namespace brokenHeart.Controllers
                             targetString += targetModifier;
                         }
 
-                        RollResult target = RollAuxiliary.CharRollString(targetString, c);
+                        RollResult target = _rollService.CharRollString(targetString, c);
 
                         string color = "Red";
                         if (EvaluateHit(self, target))
@@ -316,7 +321,7 @@ namespace brokenHeart.Controllers
                                 targetString += targetModifier;
                             }
 
-                            RollResult targetRoll = RollAuxiliary.CharRollString(
+                            RollResult targetRoll = _rollService.CharRollString(
                                 targetString,
                                 target
                             );
@@ -443,7 +448,7 @@ namespace brokenHeart.Controllers
 
             foreach (Roll roll in ability.Rolls!)
             {
-                RollResult rollResult = RollAuxiliary.CharRollString(roll.Instruction, c);
+                RollResult rollResult = _rollService.CharRollString(roll.Instruction, c);
                 returnMessages.Add(
                     new Message(
                         $"Additional Roll \"{roll.Name}\": {rollResult.Result}",
