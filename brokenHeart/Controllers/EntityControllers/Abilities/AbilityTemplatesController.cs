@@ -1,6 +1,6 @@
-﻿using brokenHeart.Auxiliary;
-using brokenHeart.Database.DAO.Abilities.Abilities;
+﻿using brokenHeart.Database.DAO.Abilities.Abilities;
 using brokenHeart.DB;
+using brokenHeart.Services.Endpoints;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.JsonPatch.Operations;
@@ -14,10 +14,15 @@ namespace brokenHeart.Controllers.EntityControllers.Abilities
     public class AbilityTemplatesController : ControllerBase
     {
         private readonly BrokenDbContext _context;
+        private readonly IEndpointEntityService _endpointEntityService;
 
-        public AbilityTemplatesController(BrokenDbContext context)
+        public AbilityTemplatesController(
+            BrokenDbContext context,
+            IEndpointEntityService endpointEntityService
+        )
         {
             _context = context;
+            _endpointEntityService = endpointEntityService;
         }
 
         // GET: api/AbilityTemplates
@@ -31,7 +36,7 @@ namespace brokenHeart.Controllers.EntityControllers.Abilities
             }
 
             IEnumerable<AbilityTemplate> abilityTemplates = FullAbilityTemplates()
-                .Select(x => ApiAuxiliary.GetEntityPrepare(x) as AbilityTemplate)
+                .Select(x => _endpointEntityService.GetEntityPrepare(x) as AbilityTemplate)
                 .ToList();
 
             return Ok(abilityTemplates);
@@ -47,7 +52,7 @@ namespace brokenHeart.Controllers.EntityControllers.Abilities
                 return NotFound();
             }
 
-            AbilityTemplate abilityTemplate = ApiAuxiliary.GetEntityPrepare(
+            AbilityTemplate abilityTemplate = _endpointEntityService.GetEntityPrepare(
                 await FullAbilityTemplates().FirstOrDefaultAsync(x => x.Id == id)
             );
 
@@ -88,7 +93,7 @@ namespace brokenHeart.Controllers.EntityControllers.Abilities
 
             try
             {
-                ApiAuxiliary.PatchEntity(
+                _endpointEntityService.PatchEntity(
                     _context,
                     typeof(AbilityTemplate),
                     abilityTemplate,
@@ -118,7 +123,7 @@ namespace brokenHeart.Controllers.EntityControllers.Abilities
                 return Problem("Entity set 'BrokenDbContext.AbilityTemplates'  is null.");
             }
 
-            AbilityTemplate returnAbilityTemplate = ApiAuxiliary.PostEntity(
+            AbilityTemplate returnAbilityTemplate = _endpointEntityService.PostEntity(
                 _context,
                 typeof(AbilityTemplate),
                 abilityTemplate

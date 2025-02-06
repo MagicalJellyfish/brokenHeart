@@ -1,10 +1,10 @@
-﻿using brokenHeart.Auxiliary;
-using brokenHeart.Database.DAO;
+﻿using brokenHeart.Database.DAO;
 using brokenHeart.Database.DAO.Characters;
 using brokenHeart.Database.DAO.Modifiers.Effects;
 using brokenHeart.Database.DAO.Modifiers.Effects.Injuries;
 using brokenHeart.Database.DAO.Stats;
 using brokenHeart.DB;
+using brokenHeart.Services.Endpoints;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.JsonPatch.Operations;
@@ -18,10 +18,15 @@ namespace brokenHeart.Controllers.EntityControllers.Characters
     public class CharactersController : ControllerBase
     {
         private readonly BrokenDbContext _context;
+        private readonly IEndpointEntityService _endpointEntityService;
 
-        public CharactersController(BrokenDbContext context)
+        public CharactersController(
+            BrokenDbContext context,
+            IEndpointEntityService endpointEntityService
+        )
         {
             _context = context;
+            _endpointEntityService = endpointEntityService;
         }
 
         // GET: api/Characters/Players
@@ -37,7 +42,7 @@ namespace brokenHeart.Controllers.EntityControllers.Characters
             IEnumerable<Character> characters = _context
                 .Characters.Include(x => x.Image)
                 .Where(x => !x.IsNPC)
-                .Select(x => ApiAuxiliary.GetEntityPrepare(x) as Character)
+                .Select(x => _endpointEntityService.GetEntityPrepare(x) as Character)
                 .ToList();
 
             return Ok(characters);
@@ -56,7 +61,7 @@ namespace brokenHeart.Controllers.EntityControllers.Characters
             IEnumerable<Character> characters = _context
                 .Characters.Include(x => x.Image)
                 .Where(x => x.IsNPC)
-                .Select(x => ApiAuxiliary.GetEntityPrepare(x) as Character)
+                .Select(x => _endpointEntityService.GetEntityPrepare(x) as Character)
                 .ToList();
 
             return Ok(characters);
@@ -75,7 +80,7 @@ namespace brokenHeart.Controllers.EntityControllers.Characters
             IEnumerable<Character> characters = _context
                 .Characters.Include(x => x.Image)
                 .Where(x => x.Owner.Username == username && !x.IsNPC)
-                .Select(x => ApiAuxiliary.GetEntityPrepare(x) as Character)
+                .Select(x => _endpointEntityService.GetEntityPrepare(x) as Character)
                 .ToList();
 
             return Ok(characters);
@@ -91,7 +96,7 @@ namespace brokenHeart.Controllers.EntityControllers.Characters
                 return NotFound();
             }
 
-            Character character = ApiAuxiliary.GetEntityPrepare(
+            Character character = _endpointEntityService.GetEntityPrepare(
                 await FullCharacters().FirstOrDefaultAsync(x => x.Id == id)
             );
 
@@ -147,7 +152,12 @@ namespace brokenHeart.Controllers.EntityControllers.Characters
 
             try
             {
-                ApiAuxiliary.PatchEntity(_context, typeof(Character), character, operations);
+                _endpointEntityService.PatchEntity(
+                    _context,
+                    typeof(Character),
+                    character,
+                    operations
+                );
             }
             catch (Exception)
             {
@@ -194,7 +204,7 @@ namespace brokenHeart.Controllers.EntityControllers.Characters
                 return Problem("Entity set 'BrokenDbContext.Characters'  is null.");
             }
 
-            Character returnCharacter = ApiAuxiliary.PostEntity(
+            Character returnCharacter = _endpointEntityService.PostEntity(
                 _context,
                 typeof(Character),
                 character

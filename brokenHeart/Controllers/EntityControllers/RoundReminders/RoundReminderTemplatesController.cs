@@ -1,7 +1,6 @@
-using brokenHeart.Auxiliary;
 using brokenHeart.Database.DAO.RoundReminders;
-using brokenHeart.Database.DAO.Traits;
 using brokenHeart.DB;
+using brokenHeart.Services.Endpoints;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.JsonPatch.Operations;
@@ -15,10 +14,15 @@ namespace brokenHeart.Controllers.EntityControllers.RoundReminderTemplates
     public class RoundReminderTemplatesController : ControllerBase
     {
         private readonly BrokenDbContext _context;
+        private readonly IEndpointEntityService _endpointEntityService;
 
-        public RoundReminderTemplatesController(BrokenDbContext context)
+        public RoundReminderTemplatesController(
+            BrokenDbContext context,
+            IEndpointEntityService endpointEntityService
+        )
         {
             _context = context;
+            _endpointEntityService = endpointEntityService;
         }
 
         // GET: api/RoundReminderTemplates
@@ -37,7 +41,7 @@ namespace brokenHeart.Controllers.EntityControllers.RoundReminderTemplates
             }
 
             IEnumerable<RoundReminderTemplate> roundReminderTemplates = FullRoundReminderTemplates()
-                .Select(x => ApiAuxiliary.GetEntityPrepare(x) as RoundReminderTemplate)
+                .Select(x => _endpointEntityService.GetEntityPrepare(x) as RoundReminderTemplate)
                 .ToList();
 
             return Ok(roundReminderTemplates);
@@ -56,7 +60,7 @@ namespace brokenHeart.Controllers.EntityControllers.RoundReminderTemplates
                 return NotFound();
             }
 
-            RoundReminderTemplate roundReminderTemplate = ApiAuxiliary.GetEntityPrepare(
+            RoundReminderTemplate roundReminderTemplate = _endpointEntityService.GetEntityPrepare(
                 await FullRoundReminderTemplates().FirstOrDefaultAsync(x => x.Id == id)
             );
 
@@ -98,7 +102,7 @@ namespace brokenHeart.Controllers.EntityControllers.RoundReminderTemplates
 
             try
             {
-                ApiAuxiliary.PatchEntity(
+                _endpointEntityService.PatchEntity(
                     _context,
                     typeof(RoundReminderTemplate),
                     roundReminderTemplate,
@@ -128,7 +132,7 @@ namespace brokenHeart.Controllers.EntityControllers.RoundReminderTemplates
                 return Problem("Entity set 'BrokenDbContext.RoundReminderTemplates'  is null.");
             }
 
-            RoundReminderTemplate returnRoundReminderTemplate = ApiAuxiliary.PostEntity(
+            RoundReminderTemplate returnRoundReminderTemplate = _endpointEntityService.PostEntity(
                 _context,
                 typeof(RoundReminderTemplate),
                 roundReminderTemplate

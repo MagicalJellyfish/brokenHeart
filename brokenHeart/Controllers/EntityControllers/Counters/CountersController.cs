@@ -1,6 +1,6 @@
-﻿using brokenHeart.Auxiliary;
-using brokenHeart.Database.DAO.Counters;
+﻿using brokenHeart.Database.DAO.Counters;
 using brokenHeart.DB;
+using brokenHeart.Services.Endpoints;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.JsonPatch.Operations;
@@ -14,10 +14,15 @@ namespace brokenHeart.Controllers.EntityControllers.Counters
     public class CountersController : ControllerBase
     {
         private readonly BrokenDbContext _context;
+        private readonly IEndpointEntityService _endpointEntityService;
 
-        public CountersController(BrokenDbContext context)
+        public CountersController(
+            BrokenDbContext context,
+            IEndpointEntityService endpointEntityService
+        )
         {
             _context = context;
+            _endpointEntityService = endpointEntityService;
         }
 
         // GET: api/Counters
@@ -31,7 +36,7 @@ namespace brokenHeart.Controllers.EntityControllers.Counters
             }
 
             IEnumerable<Counter> counters = FullCounters()
-                .Select(x => ApiAuxiliary.GetEntityPrepare(x) as Counter)
+                .Select(x => _endpointEntityService.GetEntityPrepare(x) as Counter)
                 .ToList();
 
             return Ok(counters);
@@ -46,7 +51,7 @@ namespace brokenHeart.Controllers.EntityControllers.Counters
             {
                 return NotFound();
             }
-            Counter counter = ApiAuxiliary.GetEntityPrepare(
+            Counter counter = _endpointEntityService.GetEntityPrepare(
                 await FullCounters().FirstOrDefaultAsync(x => x.Id == id)
             );
 
@@ -87,7 +92,7 @@ namespace brokenHeart.Controllers.EntityControllers.Counters
 
             try
             {
-                ApiAuxiliary.PatchEntity(_context, typeof(Counter), counter, operations);
+                _endpointEntityService.PatchEntity(_context, typeof(Counter), counter, operations);
             }
             catch (Exception)
             {
@@ -110,7 +115,11 @@ namespace brokenHeart.Controllers.EntityControllers.Counters
                 return Problem("Entity set 'BrokenDbContext.Counters'  is null.");
             }
 
-            Counter returnCounter = ApiAuxiliary.PostEntity(_context, typeof(Counter), counter);
+            Counter returnCounter = _endpointEntityService.PostEntity(
+                _context,
+                typeof(Counter),
+                counter
+            );
 
             return CreatedAtAction("GetCounter", new { id = returnCounter.Id }, returnCounter);
         }

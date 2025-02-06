@@ -1,7 +1,7 @@
-using brokenHeart.Auxiliary;
 using brokenHeart.Database.DAO.Modifiers.Effects;
 using brokenHeart.Database.DAO.RoundReminders;
 using brokenHeart.DB;
+using brokenHeart.Services.Endpoints;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.JsonPatch.Operations;
@@ -15,10 +15,15 @@ namespace brokenHeart.Controllers.EntityControllers.EffectTemplates
     public class EffectTemplatesController : ControllerBase
     {
         private readonly BrokenDbContext _context;
+        private readonly IEndpointEntityService _endpointEntityService;
 
-        public EffectTemplatesController(BrokenDbContext context)
+        public EffectTemplatesController(
+            BrokenDbContext context,
+            IEndpointEntityService endpointEntityService
+        )
         {
             _context = context;
+            _endpointEntityService = endpointEntityService;
         }
 
         // GET: api/EffectTemplates
@@ -32,7 +37,7 @@ namespace brokenHeart.Controllers.EntityControllers.EffectTemplates
             }
 
             IEnumerable<EffectTemplate> effectTemplates = FullEffectTemplates()
-                .Select(x => ApiAuxiliary.GetEntityPrepare(x) as EffectTemplate)
+                .Select(x => _endpointEntityService.GetEntityPrepare(x) as EffectTemplate)
                 .ToList();
 
             return Ok(effectTemplates);
@@ -48,7 +53,7 @@ namespace brokenHeart.Controllers.EntityControllers.EffectTemplates
                 return NotFound();
             }
 
-            EffectTemplate effectTemplate = ApiAuxiliary.GetEntityPrepare(
+            EffectTemplate effectTemplate = _endpointEntityService.GetEntityPrepare(
                 await FullEffectTemplates().FirstOrDefaultAsync(x => x.Id == id)
             );
 
@@ -89,7 +94,7 @@ namespace brokenHeart.Controllers.EntityControllers.EffectTemplates
 
             try
             {
-                ApiAuxiliary.PatchEntity(
+                _endpointEntityService.PatchEntity(
                     _context,
                     typeof(EffectTemplate),
                     effectTemplate,
@@ -119,7 +124,7 @@ namespace brokenHeart.Controllers.EntityControllers.EffectTemplates
                 return Problem("Entity set 'BrokenDbContext.EffectTemplates'  is null.");
             }
 
-            EffectTemplate returnEffectTemplate = ApiAuxiliary.PostEntity(
+            EffectTemplate returnEffectTemplate = _endpointEntityService.PostEntity(
                 _context,
                 typeof(EffectTemplate),
                 effectTemplate

@@ -2,23 +2,19 @@
 using brokenHeart.Database.DAO.Characters;
 using brokenHeart.Database.DAO.Counters;
 using brokenHeart.Database.DAO.Stats;
+using brokenHeart.Models.Rolling;
 
-namespace brokenHeart.Auxiliary
+namespace brokenHeart.Services.Rolling
 {
-    public class RollAuxiliary
+    public class RollService : IRollService
     {
         private static Random rnd = new Random();
         private static List<char> operators = new List<char> { '+', '-', '*', '/', '(', ')' };
         private static List<char> specialChars = new List<char>(operators) { 'd' };
 
-        public enum KeepType
-        {
-            Highest,
-            Lowest,
-            None
-        }
+        public RollService() { }
 
-        public static RollResult CharRollString(string input, Character c)
+        public RollResult CharRollString(string input, Character c)
         {
             string output = "";
             for (int i = 0; i < input.Length; i++)
@@ -133,7 +129,7 @@ namespace brokenHeart.Auxiliary
             return RollString(output, input);
         }
 
-        public static RollResult RollString(string input, string? original = null)
+        public RollResult RollString(string input, string? original = null)
         {
             bool critEvaluated = false;
             bool criticalSuccess = false;
@@ -302,7 +298,7 @@ namespace brokenHeart.Auxiliary
             );
         }
 
-        private static int EvaluateString(string input)
+        private int EvaluateString(string input)
         {
             List<char> operators = new List<char> { 'd', '+', '-', '*', '/' };
 
@@ -394,7 +390,7 @@ namespace brokenHeart.Auxiliary
             return result;
         }
 
-        private static int Calculate(string first, char operation, string second)
+        private int Calculate(string first, char operation, string second)
         {
             int firstNum = int.Parse(first);
             int secondNum = int.Parse(second);
@@ -419,12 +415,7 @@ namespace brokenHeart.Auxiliary
             return result;
         }
 
-        public static RollResult Roll(
-            int rolls,
-            int die,
-            KeepType keep = KeepType.None,
-            int keepNum = -1
-        )
+        public RollResult Roll(int rolls, int die, KeepType keep = KeepType.None, int keepNum = -1)
         {
             if (keepNum == -1)
             {
@@ -482,5 +473,12 @@ namespace brokenHeart.Auxiliary
 
             return new RollResult(resultCombined, detailString);
         }
+    }
+
+    public enum KeepType
+    {
+        Highest,
+        Lowest,
+        None
     }
 }

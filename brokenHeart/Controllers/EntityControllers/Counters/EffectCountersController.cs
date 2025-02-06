@@ -1,7 +1,6 @@
-using System.Diagnostics.Metrics;
-using brokenHeart.Auxiliary;
 using brokenHeart.Database.DAO.Counters;
 using brokenHeart.DB;
+using brokenHeart.Services.Endpoints;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.JsonPatch.Operations;
@@ -15,10 +14,15 @@ namespace brokenHeart.Controllers.EntityControllers.EffectCounters
     public class EffectCountersController : ControllerBase
     {
         private readonly BrokenDbContext _context;
+        private readonly IEndpointEntityService _endpointEntityService;
 
-        public EffectCountersController(BrokenDbContext context)
+        public EffectCountersController(
+            BrokenDbContext context,
+            IEndpointEntityService endpointEntityService
+        )
         {
             _context = context;
+            _endpointEntityService = endpointEntityService;
         }
 
         // GET: api/EffectCounters
@@ -32,7 +36,7 @@ namespace brokenHeart.Controllers.EntityControllers.EffectCounters
             }
 
             IEnumerable<EffectCounter> effectCounters = FullEffectCounters()
-                .Select(x => ApiAuxiliary.GetEntityPrepare(x) as EffectCounter)
+                .Select(x => _endpointEntityService.GetEntityPrepare(x) as EffectCounter)
                 .ToList();
 
             return Ok(effectCounters);
@@ -48,7 +52,7 @@ namespace brokenHeart.Controllers.EntityControllers.EffectCounters
                 return NotFound();
             }
 
-            EffectCounter effectCounter = ApiAuxiliary.GetEntityPrepare(
+            EffectCounter effectCounter = _endpointEntityService.GetEntityPrepare(
                 await FullEffectCounters().FirstOrDefaultAsync(x => x.Id == id)
             );
 
@@ -89,7 +93,7 @@ namespace brokenHeart.Controllers.EntityControllers.EffectCounters
 
             try
             {
-                ApiAuxiliary.PatchEntity(
+                _endpointEntityService.PatchEntity(
                     _context,
                     typeof(EffectCounter),
                     effectCounter,
@@ -119,7 +123,7 @@ namespace brokenHeart.Controllers.EntityControllers.EffectCounters
                 return Problem("Entity set 'BrokenDbContext.EffectCounters'  is null.");
             }
 
-            EffectCounter returnEffectCounter = ApiAuxiliary.PostEntity(
+            EffectCounter returnEffectCounter = _endpointEntityService.PostEntity(
                 _context,
                 typeof(EffectCounter),
                 effectCounter

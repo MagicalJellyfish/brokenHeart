@@ -1,28 +1,24 @@
-﻿using brokenHeart.Auxiliary;
-using brokenHeart.Database.DAO;
+﻿using brokenHeart.Database.DAO;
 using brokenHeart.DB;
+using brokenHeart.Models.Rolling;
+using brokenHeart.Services.Rolling;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 
-namespace brokenHeart.Controllers
+namespace brokenHeart.Services.SignalR
 {
     [Authorize]
     public class SignalRHub : Hub
     {
         private readonly BrokenDbContext _context;
+        private readonly IRollService _rollService;
 
-        public SignalRHub(BrokenDbContext context)
+        public SignalRHub(BrokenDbContext context, IRollService rollService)
             : base()
         {
             _context = context;
-
-            context.CharacterChanged += SendCharacterUpdate;
-        }
-
-        public void SendCharacterUpdate(object? sender, int changedChar)
-        {
-            Clients.Group($"charChanged/{changedChar}").SendAsync($"charChanged/{changedChar}");
+            _rollService = rollService;
         }
 
         public override Task OnConnectedAsync()
@@ -56,7 +52,7 @@ namespace brokenHeart.Controllers
             }
 
             string roll = $"1d20+[{statName.ToUpper()}]";
-            RollResult result = RollAuxiliary.CharRollString(roll, c);
+            RollResult result = _rollService.CharRollString(roll, c);
 
             await Clients
                 .Group("brokenHand")

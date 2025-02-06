@@ -1,8 +1,7 @@
-﻿using brokenHeart.Auxiliary;
-using brokenHeart.Database.DAO.Characters;
+﻿using brokenHeart.Database.DAO.Characters;
 using brokenHeart.DB;
+using brokenHeart.Services.Endpoints;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.JsonPatch.Operations;
 using Microsoft.AspNetCore.Mvc;
@@ -14,10 +13,15 @@ namespace brokenHeart.Controllers.EntityControllers.Characters
     public class CharacterImagesController : ControllerBase
     {
         private readonly BrokenDbContext _context;
+        private readonly IEndpointEntityService _endpointEntityService;
 
-        public CharacterImagesController(BrokenDbContext context)
+        public CharacterImagesController(
+            BrokenDbContext context,
+            IEndpointEntityService endpointEntityService
+        )
         {
             _context = context;
+            _endpointEntityService = endpointEntityService;
         }
 
         // PATCH: api/CharacterImages/5
@@ -49,7 +53,7 @@ namespace brokenHeart.Controllers.EntityControllers.Characters
 
             try
             {
-                ApiAuxiliary.PatchEntity(
+                _endpointEntityService.PatchEntity(
                     _context,
                     typeof(CharacterImage),
                     characterImage,

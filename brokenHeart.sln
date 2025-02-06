@@ -16,9 +16,14 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "brokenHeart.Database", "brokenHeart.Database\brokenHeart.Database.csproj", "{91AE7BF2-8ECC-4E3D-BF29-EE6F6A4B0421}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "brokenHeart.Authentication", "brokenHeart.Authentication\brokenHeart.Authentication.csproj", "{4396E47F-BB4A-4C0A-86ED-9AA68C35CE45}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "brokenHeart.Authentication", "brokenHeart.Authentication\brokenHeart.Authentication.csproj", "{4396E47F-BB4A-4C0A-86ED-9AA68C35CE45}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "brokenHeart.Models", "brokenHeart.Models\brokenHeart.Models.csproj", "{61C909FD-88EC-43DF-B3D1-C8BE87B3A96A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "brokenHeart.Models", "brokenHeart.Models\brokenHeart.Models.csproj", "{61C909FD-88EC-43DF-B3D1-C8BE87B3A96A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "brokenHeart.Services", "brokenHeart.Services\brokenHeart.Services.csproj", "{1FCE0409-10E1-4B18-B470-619C2CD5C222}"
+	ProjectSection(ProjectDependencies) = postProject
+		{61C909FD-88EC-43DF-B3D1-C8BE87B3A96A} = {61C909FD-88EC-43DF-B3D1-C8BE87B3A96A}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -42,6 +47,10 @@ Global
 		{61C909FD-88EC-43DF-B3D1-C8BE87B3A96A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{61C909FD-88EC-43DF-B3D1-C8BE87B3A96A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{61C909FD-88EC-43DF-B3D1-C8BE87B3A96A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1FCE0409-10E1-4B18-B470-619C2CD5C222}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1FCE0409-10E1-4B18-B470-619C2CD5C222}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1FCE0409-10E1-4B18-B470-619C2CD5C222}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1FCE0409-10E1-4B18-B470-619C2CD5C222}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

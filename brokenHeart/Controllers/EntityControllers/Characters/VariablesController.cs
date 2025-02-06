@@ -1,7 +1,6 @@
-﻿using brokenHeart.Auxiliary;
-using brokenHeart.Database.DAO.Abilities;
-using brokenHeart.Database.DAO.Characters;
+﻿using brokenHeart.Database.DAO.Characters;
 using brokenHeart.DB;
+using brokenHeart.Services.Endpoints;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.JsonPatch.Operations;
@@ -15,10 +14,15 @@ namespace brokenHeart.Controllers.EntityControllers.Characters
     public class VariablesController : ControllerBase
     {
         private readonly BrokenDbContext _context;
+        private readonly IEndpointEntityService _endpointEntityService;
 
-        public VariablesController(BrokenDbContext context)
+        public VariablesController(
+            BrokenDbContext context,
+            IEndpointEntityService endpointEntityService
+        )
         {
             _context = context;
+            _endpointEntityService = endpointEntityService;
         }
 
         // GET: api/Variables
@@ -32,7 +36,7 @@ namespace brokenHeart.Controllers.EntityControllers.Characters
             }
 
             IEnumerable<Variable> variables = FullVariables()
-                .Select(x => ApiAuxiliary.GetEntityPrepare(x) as Variable)
+                .Select(x => _endpointEntityService.GetEntityPrepare(x) as Variable)
                 .ToList();
 
             return Ok(variables);
@@ -48,7 +52,7 @@ namespace brokenHeart.Controllers.EntityControllers.Characters
                 return NotFound();
             }
 
-            Variable variable = ApiAuxiliary.GetEntityPrepare(
+            Variable variable = _endpointEntityService.GetEntityPrepare(
                 await FullVariables().FirstOrDefaultAsync(x => x.Id == id)
             );
 
@@ -89,7 +93,12 @@ namespace brokenHeart.Controllers.EntityControllers.Characters
 
             try
             {
-                ApiAuxiliary.PatchEntity(_context, typeof(Variable), variable, operations);
+                _endpointEntityService.PatchEntity(
+                    _context,
+                    typeof(Variable),
+                    variable,
+                    operations
+                );
             }
             catch (Exception)
             {
@@ -112,7 +121,11 @@ namespace brokenHeart.Controllers.EntityControllers.Characters
                 return Problem("Entity set 'BrokenDbContext.Variables'  is null.");
             }
 
-            Variable returnVariable = ApiAuxiliary.PostEntity(_context, typeof(Variable), variable);
+            Variable returnVariable = _endpointEntityService.PostEntity(
+                _context,
+                typeof(Variable),
+                variable
+            );
 
             return CreatedAtAction("GetVariable", new { id = returnVariable.Id }, returnVariable);
         }

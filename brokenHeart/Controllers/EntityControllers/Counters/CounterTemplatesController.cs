@@ -1,8 +1,6 @@
-using System.Diagnostics.Metrics;
-using brokenHeart.Auxiliary;
 using brokenHeart.Database.DAO.Counters;
-using brokenHeart.Database.DAO.RoundReminders;
 using brokenHeart.DB;
+using brokenHeart.Services.Endpoints;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.JsonPatch.Operations;
@@ -16,10 +14,15 @@ namespace brokenHeart.Controllers.EntityControllers.CounterTemplates
     public class CounterTemplatesController : ControllerBase
     {
         private readonly BrokenDbContext _context;
+        private readonly IEndpointEntityService _endpointEntityService;
 
-        public CounterTemplatesController(BrokenDbContext context)
+        public CounterTemplatesController(
+            BrokenDbContext context,
+            IEndpointEntityService endpointEntityService
+        )
         {
             _context = context;
+            _endpointEntityService = endpointEntityService;
         }
 
         // GET: api/CounterTemplates
@@ -34,7 +37,7 @@ namespace brokenHeart.Controllers.EntityControllers.CounterTemplates
 
             IEnumerable<CounterTemplate> counterTemplates = FullCounterTemplates()
                 .Where(x => EF.Property<string>(x, "Discriminator") == "CounterTemplate")
-                .Select(x => ApiAuxiliary.GetEntityPrepare(x) as CounterTemplate)
+                .Select(x => _endpointEntityService.GetEntityPrepare(x) as CounterTemplate)
                 .ToList();
 
             return Ok(counterTemplates);
@@ -50,7 +53,7 @@ namespace brokenHeart.Controllers.EntityControllers.CounterTemplates
                 return NotFound();
             }
 
-            CounterTemplate counterTemplate = ApiAuxiliary.GetEntityPrepare(
+            CounterTemplate counterTemplate = _endpointEntityService.GetEntityPrepare(
                 await FullCounterTemplates().FirstOrDefaultAsync(x => x.Id == id)
             );
 
@@ -91,7 +94,7 @@ namespace brokenHeart.Controllers.EntityControllers.CounterTemplates
 
             try
             {
-                ApiAuxiliary.PatchEntity(
+                _endpointEntityService.PatchEntity(
                     _context,
                     typeof(CounterTemplate),
                     counterTemplate,
@@ -121,7 +124,7 @@ namespace brokenHeart.Controllers.EntityControllers.CounterTemplates
                 return Problem("Entity set 'BrokenDbContext.CounterTemplates'  is null.");
             }
 
-            CounterTemplate returnCounterTemplate = ApiAuxiliary.PostEntity(
+            CounterTemplate returnCounterTemplate = _endpointEntityService.PostEntity(
                 _context,
                 typeof(CounterTemplate),
                 counterTemplate

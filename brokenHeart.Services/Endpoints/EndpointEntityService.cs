@@ -3,14 +3,15 @@ using System.Data;
 using System.Reflection;
 using brokenHeart.DB;
 using Microsoft.AspNetCore.JsonPatch.Operations;
-using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Linq;
 
-namespace brokenHeart.Auxiliary
+namespace brokenHeart.Services.Endpoints
 {
-    public class ApiAuxiliary
+    public class EndpointEntityService : IEndpointEntityService
     {
-        public static dynamic GetEntityPrepare(dynamic requestEntity)
+        public EndpointEntityService() { }
+
+        public dynamic GetEntityPrepare(dynamic requestEntity)
         {
             List<PropertyInfo> allProperties = new List<PropertyInfo>(
                 requestEntity.GetType().GetProperties()
@@ -44,7 +45,7 @@ namespace brokenHeart.Auxiliary
             return requestEntity;
         }
 
-        public static void PatchEntity(
+        public void PatchEntity(
             BrokenDbContext context,
             Type entityType,
             dynamic requestEntity,
@@ -126,7 +127,7 @@ namespace brokenHeart.Auxiliary
                                 {
                                     if (typeof(ICollection).IsAssignableFrom(property.PropertyType))
                                     {
-                                        var value = (operation.value as JArray);
+                                        var value = operation.value as JArray;
                                         dynamic setValue = value
                                             .GetType()
                                             .GetMethod(nameof(value.ToObject), new Type[0])
@@ -305,10 +306,8 @@ namespace brokenHeart.Auxiliary
 
                             if (
                                 propertyIds.GetValue(requestEntity).Count
-                                != (
-                                    relationSets[propertyIds].GetValue(requestEntity).Count
+                                != relationSets[propertyIds].GetValue(requestEntity).Count
                                     - previousObjectCount
-                                )
                             )
                             {
                                 throw new Exception();
@@ -339,11 +338,7 @@ namespace brokenHeart.Auxiliary
             }
         }
 
-        public static dynamic PostEntity(
-            BrokenDbContext context,
-            Type entityType,
-            dynamic requestEntity
-        )
+        public dynamic PostEntity(BrokenDbContext context, Type entityType, dynamic requestEntity)
         {
             using (var transaction = context.Database.BeginTransaction())
             {
@@ -402,10 +397,8 @@ namespace brokenHeart.Auxiliary
 
                         if (
                             propertyIds.GetValue(requestEntity).Count
-                            != (
-                                relationSets[propertyIds].GetValue(requestEntity).Count
+                            != relationSets[propertyIds].GetValue(requestEntity).Count
                                 - previousObjectCount
-                            )
                         )
                         {
                             throw new Exception();
