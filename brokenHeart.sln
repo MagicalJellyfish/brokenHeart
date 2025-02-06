@@ -18,6 +18,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "brokenHeart.Database", "bro
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "brokenHeart.Authentication", "brokenHeart.Authentication\brokenHeart.Authentication.csproj", "{4396E47F-BB4A-4C0A-86ED-9AA68C35CE45}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "brokenHeart.Models", "brokenHeart.Models\brokenHeart.Models.csproj", "{61C909FD-88EC-43DF-B3D1-C8BE87B3A96A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -36,6 +38,10 @@ Global
 		{4396E47F-BB4A-4C0A-86ED-9AA68C35CE45}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4396E47F-BB4A-4C0A-86ED-9AA68C35CE45}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4396E47F-BB4A-4C0A-86ED-9AA68C35CE45}.Release|Any CPU.Build.0 = Release|Any CPU
+		{61C909FD-88EC-43DF-B3D1-C8BE87B3A96A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{61C909FD-88EC-43DF-B3D1-C8BE87B3A96A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{61C909FD-88EC-43DF-B3D1-C8BE87B3A96A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{61C909FD-88EC-43DF-B3D1-C8BE87B3A96A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

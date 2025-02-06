@@ -1,4 +1,4 @@
-﻿namespace brokenHeart.Auxiliary
+﻿namespace brokenHeart.Models.Rolling
 {
     public class RollResult
     {
