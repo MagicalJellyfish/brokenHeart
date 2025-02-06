@@ -1,4 +1,4 @@
-﻿namespace brokenHeart.Auxiliary
+﻿namespace brokenHeart.Models.brokenHand
 {
     public class Message
     {
