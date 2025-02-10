@@ -1,5 +1,6 @@
 ﻿using brokenHeart.Services.Endpoints;
 using brokenHeart.Services.Rolling;
+using brokenHeart.Services.SignalR;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace brokenHeart.Services
@@ -10,6 +11,8 @@ namespace brokenHeart.Services
         {
             serviceCollection.AddScoped<IEndpointEntityService, EndpointEntityService>();
             serviceCollection.AddScoped<IRollService, RollService>();
+
+            serviceCollection.AddHostedService<SignalRMessagingService>();
         }
     }
 }

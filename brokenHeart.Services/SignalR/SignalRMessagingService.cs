@@ -1,17 +1,33 @@
-﻿using brokenHeart.DB;
+﻿using brokenHeart.Database.Utility;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.Extensions.Hosting;
 
 namespace brokenHeart.Services.SignalR
 {
-    public class SignalRMessagingService
+    public class SignalRMessagingService : IHostedService
     {
         private readonly IHubContext<SignalRHub> _hubContext;
+        private readonly DatabaseEventEmitter _dbEventEmitter;
 
-        public SignalRMessagingService(BrokenDbContext context, IHubContext<SignalRHub> hubContext)
+        public SignalRMessagingService(
+            DatabaseEventEmitter dbEventEmitter,
+            IHubContext<SignalRHub> hubContext
+        )
         {
             _hubContext = hubContext;
+            _dbEventEmitter = dbEventEmitter;
+        }
 
-            context.CharacterChanged += SendCharacterUpdate;
+        public Task StartAsync(CancellationToken cancellationToken)
+        {
+            _dbEventEmitter.CharacterChanged += SendCharacterUpdate;
+            return Task.CompletedTask;
+        }
+
+        public Task StopAsync(CancellationToken cancellationToken)
+        {
+            _dbEventEmitter.CharacterChanged -= SendCharacterUpdate;
+            return Task.CompletedTask;
         }
 
         public void SendCharacterUpdate(object? sender, int changedChar)

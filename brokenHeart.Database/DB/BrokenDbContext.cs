@@ -59,10 +59,16 @@ namespace brokenHeart.DB
 
         public string DbPath { get; }
 
-        public event EventHandler<int> CharacterChanged;
+        public DatabaseEventEmitter _eventEmitter { get; set; }
 
-        public BrokenDbContext(DbContextOptions<BrokenDbContext> options)
-            : base(options) { }
+        public BrokenDbContext(
+            DbContextOptions<BrokenDbContext> options,
+            DatabaseEventEmitter eventEmitter
+        )
+            : base(options)
+        {
+            _eventEmitter = eventEmitter;
+        }
 
         public int SaveChangesSimple()
         {
@@ -121,7 +127,7 @@ namespace brokenHeart.DB
                         c.Update();
                         saveChanges += base.SaveChanges();
 
-                        CharacterChanged?.Invoke(this, changedChar);
+                        _eventEmitter.EmitCharacterChange(changedChar);
                     }
                     catch (Exception)
                     {

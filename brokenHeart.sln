@@ -20,7 +20,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "brokenHeart.Authentication"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "brokenHeart.Models", "brokenHeart.Models\brokenHeart.Models.csproj", "{61C909FD-88EC-43DF-B3D1-C8BE87B3A96A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "brokenHeart.Services", "brokenHeart.Services\brokenHeart.Services.csproj", "{1FCE0409-10E1-4B18-B470-619C2CD5C222}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "brokenHeart.Services", "brokenHeart.Services\brokenHeart.Services.csproj", "{1FCE0409-10E1-4B18-B470-619C2CD5C222}"
 	ProjectSection(ProjectDependencies) = postProject
 		{61C909FD-88EC-43DF-B3D1-C8BE87B3A96A} = {61C909FD-88EC-43DF-B3D1-C8BE87B3A96A}
 	EndProjectSection
