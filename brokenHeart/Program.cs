@@ -46,6 +46,7 @@ static void RegisterServices(IServiceCollection serviceCollection)
     serviceCollection.AddHostedService<TokenCleanupBService>();
 
     brokenHeart.Authentication.ServiceRegistration.RegisterServices(serviceCollection);
+    brokenHeart.Database.ServiceRegistration.RegisterServices(serviceCollection);
     brokenHeart.Services.ServiceRegistration.RegisterServices(serviceCollection);
 }
 
