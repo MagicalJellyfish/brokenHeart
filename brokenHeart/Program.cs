@@ -4,7 +4,7 @@ using brokenHeart;
 using brokenHeart.Auth;
 using brokenHeart.Authentication.DB;
 using brokenHeart.DB;
-using brokenHeart.JSON;
+using brokenHeart.Endpoints.JSON;
 using brokenHeart.Services.SignalR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.HttpOverrides;

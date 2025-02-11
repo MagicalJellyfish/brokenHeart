@@ -1,7 +1,7 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace brokenHeart.JSON
+namespace brokenHeart.Endpoints.JSON
 {
     public class ByteArrayConverter : JsonConverter<byte[]>
     {
