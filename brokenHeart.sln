@@ -7,6 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "brokenHeart", "brokenHeart\
 	ProjectSection(ProjectDependencies) = postProject
 		{61C909FD-88EC-43DF-B3D1-C8BE87B3A96A} = {61C909FD-88EC-43DF-B3D1-C8BE87B3A96A}
 		{91AE7BF2-8ECC-4E3D-BF29-EE6F6A4B0421} = {91AE7BF2-8ECC-4E3D-BF29-EE6F6A4B0421}
+		{EA56B970-3C1B-4A2C-B583-632B2DE33A77} = {EA56B970-3C1B-4A2C-B583-632B2DE33A77}
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{194C4B95-05BF-4268-AB8C-636257BAA4F6}"
@@ -24,6 +25,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "brokenHeart.Services", "bro
 	ProjectSection(ProjectDependencies) = postProject
 		{61C909FD-88EC-43DF-B3D1-C8BE87B3A96A} = {61C909FD-88EC-43DF-B3D1-C8BE87B3A96A}
 	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "brokenHeart.Endpoints", "brokenHeart.Endpoints\brokenHeart.Endpoints.csproj", "{EA56B970-3C1B-4A2C-B583-632B2DE33A77}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,6 +54,10 @@ Global
 		{1FCE0409-10E1-4B18-B470-619C2CD5C222}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1FCE0409-10E1-4B18-B470-619C2CD5C222}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1FCE0409-10E1-4B18-B470-619C2CD5C222}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EA56B970-3C1B-4A2C-B583-632B2DE33A77}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EA56B970-3C1B-4A2C-B583-632B2DE33A77}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EA56B970-3C1B-4A2C-B583-632B2DE33A77}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EA56B970-3C1B-4A2C-B583-632B2DE33A77}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
