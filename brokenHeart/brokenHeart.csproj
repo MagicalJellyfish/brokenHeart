@@ -33,6 +33,7 @@
   <ItemGroup>
     <ProjectReference Include="..\brokenHeart.Authentication\brokenHeart.Authentication.csproj" />
     <ProjectReference Include="..\brokenHeart.Database\brokenHeart.Database.csproj" />
+    <ProjectReference Include="..\brokenHeart.Endpoints\brokenHeart.Endpoints.csproj" />
     <ProjectReference Include="..\brokenHeart.Models\brokenHeart.Models.csproj" />
     <ProjectReference Include="..\brokenHeart.Services\brokenHeart.Services.csproj" />
   </ItemGroup>
