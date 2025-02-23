@@ -129,9 +129,6 @@ namespace brokenHeart.Database.DAO
         public virtual ICollection<RoundReminder> RoundReminders { get; set; } =
             new List<RoundReminder>();
 
-        public int ImageId { get; set; }
-        public CharacterImage Image { get; set; } = new CharacterImage();
-
         public bool IsNPC { get; set; }
 
         public int OwnerId { get; set; }
