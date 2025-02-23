@@ -27,6 +27,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "brokenHeart.Services", "bro
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "brokenHeart.Endpoints", "brokenHeart.Endpoints\brokenHeart.Endpoints.csproj", "{EA56B970-3C1B-4A2C-B583-632B2DE33A77}"
+	ProjectSection(ProjectDependencies) = postProject
+		{61C909FD-88EC-43DF-B3D1-C8BE87B3A96A} = {61C909FD-88EC-43DF-B3D1-C8BE87B3A96A}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

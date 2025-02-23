@@ -1,5 +1,4 @@
-﻿using brokenHeart.Database.DAO.Characters;
-using brokenHeart.Models.Core.Abilities.Abilities;
+﻿using brokenHeart.Models.Core.Abilities.Abilities;
 using brokenHeart.Models.Core.Counters;
 using brokenHeart.Models.Core.Modifiers.Effects;
 using brokenHeart.Models.Core.Modifiers.Effects.Injuries;
@@ -68,8 +67,6 @@ namespace brokenHeart.Models.Core.Characters
 
         public Children<RoundReminderModel> RoundReminders { get; set; } =
             new Children<RoundReminderModel>();
-
-        public CharacterImage Image { get; set; } = new CharacterImage();
 
         public bool IsNPC { get; set; }
     }
