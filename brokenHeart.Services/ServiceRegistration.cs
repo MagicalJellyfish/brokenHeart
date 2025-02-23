@@ -1,4 +1,6 @@
-﻿using brokenHeart.Services.Endpoints;
+﻿using brokenHeart.Services.DataTransfer.Projection.Characters;
+using brokenHeart.Services.DataTransfer.Search.Characters;
+using brokenHeart.Services.Endpoints;
 using brokenHeart.Services.Rolling;
 using brokenHeart.Services.SignalR;
 using Microsoft.Extensions.DependencyInjection;
@@ -11,6 +13,9 @@ namespace brokenHeart.Services
         {
             serviceCollection.AddScoped<IEndpointEntityService, EndpointEntityService>();
             serviceCollection.AddScoped<IRollService, RollService>();
+
+            serviceCollection.AddScoped<ICharacterSearchService, CharacterSearchService>();
+            serviceCollection.AddScoped<ICharacterProjectionService, CharacterProjectionService>();
 
             serviceCollection.AddHostedService<SignalRMessagingService>();
         }
