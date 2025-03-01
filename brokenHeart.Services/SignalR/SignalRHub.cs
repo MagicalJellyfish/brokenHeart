@@ -1,4 +1,5 @@
-﻿using brokenHeart.Database.DAO;
+﻿using brokenHeart.Authentication.DB;
+using brokenHeart.Database.DAO;
 using brokenHeart.DB;
 using brokenHeart.Models.Rolling;
 using brokenHeart.Services.Rolling;
@@ -12,12 +13,18 @@ namespace brokenHeart.Services.SignalR
     public class SignalRHub : Hub
     {
         private readonly BrokenDbContext _context;
+        private readonly AuthDbContext _authContext;
         private readonly IRollService _rollService;
 
-        public SignalRHub(BrokenDbContext context, IRollService rollService)
+        public SignalRHub(
+            BrokenDbContext context,
+            AuthDbContext authContext,
+            IRollService rollService
+        )
             : base()
         {
             _context = context;
+            _authContext = authContext;
             _rollService = rollService;
         }
 
@@ -31,8 +38,25 @@ namespace brokenHeart.Services.SignalR
             return base.OnConnectedAsync();
         }
 
-        public async Task RollStat(int charId, int statId, string discordId)
+        public async Task RollStat(int charId, int statId)
         {
+            string? requestUsername = Context.GetHttpContext().User.Identity?.Name?.ToLower();
+
+            if (requestUsername == null)
+            {
+                return;
+            }
+
+            ulong? discordId = _authContext
+                .Users.Where(x => x.Username == requestUsername)
+                .SingleOrDefault()
+                ?.DiscordId;
+
+            if (discordId == null)
+            {
+                return;
+            }
+
             Character? c = GetBaseCharacters().SingleOrDefault(x => x.Id == charId);
             if (c == null)
             {
@@ -54,9 +78,7 @@ namespace brokenHeart.Services.SignalR
             string roll = $"1d20+[{statName.ToUpper()}]";
             RollResult result = _rollService.CharRollString(roll, c);
 
-            await Clients
-                .Group("brokenHand")
-                .SendAsync("web/Roll", roll, result, ulong.Parse(discordId));
+            await Clients.Group("brokenHand").SendAsync("web/Roll", roll, result, discordId);
         }
 
         public async Task RegisterForCharChange(int id)
