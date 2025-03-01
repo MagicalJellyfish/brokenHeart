@@ -1,5 +1,3 @@
-using System.Security.Claims;
-using System.Text;
 using brokenHeart;
 using brokenHeart.Auth;
 using brokenHeart.Authentication.DB;
@@ -10,6 +8,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using System.Security.Claims;
+using System.Text;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 ConfigureBuilder(builder);
@@ -123,7 +123,7 @@ static void AddAuthentication(WebApplicationBuilder builder)
                 ValidateLifetime = true,
                 IssuerSigningKey = new SymmetricSecurityKey(
                     Encoding.UTF8.GetBytes(builder.Configuration["JWT_Secret"])
-                )
+                ),
             };
             options.Events = new JwtBearerEvents
             {

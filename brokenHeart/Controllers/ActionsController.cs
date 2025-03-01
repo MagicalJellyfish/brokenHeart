@@ -10,7 +10,6 @@ using brokenHeart.Services.Endpoints;
 using brokenHeart.Services.Rolling;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 
 namespace brokenHeart.Controllers
 {
@@ -187,7 +186,7 @@ namespace brokenHeart.Controllers
             }
 
             List<Character> targetChars = new List<Character>();
-            if (!targets.IsNullOrEmpty())
+            if (!string.IsNullOrEmpty(targets))
             {
                 List<Character> baseCharacters = GetBaseCharacters().ToList();
 
@@ -256,7 +255,7 @@ namespace brokenHeart.Controllers
             }
 
             RollResult? damage = null;
-            if (!ability.Damage.IsNullOrEmpty())
+            if (!string.IsNullOrEmpty(ability.Damage))
             {
                 string damageString = ability.Damage!;
                 if (damageModifier != null)
@@ -268,7 +267,7 @@ namespace brokenHeart.Controllers
             }
 
             List<Message> returnMessages = new List<Message>();
-            if (!ability.Self.IsNullOrEmpty())
+            if (!string.IsNullOrEmpty(ability.Self))
             {
                 string selfString = ability.Self!;
                 if (selfModifer != null)
@@ -278,7 +277,7 @@ namespace brokenHeart.Controllers
 
                 RollResult self = _rollService.CharRollString(selfString, c);
 
-                if (!ability.Target.IsNullOrEmpty())
+                if (!string.IsNullOrEmpty(ability.Target))
                 {
                     if (ability.TargetType == TargetType.Self)
                     {
