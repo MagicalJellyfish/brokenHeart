@@ -1,5 +1,4 @@
 using brokenHeart;
-using brokenHeart.Auth;
 using brokenHeart.Authentication.DB;
 using brokenHeart.DB;
 using brokenHeart.Endpoints.JSON;
@@ -43,8 +42,6 @@ static void ConfigureBuilder(WebApplicationBuilder builder)
 
 static void RegisterServices(IServiceCollection serviceCollection)
 {
-    serviceCollection.AddHostedService<TokenCleanupBService>();
-
     brokenHeart.Authentication.ServiceRegistration.RegisterServices(serviceCollection);
     brokenHeart.Database.ServiceRegistration.RegisterServices(serviceCollection);
     brokenHeart.Services.ServiceRegistration.RegisterServices(serviceCollection);

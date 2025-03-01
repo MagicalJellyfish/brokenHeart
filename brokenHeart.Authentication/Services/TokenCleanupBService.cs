@@ -39,6 +39,9 @@ namespace brokenHeart.Auth
 
                 foreach (Token token in expiredTokens)
                 {
+                    Console.WriteLine(
+                        $"Clearing expired token for {context.Users.SingleOrDefault(x => x.Tokens.Contains(token))?.Username}"
+                    );
                     context.Tokens.Remove(token);
                 }
 

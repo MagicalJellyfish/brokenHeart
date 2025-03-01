@@ -1,7 +1,4 @@
-﻿using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Security.Cryptography;
-using brokenHeart.Authentication.DB;
+﻿using brokenHeart.Authentication.DB;
 using brokenHeart.Authentication.Entities;
 using brokenHeart.Authentication.Models;
 using brokenHeart.Database.DAO;
@@ -10,6 +7,9 @@ using brokenHeart.Models;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Security.Cryptography;
 
 namespace brokenHeart.Authentication.Services
 {
@@ -218,7 +218,11 @@ namespace brokenHeart.Authentication.Services
 
         public ExecutionResult<AuthenticationResult> Refresh(RefreshModel refreshModel)
         {
-            if (refreshModel == null)
+            if (
+                refreshModel == null
+                || refreshModel.AccessToken == null
+                || refreshModel.RefreshToken == null
+            )
             {
                 return new ExecutionResult<AuthenticationResult>()
                 {
@@ -256,7 +260,17 @@ namespace brokenHeart.Authentication.Services
                 };
             }
 
-            Token dbToken = user.Tokens.Single(x => x.AccessToken == accessToken);
+            Token? dbToken = user.Tokens.SingleOrDefault(x => x.AccessToken == accessToken);
+
+            if (dbToken == null)
+            {
+                return new ExecutionResult<AuthenticationResult>()
+                {
+                    Succeeded = false,
+                    StatusCode = System.Net.HttpStatusCode.BadRequest,
+                    Message = "Invalid access token"
+                };
+            }
 
             if (refreshToken != dbToken.RefreshToken)
             {
@@ -271,11 +285,7 @@ namespace brokenHeart.Authentication.Services
                 };
             }
 
-            if (
-                user.Tokens.Single(x =>
-                    x.AccessToken == refreshModel.AccessToken
-                ).RefreshTokenExpiryTime <= DateTime.Now
-            )
+            if (dbToken.RefreshTokenExpiryTime <= DateTime.Now)
             {
                 _authContext.Tokens.Remove(dbToken);
 
@@ -288,8 +298,9 @@ namespace brokenHeart.Authentication.Services
             }
 
             TokenResult tokenResult = _tokenService.GenerateTokens(principal.Claims.ToList());
+            tokenResult.Token.Id = dbToken.Id;
 
-            _authContext.Tokens.Update(tokenResult.Token);
+            _authContext.Tokens.Update(dbToken).CurrentValues.SetValues(tokenResult.Token);
             _authContext.SaveChanges();
 
             return new ExecutionResult<AuthenticationResult>()

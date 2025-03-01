@@ -29,14 +29,14 @@ namespace brokenHeart.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<ActionResult> Register(RegistrationModel registrationModel)
+        public ActionResult Register(RegistrationModel registrationModel)
         {
             ExecutionResult result = _authenticationService.Register(registrationModel);
             return StatusCode((int)result.StatusCode, result.Message);
         }
 
         [HttpPost("login")]
-        public async Task<ActionResult> Login(LoginModel loginModel)
+        public ActionResult Login(LoginModel loginModel)
         {
             ExecutionResult<AuthenticationResult> result = _authenticationService.Login(loginModel);
 
@@ -50,18 +50,25 @@ namespace brokenHeart.Controllers
 
         [HttpGet("logout")]
         [Authorize]
-        public async Task<ActionResult> Logout()
+        public ActionResult Logout()
         {
-            _authenticationService.Logout(
-                User.Identity.Name.ToLower(),
-                Request.Headers.Single(y => y.Key == "Authorization").Value.Single().Substring(7)
-            );
+            string? token = Request
+                .Headers.SingleOrDefault(y => y.Key == "Authorization")
+                .Value.SingleOrDefault()
+                ?.Substring(7);
+
+            if (token == null)
+            {
+                return BadRequest("No token supplied");
+            }
+
+            _authenticationService.Logout(User.Identity.Name.ToLower(), token);
 
             return Ok();
         }
 
         [HttpPost("refresh-token")]
-        public async Task<IActionResult> RefreshToken(RefreshModel refreshModel)
+        public IActionResult RefreshToken(RefreshModel refreshModel)
         {
             ExecutionResult<AuthenticationResult> result = _authenticationService.Refresh(
                 refreshModel
@@ -77,7 +84,7 @@ namespace brokenHeart.Controllers
 
         [HttpGet("discord")]
         [Authorize]
-        public async Task<ActionResult<object>> GetId()
+        public ActionResult<object> GetId()
         {
             var user = _context.Users.Single(x =>
                 x.Username.ToLower() == User.Identity.Name.ToLower()
@@ -93,7 +100,7 @@ namespace brokenHeart.Controllers
 
         [HttpPatch("discord/{discordId}")]
         [Authorize]
-        public async Task<ActionResult> ChangeId(ulong discordId)
+        public ActionResult ChangeId(ulong discordId)
         {
             var user = _context.Users.Single(x =>
                 x.Username.ToLower() == User.Identity.Name.ToLower()

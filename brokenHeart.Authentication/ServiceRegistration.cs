@@ -1,4 +1,5 @@
-﻿using brokenHeart.Authentication.Services;
+﻿using brokenHeart.Auth;
+using brokenHeart.Authentication.Services;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace brokenHeart.Authentication
@@ -10,6 +11,8 @@ namespace brokenHeart.Authentication
             serviceCollection.AddScoped<IPasswordService, PasswordService>();
             serviceCollection.AddScoped<IAuthenticationService, AuthenticationService>();
             serviceCollection.AddScoped<ITokenService, TokenService>();
+
+            serviceCollection.AddHostedService<TokenCleanupBService>();
         }
     }
 }
