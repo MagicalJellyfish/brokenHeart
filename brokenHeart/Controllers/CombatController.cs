@@ -10,7 +10,6 @@ using brokenHeart.Services.Endpoints;
 using brokenHeart.Services.Rolling;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 
 namespace brokenHeart.Controllers
 {
@@ -324,7 +323,7 @@ namespace brokenHeart.Controllers
                 string effects = "";
                 foreach (Effect effect in character.Effects)
                 {
-                    if (!effect.Hp.IsNullOrEmpty())
+                    if (!string.IsNullOrEmpty(effect.Hp))
                     {
                         RollResult result = _rollService.CharRollString(effect.Hp, character);
                         effects +=
