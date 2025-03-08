@@ -28,6 +28,8 @@ namespace brokenHeart.Services
 
             // Projections
             serviceCollection.AddScoped<ICharacterProjectionService, CharacterProjectionService>();
+            serviceCollection.AddScoped<IStatProjectionService, StatProjectionService>();
+
             // Search
             serviceCollection.AddScoped<ICharacterSearchService, CharacterSearchService>();
             serviceCollection.AddScoped<IAbilitySearchService, AbilitySearchService>();
