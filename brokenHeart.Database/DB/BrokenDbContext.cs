@@ -322,7 +322,13 @@ namespace brokenHeart.DB
                 .HasForeignKey("CharacterId")
                 .OnDelete(DeleteBehavior.Cascade);
 
-            //EFCore gets confused on two Many-To-Many Relations on the same table
+            //EFCore gets confused on two Relations between the same tables
+            modelBuilder
+                .Entity<Character>()
+                .HasOne(x => x.DeathCounter)
+                .WithOne(y => y.DeathCountCharacter)
+                .HasForeignKey<Character>(x => x.DeathCounterId);
+
             modelBuilder
                 .Entity<AbilityTemplate>()
                 .HasMany(x => x.AppliedEffectTemplates)
