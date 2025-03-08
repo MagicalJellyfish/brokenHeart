@@ -15,6 +15,9 @@ namespace brokenHeart.Services
             serviceCollection.AddScoped<IEndpointEntityService, EndpointEntityService>();
             serviceCollection.AddScoped<IRollService, RollService>();
 
+            // Save
+            serviceCollection.AddScoped<ICharacterSaveService, CharacterSaveService>();
+
             // Projections
             serviceCollection.AddScoped<ICharacterProjectionService, CharacterProjectionService>();
             // Search

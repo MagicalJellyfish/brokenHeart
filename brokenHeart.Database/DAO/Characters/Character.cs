@@ -57,9 +57,9 @@ namespace brokenHeart.Database.DAO
         }
 
         public int Id { get; set; }
-        public string Name { get; set; }
+        public string Name { get; set; } = "";
         public string? DefaultShortcut { get; set; }
-        public string Description { get; set; }
+        public string Description { get; set; } = "";
 
         //in m
         public decimal? Height { get; set; }
@@ -68,10 +68,10 @@ namespace brokenHeart.Database.DAO
         public int? Weight { get; set; }
 
         //in €
-        public decimal Money { get; set; }
+        public decimal Money { get; set; } = 0;
 
         // Custom Currency
-        public int C { get; set; }
+        public int C { get; set; } = 0;
 
         public int MaxHp { get; set; }
 
@@ -87,8 +87,8 @@ namespace brokenHeart.Database.DAO
         public int Evasion { get; private set; }
 
         public int? Age { get; set; }
-        public string Notes { get; set; }
-        public string Experience { get; set; }
+        public string Notes { get; set; } = "";
+        public string Experience { get; set; } = "";
 
         public virtual ICollection<StatValue> Stats { get; private set; } = new List<StatValue>();
         public virtual ICollection<BodypartCondition> BodypartConditions { get; set; } =
