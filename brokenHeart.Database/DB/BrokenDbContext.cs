@@ -322,6 +322,13 @@ namespace brokenHeart.DB
                 .HasForeignKey("CharacterId")
                 .OnDelete(DeleteBehavior.Cascade);
 
+            modelBuilder
+                .Entity<Ability>()
+                .HasOne("brokenHeart.Database.DAO.Character", "Character")
+                .WithMany("Abilities")
+                .HasForeignKey("CharacterId")
+                .OnDelete(DeleteBehavior.Cascade);
+
             //EFCore gets confused on two Relations between the same tables
             modelBuilder
                 .Entity<Character>()
