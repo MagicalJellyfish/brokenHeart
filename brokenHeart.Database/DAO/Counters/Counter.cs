@@ -28,7 +28,7 @@ namespace brokenHeart.Database.DAO.Counters
         }
 
         public int Id { get; set; }
-        public string Name { get; set; } = "";
+        public string Name { get; set; } = "New Counter";
         public string Description { get; set; } = "";
         public int Value { get; set; } = 0;
         public int Max { get; set; } = 0;

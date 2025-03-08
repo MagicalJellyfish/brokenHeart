@@ -13,14 +13,14 @@ namespace brokenHeart.Database.DAO.Abilities.Abilities
         public Ability(
             string name,
             string description,
-            string? shortcut = null,
+            string shortcut = "",
             bool canInjure = false,
             TargetType targetType = TargetType.None,
-            string? self = null,
-            string? target = null,
-            string? damage = null,
-            string? range = null,
-            int? maxUses = null,
+            string self = "",
+            string target = "",
+            string damage = "",
+            string range = "",
+            int maxUses = 0,
             ReplenishType replenishType = ReplenishType.None,
             ICollection<Roll>? rolls = null,
             ICollection<EffectTemplate>? appliedEffectTemplates = null
@@ -54,7 +54,7 @@ namespace brokenHeart.Database.DAO.Abilities.Abilities
         }
 
         public int Id { get; set; }
-        public string Name { get; set; } = "";
+        public string Name { get; set; } = "New Ability";
         public string Abstract { get; set; } = "";
         public string Description { get; set; } = "";
 
@@ -62,14 +62,14 @@ namespace brokenHeart.Database.DAO.Abilities.Abilities
         public TargetType TargetType { get; set; } = TargetType.Target;
 
         public bool CanInjure { get; set; } = true;
-        public string? Self { get; set; }
-        public string? Target { get; set; }
-        public string? Damage { get; set; }
+        public string Self { get; set; } = "";
+        public string Target { get; set; } = "";
+        public string Damage { get; set; } = "";
 
-        public string? Range { get; set; }
+        public string Range { get; set; } = "";
 
-        public int? Uses { get; set; }
-        public int? MaxUses { get; set; }
+        public int Uses { get; set; } = 0;
+        public int MaxUses { get; set; } = 0;
         public ReplenishType ReplenishType { get; set; } = ReplenishType.None;
 
         [NotMapped]

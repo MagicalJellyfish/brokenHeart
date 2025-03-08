@@ -42,7 +42,7 @@ namespace brokenHeart.Database.DAO.Modifiers
         }
 
         public int Id { get; set; }
-        public string Name { get; set; } = "";
+        public string Name { get; set; } = "New Modifier";
         public string Description { get; set; } = "";
         public string Abstract { get; set; } = "";
         public int MaxHp { get; set; } = 0;
