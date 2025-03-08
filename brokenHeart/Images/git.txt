@@ -1,0 +1,1 @@
+Git deletes this folder on switching branches if theres nothing inside
