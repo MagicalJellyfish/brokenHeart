@@ -14,7 +14,7 @@ namespace brokenHeart.Database.DAO.Characters
         }
 
         public int Id { get; set; }
-        public string Name { get; set; } = "";
+        public string Name { get; set; } = "New Variable";
         public int Value { get; set; } = 0;
 
         public int? CharacterId { get; set; }

@@ -20,7 +20,7 @@ namespace brokenHeart.Database.DAO.RoundReminders
 
         public int Id { get; set; }
         public bool Reminding { get; set; } = true;
-        public string Reminder { get; set; } = "";
+        public string Reminder { get; set; } = "New Reminder";
 
         public int ViewPosition { get; set; }
 

@@ -57,7 +57,7 @@ namespace brokenHeart.Database.DAO
         }
 
         public int Id { get; set; }
-        public string Name { get; set; } = "";
+        public string Name { get; set; } = "New Character";
         public string? DefaultShortcut { get; set; }
         public string Description { get; set; } = "";
 
