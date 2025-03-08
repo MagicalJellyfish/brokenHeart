@@ -1,6 +1,7 @@
 ﻿using brokenHeart.Database.DAO.RoundReminders;
 using brokenHeart.Models.DataTransfer;
 using brokenHeart.Models.DataTransfer.Projection;
+using brokenHeart.Models.DataTransfer.Save.ElementFields.RoundReminders;
 using brokenHeart.Models.DataTransfer.Search;
 using brokenHeart.Services.DataTransfer.Search.RoundReminders;
 
@@ -36,7 +37,12 @@ namespace brokenHeart.Services.DataTransfer.Projection.RoundReminders
                 {
                     Texts = new()
                     {
-                        new ElementView.Text() { Title = "Reminding Text", Content = x.Reminder },
+                        new ElementView.Text()
+                        {
+                            FieldId = (int)RoundReminderField.Reminder,
+                            Title = "Reminding Text",
+                            Content = x.Reminder
+                        },
                     },
                     Fields = new()
                     {
@@ -48,6 +54,7 @@ namespace brokenHeart.Services.DataTransfer.Projection.RoundReminders
                         },
                         new ElementView.Field()
                         {
+                            FieldId = (int)RoundReminderField.Reminding,
                             Title = "Reminding",
                             Content = x.Reminding,
                             Type = ElementView.FieldType.Boolean

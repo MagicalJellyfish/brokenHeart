@@ -55,6 +55,18 @@ namespace brokenHeart.Endpoints.brokenEye.Entities
             return Ok(result.Value);
         }
 
+        [HttpPut("{type}/{id}")]
+        public ActionResult UpdateElement(
+            ElementType type,
+            int id,
+            List<ElementUpdate> elementUpdate
+        )
+        {
+            _elementSubmissionService.UpdateElement(type, id, elementUpdate);
+
+            return Ok();
+        }
+
         [HttpDelete("{type}/{id}")]
         public ActionResult DeleteElement(ElementType type, int id)
         {

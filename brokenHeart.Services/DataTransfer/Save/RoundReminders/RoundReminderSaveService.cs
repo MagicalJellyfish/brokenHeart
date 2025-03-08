@@ -2,6 +2,8 @@
 using brokenHeart.DB;
 using brokenHeart.Models;
 using brokenHeart.Models.DataTransfer;
+using brokenHeart.Models.DataTransfer.Save;
+using brokenHeart.Models.DataTransfer.Save.ElementFields.RoundReminders;
 
 namespace brokenHeart.Services.DataTransfer.Save.RoundReminders
 {
@@ -44,6 +46,26 @@ namespace brokenHeart.Services.DataTransfer.Save.RoundReminders
             _context.SaveChanges();
 
             return new ExecutionResult<int>() { Value = roundReminder.Id };
+        }
+
+        public void UpdateElement(int id, List<ElementUpdate> updates)
+        {
+            RoundReminder roundReminder = _context.RoundReminders.Single(x => x.Id == id);
+
+            foreach (ElementUpdate update in updates)
+            {
+                switch ((RoundReminderField)update.FieldId)
+                {
+                    case RoundReminderField.Reminding:
+                        roundReminder.Reminding = bool.Parse(update.Value);
+                        break;
+                    case RoundReminderField.Reminder:
+                        roundReminder.Reminder = update.Value;
+                        break;
+                }
+            }
+
+            _context.SaveChanges();
         }
 
         public void DeleteElement(int id)

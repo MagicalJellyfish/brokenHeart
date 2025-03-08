@@ -2,6 +2,8 @@
 using brokenHeart.DB;
 using brokenHeart.Models;
 using brokenHeart.Models.DataTransfer;
+using brokenHeart.Models.DataTransfer.Save;
+using brokenHeart.Models.DataTransfer.Save.ElementFields.Modifiers.Traits;
 
 namespace brokenHeart.Services.DataTransfer.Save.Modifiers.Traits
 {
@@ -10,10 +12,12 @@ namespace brokenHeart.Services.DataTransfer.Save.Modifiers.Traits
         public ElementType SaveType => ElementType.Trait;
 
         private readonly BrokenDbContext _context;
+        private readonly IModifierSaveService _modifierSaveService;
 
-        public TraitSaveService(BrokenDbContext context)
+        public TraitSaveService(BrokenDbContext context, IModifierSaveService modifierSaveService)
         {
             _context = context;
+            _modifierSaveService = modifierSaveService;
         }
 
         public ExecutionResult<int> CreateElement(ElementParentType parentType, int parentId)
@@ -38,6 +42,25 @@ namespace brokenHeart.Services.DataTransfer.Save.Modifiers.Traits
             _context.SaveChanges();
 
             return new ExecutionResult<int>() { Value = trait.Id };
+        }
+
+        public void UpdateElement(int id, List<ElementUpdate> updates)
+        {
+            Trait trait = _context.Traits.Single(x => x.Id == id);
+
+            _modifierSaveService.UpdateGivenModifier(trait, updates);
+
+            foreach (ElementUpdate update in updates)
+            {
+                switch ((TraitField)update.FieldId)
+                {
+                    case TraitField.Active:
+                        trait.Active = bool.Parse(update.Value);
+                        break;
+                }
+            }
+
+            _context.SaveChanges();
         }
 
         public void DeleteElement(int id)

@@ -1,6 +1,8 @@
 using brokenHeart.Database.DAO.Modifiers.Items;
 using brokenHeart.Models.DataTransfer;
 using brokenHeart.Models.DataTransfer.Projection;
+using brokenHeart.Models.DataTransfer.Save.ElementFields.Modifiers;
+using brokenHeart.Models.DataTransfer.Save.ElementFields.Modifiers.Items;
 using brokenHeart.Models.DataTransfer.Search.Modifiers;
 using brokenHeart.Services.DataTransfer.Search.Abilities;
 
@@ -31,8 +33,18 @@ namespace brokenHeart.Services.DataTransfer.Projection.Abilities
                 {
                     Texts = new()
                     {
-                        new ElementView.Text() { Title = "Description", Content = x.Description },
-                        new ElementView.Text() { Title = "Abstract", Content = x.Abstract }
+                        new ElementView.Text()
+                        {
+                            FieldId = (int)ModifierField.Description,
+                            Title = "Description",
+                            Content = x.Description
+                        },
+                        new ElementView.Text()
+                        {
+                            FieldId = (int)ModifierField.Abstract,
+                            Title = "Abstract",
+                            Content = x.Abstract
+                        }
                     },
                     Fields = new()
                     {
@@ -44,36 +56,42 @@ namespace brokenHeart.Services.DataTransfer.Projection.Abilities
                         },
                         new ElementView.Field()
                         {
+                            FieldId = (int)ModifierField.Name,
                             Title = "Name",
                             Content = x.Name,
                             Type = ElementView.FieldType.String
                         },
                         new ElementView.Field()
                         {
+                            FieldId = (int)ModifierField.MaxHp,
                             Title = "Maximum HP Increase",
                             Content = x.MaxHp,
                             Type = ElementView.FieldType.Number
                         },
                         new ElementView.Field()
                         {
+                            FieldId = (int)ModifierField.MovementSpeed,
                             Title = "Movement Speed Increase",
                             Content = x.MovementSpeed,
                             Type = ElementView.FieldType.Number
                         },
                         new ElementView.Field()
                         {
+                            FieldId = (int)ModifierField.Evasion,
                             Title = "Evasion",
                             Content = x.Evasion,
                             Type = ElementView.FieldType.Number
                         },
                         new ElementView.Field()
                         {
+                            FieldId = (int)ModifierField.Armor,
                             Title = "Armor",
                             Content = x.Armor,
                             Type = ElementView.FieldType.Number
                         },
                         new ElementView.Field()
                         {
+                            FieldId = (int)ItemField.Equipped,
                             Title = "Equipped",
                             Content = x.Equipped,
                             Type = ElementView.FieldType.Boolean
@@ -89,12 +107,14 @@ namespace brokenHeart.Services.DataTransfer.Projection.Abilities
                                 {
                                     new ElementView.Field()
                                     {
+                                        FieldId = (int)ItemField.Amount,
                                         Title = "Amount",
                                         Content = x.Amount,
                                         Type = ElementView.FieldType.Number
                                     },
                                     new ElementView.Field()
                                     {
+                                        FieldId = (int)ItemField.Unit,
                                         Title = "Unit",
                                         Content = x.Unit,
                                         Type = ElementView.FieldType.String
@@ -148,7 +168,7 @@ namespace brokenHeart.Services.DataTransfer.Projection.Abilities
                                             Name = x.RoundReminder.Reminder,
                                         }
                                     }
-                                    : null
+                                    : new List<ElementView.Relation.ElementRelationItem>()
                         },
                         new ElementView.Relation()
                         {
