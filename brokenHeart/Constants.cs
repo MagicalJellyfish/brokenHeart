@@ -367,16 +367,6 @@ namespace brokenHeart
                 }
             }
 
-            //Validate Death Counter
-            if (
-                !(await _dbContext.CounterTemplates.Select(x => x.Name).ToListAsync()).Contains(
-                    Dying.Name
-                )
-            )
-            {
-                _dbContext.CounterTemplates.Add(Dying);
-            }
-
             foreach (User user in _authContext.Users)
             {
                 if (

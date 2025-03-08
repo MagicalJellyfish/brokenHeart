@@ -38,6 +38,9 @@ namespace brokenHeart.Database.DAO.Counters
 
         public int ViewPosition { get; set; }
 
+        public int? DeathCountCharacterId { get; set; }
+        public virtual Character? DeathCountCharacter { get; set; }
+
         public int? CharacterId { get; set; }
         public virtual Character? Character { get; set; }
         public int? ModifierId { get; set; }

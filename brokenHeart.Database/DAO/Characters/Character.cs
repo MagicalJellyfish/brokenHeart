@@ -124,6 +124,9 @@ namespace brokenHeart.Database.DAO
         public ICollection<int>? CountersIds { get; set; } = new List<int>();
         public virtual ICollection<Counter> Counters { get; set; } = new List<Counter>();
 
+        public int? DeathCounterId { get; set; }
+        public virtual Counter? DeathCounter { get; set; }
+
         [NotMapped]
         public ICollection<int>? RoundRemindersIds { get; set; } = new List<int>();
         public virtual ICollection<RoundReminder> RoundReminders { get; set; } =
