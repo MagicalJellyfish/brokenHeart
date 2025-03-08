@@ -2,6 +2,9 @@
 using brokenHeart.DB;
 using brokenHeart.Models;
 using brokenHeart.Models.DataTransfer;
+using brokenHeart.Models.DataTransfer.Save;
+using brokenHeart.Models.DataTransfer.Save.ElementFields.Modifiers.Effects;
+using brokenHeart.Services.Utility;
 
 namespace brokenHeart.Services.DataTransfer.Save.Modifiers.Effects
 {
@@ -10,10 +13,12 @@ namespace brokenHeart.Services.DataTransfer.Save.Modifiers.Effects
         public ElementType SaveType => ElementType.Effect;
 
         private readonly BrokenDbContext _context;
+        private readonly IModifierSaveService _modifierSaveService;
 
-        public EffectSaveService(BrokenDbContext context)
+        public EffectSaveService(BrokenDbContext context, IModifierSaveService modifierSaveService)
         {
             _context = context;
+            _modifierSaveService = modifierSaveService;
         }
 
         public ExecutionResult<int> CreateElement(ElementParentType parentType, int parentId)
@@ -38,6 +43,31 @@ namespace brokenHeart.Services.DataTransfer.Save.Modifiers.Effects
             _context.SaveChanges();
 
             return new ExecutionResult<int>() { Value = effect.Id };
+        }
+
+        public void UpdateElement(int id, List<ElementUpdate> updates)
+        {
+            Effect effect = _context.Effects.Single(x => x.Id == id);
+
+            _modifierSaveService.UpdateGivenModifier(effect, updates);
+
+            foreach (ElementUpdate update in updates)
+            {
+                switch ((EffectField)update.FieldId)
+                {
+                    case EffectField.Hp:
+                        effect.Hp = update.Value;
+                        break;
+                    case EffectField.MaxTempHp:
+                        effect.MaxTempHp = update.Value.SafeParseInt();
+                        break;
+                    case EffectField.Duration:
+                        effect.Duration = update.Value;
+                        break;
+                }
+            }
+
+            _context.SaveChanges();
         }
 
         public void DeleteElement(int id)

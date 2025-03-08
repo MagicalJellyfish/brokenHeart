@@ -2,6 +2,9 @@
 using brokenHeart.DB;
 using brokenHeart.Models;
 using brokenHeart.Models.DataTransfer;
+using brokenHeart.Models.DataTransfer.Save;
+using brokenHeart.Models.DataTransfer.Save.ElementFields.Modifiers.Items;
+using brokenHeart.Services.Utility;
 
 namespace brokenHeart.Services.DataTransfer.Save.Modifiers.Items
 {
@@ -10,10 +13,12 @@ namespace brokenHeart.Services.DataTransfer.Save.Modifiers.Items
         public ElementType SaveType => ElementType.Item;
 
         private readonly BrokenDbContext _context;
+        private readonly IModifierSaveService _modifierSaveService;
 
-        public ItemSaveService(BrokenDbContext context)
+        public ItemSaveService(BrokenDbContext context, IModifierSaveService modifierSaveService)
         {
             _context = context;
+            _modifierSaveService = modifierSaveService;
         }
 
         public ExecutionResult<int> CreateElement(ElementParentType parentType, int parentId)
@@ -38,6 +43,31 @@ namespace brokenHeart.Services.DataTransfer.Save.Modifiers.Items
             _context.SaveChanges();
 
             return new ExecutionResult<int>() { Value = item.Id };
+        }
+
+        public void UpdateElement(int id, List<ElementUpdate> updates)
+        {
+            Item item = _context.Items.Single(x => x.Id == id);
+
+            _modifierSaveService.UpdateGivenModifier(item, updates);
+
+            foreach (ElementUpdate update in updates)
+            {
+                switch ((ItemField)update.FieldId)
+                {
+                    case ItemField.Equipped:
+                        item.Equipped = bool.Parse(update.Value);
+                        break;
+                    case ItemField.Amount:
+                        item.Amount = update.Value.SafeParseInt();
+                        break;
+                    case ItemField.Unit:
+                        item.Unit = update.Value;
+                        break;
+                }
+            }
+
+            _context.SaveChanges();
         }
 
         public void DeleteElement(int id)

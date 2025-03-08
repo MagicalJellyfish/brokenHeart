@@ -8,12 +8,14 @@
 
         public class Text
         {
+            public int FieldId { get; set; } = -1;
             public string Title { get; set; }
             public string Content { get; set; }
         }
 
         public class Field
         {
+            public int FieldId { get; set; } = -1;
             public string Title { get; set; }
             public FieldType Type { get; set; }
             public dynamic? Content { get; set; }

@@ -8,6 +8,7 @@ using brokenHeart.Services.DataTransfer.Save;
 using brokenHeart.Services.DataTransfer.Save.Abilities;
 using brokenHeart.Services.DataTransfer.Save.Characters;
 using brokenHeart.Services.DataTransfer.Save.Counters;
+using brokenHeart.Services.DataTransfer.Save.Modifiers;
 using brokenHeart.Services.DataTransfer.Save.Modifiers.Effects;
 using brokenHeart.Services.DataTransfer.Save.Modifiers.Items;
 using brokenHeart.Services.DataTransfer.Save.Modifiers.Traits;
@@ -33,6 +34,7 @@ namespace brokenHeart.Services
 
             // Save
             serviceCollection.AddScoped<ICharacterSaveService, CharacterSaveService>();
+            serviceCollection.AddScoped<IModifierSaveService, ModifierSaveService>();
 
             // Projections
             serviceCollection.AddScoped<ICharacterProjectionService, CharacterProjectionService>();

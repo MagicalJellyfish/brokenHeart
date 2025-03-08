@@ -2,6 +2,9 @@
 using brokenHeart.DB;
 using brokenHeart.Models;
 using brokenHeart.Models.DataTransfer;
+using brokenHeart.Models.DataTransfer.Save;
+using brokenHeart.Models.DataTransfer.Save.ElementFields.Abilities;
+using brokenHeart.Services.Utility;
 
 namespace brokenHeart.Services.DataTransfer.Save.Abilities
 {
@@ -41,6 +44,59 @@ namespace brokenHeart.Services.DataTransfer.Save.Abilities
             _context.SaveChanges();
 
             return new ExecutionResult<int>() { Value = ability.Id };
+        }
+
+        public void UpdateElement(int id, List<ElementUpdate> updates)
+        {
+            Ability ability = _context.Abilities.Single(x => x.Id == id);
+
+            foreach (ElementUpdate update in updates)
+            {
+                switch ((AbilityField)update.FieldId)
+                {
+                    case AbilityField.Name:
+                        ability.Name = update.Value;
+                        break;
+                    case AbilityField.Abstract:
+                        ability.Abstract = update.Value;
+                        break;
+                    case AbilityField.Description:
+                        ability.Description = update.Value;
+                        break;
+                    case AbilityField.Shortcut:
+                        ability.Shortcut = update.Value;
+                        break;
+                    case AbilityField.TargetType:
+                        ability.TargetType = Enum.Parse<TargetType>(update.Value);
+                        break;
+                    case AbilityField.CanInjure:
+                        ability.CanInjure = bool.Parse(update.Value);
+                        break;
+                    case AbilityField.Self:
+                        ability.Self = update.Value;
+                        break;
+                    case AbilityField.Target:
+                        ability.Target = update.Value;
+                        break;
+                    case AbilityField.Damage:
+                        ability.Damage = update.Value;
+                        break;
+                    case AbilityField.Range:
+                        ability.Range = update.Value;
+                        break;
+                    case AbilityField.Uses:
+                        ability.Uses = update.Value.SafeParseInt();
+                        break;
+                    case AbilityField.MaxUses:
+                        ability.MaxUses = update.Value.SafeParseInt();
+                        break;
+                    case AbilityField.ReplenishType:
+                        ability.ReplenishType = Enum.Parse<ReplenishType>(update.Value);
+                        break;
+                }
+            }
+
+            _context.SaveChanges();
         }
 
         public void DeleteElement(int id)

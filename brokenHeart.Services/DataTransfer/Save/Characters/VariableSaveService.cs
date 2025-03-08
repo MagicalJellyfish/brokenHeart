@@ -2,6 +2,9 @@
 using brokenHeart.DB;
 using brokenHeart.Models;
 using brokenHeart.Models.DataTransfer;
+using brokenHeart.Models.DataTransfer.Save;
+using brokenHeart.Models.DataTransfer.Save.ElementFields.Characters;
+using brokenHeart.Services.Utility;
 
 namespace brokenHeart.Services.DataTransfer.Save.Characters
 {
@@ -38,6 +41,26 @@ namespace brokenHeart.Services.DataTransfer.Save.Characters
             _context.SaveChanges();
 
             return new ExecutionResult<int>() { Value = variable.Id };
+        }
+
+        public void UpdateElement(int id, List<ElementUpdate> updates)
+        {
+            Variable variable = _context.Variables.Single(x => x.Id == id);
+
+            foreach (ElementUpdate update in updates)
+            {
+                switch ((VariableField)update.FieldId)
+                {
+                    case VariableField.Name:
+                        variable.Name = update.Value;
+                        break;
+                    case VariableField.Value:
+                        variable.Value = update.Value.SafeParseInt();
+                        break;
+                }
+            }
+
+            _context.SaveChanges();
         }
 
         public void DeleteElement(int id)

@@ -1,5 +1,6 @@
 ﻿using brokenHeart.Models;
 using brokenHeart.Models.DataTransfer;
+using brokenHeart.Models.DataTransfer.Save;
 
 namespace brokenHeart.Services.DataTransfer.Save
 {
@@ -20,6 +21,12 @@ namespace brokenHeart.Services.DataTransfer.Save
         {
             IElementSaveService elementSaveService = GetSaveService(type);
             return elementSaveService.CreateElement(parentType, parentId);
+        }
+
+        public void UpdateElement(ElementType type, int id, List<ElementUpdate> updates)
+        {
+            IElementSaveService elementSaveService = GetSaveService(type);
+            elementSaveService.UpdateElement(id, updates);
         }
 
         public void DeleteElement(ElementType type, int id)
