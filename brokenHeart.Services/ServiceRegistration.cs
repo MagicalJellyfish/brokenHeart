@@ -11,12 +11,17 @@ namespace brokenHeart.Services
     {
         public static void RegisterServices(IServiceCollection serviceCollection)
         {
+            // Various
             serviceCollection.AddScoped<IEndpointEntityService, EndpointEntityService>();
             serviceCollection.AddScoped<IRollService, RollService>();
 
+            // Projections
+            serviceCollection.AddScoped<ICharacterProjectionService, CharacterProjectionService>();
+            // Search
             serviceCollection.AddScoped<ICharacterSearchService, CharacterSearchService>();
             serviceCollection.AddScoped<ICharacterProjectionService, CharacterProjectionService>();
 
+            // SignalR
             serviceCollection.AddHostedService<SignalRMessagingService>();
         }
     }

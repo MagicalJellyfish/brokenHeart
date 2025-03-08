@@ -1,14 +1,15 @@
+using System.Security.Claims;
+using System.Text;
 using brokenHeart;
 using brokenHeart.Authentication.DB;
 using brokenHeart.DB;
 using brokenHeart.Endpoints.JSON;
 using brokenHeart.Services.SignalR;
+using LinqKit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using System.Security.Claims;
-using System.Text;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 ConfigureBuilder(builder);
@@ -85,10 +86,12 @@ static void AddControllers(WebApplicationBuilder builder)
 static void AddDatabaseContexts(WebApplicationBuilder builder)
 {
     builder.Services.AddDbContext<BrokenDbContext>(options =>
-        options.UseSqlite(
-            builder.Configuration.GetConnectionString("DataConnection"),
-            o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)
-        )
+        options
+            .UseSqlite(
+                builder.Configuration.GetConnectionString("DataConnection"),
+                o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)
+            )
+            .WithExpressionExpanding()
     );
     builder.Services.AddDbContext<AuthDbContext>(options =>
         options.UseSqlite(builder.Configuration.GetConnectionString("AuthConnection"))

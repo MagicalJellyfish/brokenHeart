@@ -1,10 +1,12 @@
 ﻿using brokenHeart.Models.DataTransfer.Projection;
-using brokenHeart.Models.DataTransfer.Search;
+using brokenHeart.Models.DataTransfer.Search.Characters;
 
 namespace brokenHeart.Services.DataTransfer.Projection.Characters
 {
     public interface ICharacterProjectionService
     {
         public List<SimpleCharacter> GetSimpleCharacters(CharacterSearch search);
+
+        public CharacterView? GetCharacterView(CharacterSearch search);
     }
 }
