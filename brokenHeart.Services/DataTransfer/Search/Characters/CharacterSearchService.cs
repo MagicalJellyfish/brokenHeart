@@ -1,6 +1,6 @@
 ﻿using brokenHeart.Database.DAO;
 using brokenHeart.DB;
-using brokenHeart.Models.DataTransfer.Search;
+using brokenHeart.Models.DataTransfer.Search.Characters;
 
 namespace brokenHeart.Services.DataTransfer.Search.Characters
 {
@@ -12,6 +12,11 @@ namespace brokenHeart.Services.DataTransfer.Search.Characters
         public IQueryable<Character> GetCharacters(CharacterSearch search)
         {
             IQueryable<Character> characters = _context.Characters;
+
+            if (search.Id != null)
+            {
+                characters = characters.Where(x => x.Id == search.Id);
+            }
 
             if (search.Name != null)
             {

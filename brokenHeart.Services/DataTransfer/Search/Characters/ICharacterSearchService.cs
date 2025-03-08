@@ -1,5 +1,5 @@
 ﻿using brokenHeart.Database.DAO;
-using brokenHeart.Models.DataTransfer.Search;
+using brokenHeart.Models.DataTransfer.Search.Characters;
 
 namespace brokenHeart.Services.DataTransfer.Search.Characters
 {
