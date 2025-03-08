@@ -1,7 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 using brokenHeart.Database.DAO.Abilities.Abilities;
 using brokenHeart.Database.DAO.Counters;
-using brokenHeart.Database.DAO.Modifiers;
 using brokenHeart.Database.DAO.RoundReminders;
 using brokenHeart.Database.DAO.Stats;
 
@@ -50,11 +49,11 @@ namespace brokenHeart.Database.DAO.Modifiers.Effects
         }
 
         //Per round
-        public string Hp { get; set; }
+        public string Hp { get; set; } = "";
 
         //Total for the duration
-        public int MaxTempHp { get; set; }
-        public string Duration { get; set; }
+        public int MaxTempHp { get; set; } = 0;
+        public string Duration { get; set; } = "";
 
         public virtual EffectCounter? EffectCounter { get; set; }
 

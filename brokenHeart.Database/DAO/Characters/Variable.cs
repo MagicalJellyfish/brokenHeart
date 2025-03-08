@@ -1,5 +1,4 @@
 ﻿using System.Text.Json.Serialization;
-using brokenHeart.Database.DAO.Abilities.Abilities;
 
 namespace brokenHeart.Database.DAO.Characters
 {
@@ -15,8 +14,8 @@ namespace brokenHeart.Database.DAO.Characters
         }
 
         public int Id { get; set; }
-        public string Name { get; set; }
-        public int Value { get; set; }
+        public string Name { get; set; } = "";
+        public int Value { get; set; } = 0;
 
         public int? CharacterId { get; set; }
         public virtual Character? Character { get; set; }

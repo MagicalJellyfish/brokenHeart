@@ -42,13 +42,13 @@ namespace brokenHeart.Database.DAO.Modifiers
         }
 
         public int Id { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
-        public string Abstract { get; set; }
-        public int MaxHp { get; set; }
-        public int MovementSpeed { get; set; }
-        public int Armor { get; set; }
-        public int Evasion { get; set; }
+        public string Name { get; set; } = "";
+        public string Description { get; set; } = "";
+        public string Abstract { get; set; } = "";
+        public int MaxHp { get; set; } = 0;
+        public int MovementSpeed { get; set; } = 0;
+        public int Armor { get; set; } = 0;
+        public int Evasion { get; set; } = 0;
 
         [NotMapped]
         public ICollection<int>? StatIncreasesIds { get; set; } = new List<int>();

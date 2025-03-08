@@ -4,6 +4,14 @@ using brokenHeart.Services.DataTransfer.Projection.Abilities;
 using brokenHeart.Services.DataTransfer.Projection.Characters;
 using brokenHeart.Services.DataTransfer.Projection.RoundReminders;
 using brokenHeart.Services.DataTransfer.Projection.Stats;
+using brokenHeart.Services.DataTransfer.Save;
+using brokenHeart.Services.DataTransfer.Save.Abilities;
+using brokenHeart.Services.DataTransfer.Save.Characters;
+using brokenHeart.Services.DataTransfer.Save.Counters;
+using brokenHeart.Services.DataTransfer.Save.Modifiers.Effects;
+using brokenHeart.Services.DataTransfer.Save.Modifiers.Items;
+using brokenHeart.Services.DataTransfer.Save.Modifiers.Traits;
+using brokenHeart.Services.DataTransfer.Save.RoundReminders;
 using brokenHeart.Services.DataTransfer.Search.Abilities;
 using brokenHeart.Services.DataTransfer.Search.Characters;
 using brokenHeart.Services.DataTransfer.Search.RoundReminders;
@@ -54,6 +62,18 @@ namespace brokenHeart.Services
                 RoundReminderProjectionService
             >();
             serviceCollection.AddScoped<IElementProjectionService, VariableProjectionService>();
+
+            // Element Submission
+            serviceCollection.AddScoped<IElementSubmissionService, ElementSubmissionService>();
+
+            serviceCollection.AddScoped<IElementSaveService, AbilitySaveService>();
+            serviceCollection.AddScoped<IElementSaveService, TraitSaveService>();
+            serviceCollection.AddScoped<IElementSaveService, ItemSaveService>();
+            serviceCollection.AddScoped<IElementSaveService, EffectSaveService>();
+            serviceCollection.AddScoped<IElementSaveService, CounterSaveService>();
+            serviceCollection.AddScoped<IElementSaveService, RoundReminderSaveService>();
+            serviceCollection.AddScoped<IElementSaveService, VariableSaveService>();
+
             // SignalR
             serviceCollection.AddHostedService<SignalRMessagingService>();
         }
