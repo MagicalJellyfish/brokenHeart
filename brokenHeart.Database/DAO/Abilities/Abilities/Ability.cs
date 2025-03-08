@@ -54,14 +54,14 @@ namespace brokenHeart.Database.DAO.Abilities.Abilities
         }
 
         public int Id { get; set; }
-        public string Name { get; set; }
-        public string Abstract { get; set; }
-        public string Description { get; set; }
+        public string Name { get; set; } = "";
+        public string Abstract { get; set; } = "";
+        public string Description { get; set; } = "";
 
-        public string Shortcut { get; set; }
-        public TargetType TargetType { get; set; }
+        public string Shortcut { get; set; } = "";
+        public TargetType TargetType { get; set; } = TargetType.Target;
 
-        public bool CanInjure { get; set; }
+        public bool CanInjure { get; set; } = true;
         public string? Self { get; set; }
         public string? Target { get; set; }
         public string? Damage { get; set; }
@@ -70,7 +70,7 @@ namespace brokenHeart.Database.DAO.Abilities.Abilities
 
         public int? Uses { get; set; }
         public int? MaxUses { get; set; }
-        public ReplenishType ReplenishType { get; set; }
+        public ReplenishType ReplenishType { get; set; } = ReplenishType.None;
 
         [NotMapped]
         public ICollection<int>? RollsIds { get; set; } = new List<int>();

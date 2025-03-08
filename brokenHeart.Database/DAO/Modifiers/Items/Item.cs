@@ -45,9 +45,9 @@ namespace brokenHeart.Database.DAO.Modifiers.Items
             Unit = unit;
         }
 
-        public bool Equipped { get; set; }
-        public int Amount { get; set; }
-        public string Unit { get; set; }
+        public bool Equipped { get; set; } = true;
+        public int Amount { get; set; } = 1;
+        public string Unit { get; set; } = "";
 
         public int CharacterId { get; set; }
         public virtual Character? Character { get; set; }

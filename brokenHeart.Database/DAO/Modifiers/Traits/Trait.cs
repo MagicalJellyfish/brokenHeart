@@ -41,7 +41,7 @@ namespace brokenHeart.Database.DAO.Modifiers.Traits
             Active = true;
         }
 
-        public bool Active { get; set; }
+        public bool Active { get; set; } = true;
 
         public int CharacterId { get; set; }
         public virtual Character? Character { get; set; }
