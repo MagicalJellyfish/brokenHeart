@@ -35,6 +35,7 @@ namespace brokenHeart.Services
             // Save
             serviceCollection.AddScoped<ICharacterSaveService, CharacterSaveService>();
             serviceCollection.AddScoped<IModifierSaveService, ModifierSaveService>();
+            serviceCollection.AddScoped<IAbilitySaveService, AbilitySaveService>();
 
             // Projections
             serviceCollection.AddScoped<ICharacterProjectionService, CharacterProjectionService>();
