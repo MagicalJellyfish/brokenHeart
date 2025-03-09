@@ -55,6 +55,14 @@ namespace brokenHeart.Endpoints.brokenEye.Entities
             return Ok(result.Value);
         }
 
+        [HttpPut("reorder/{type}")]
+        public ActionResult ReorderElements(ElementType type, List<ElementReorder> elementReorder)
+        {
+            _elementSubmissionService.ReorderElements(type, elementReorder);
+
+            return Ok();
+        }
+
         [HttpPut("{type}/{id}")]
         public ActionResult UpdateElement(
             ElementType type,

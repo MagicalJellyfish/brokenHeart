@@ -10,6 +10,8 @@ namespace brokenHeart.Services.DataTransfer.Save
 
         public ExecutionResult<int> CreateElement(ElementParentType parentType, int parentId);
 
+        public void ReorderElements(List<ElementReorder> reorders);
+
         public void UpdateElement(int id, List<ElementUpdate> updates);
 
         public void DeleteElement(int id);

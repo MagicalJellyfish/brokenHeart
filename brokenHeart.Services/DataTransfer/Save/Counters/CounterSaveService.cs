@@ -46,6 +46,20 @@ namespace brokenHeart.Services.DataTransfer.Save.Counters
             return new ExecutionResult<int>() { Value = counter.Id };
         }
 
+        public void ReorderElements(List<ElementReorder> reorders)
+        {
+            List<Counter> counters = _context
+                .Counters.Where(x => reorders.Select(y => y.Id).Contains(x.Id))
+                .ToList();
+
+            foreach (Counter counter in counters)
+            {
+                counter.ViewPosition = reorders.Single(x => x.Id == counter.Id).ViewPosition;
+            }
+
+            _context.SaveChanges();
+        }
+
         public void UpdateElement(int id, List<ElementUpdate> updates)
         {
             Counter counter = _context.Counters.Single(x => x.Id == id);

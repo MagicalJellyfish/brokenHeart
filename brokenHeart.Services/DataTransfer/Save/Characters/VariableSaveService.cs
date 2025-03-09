@@ -43,6 +43,20 @@ namespace brokenHeart.Services.DataTransfer.Save.Characters
             return new ExecutionResult<int>() { Value = variable.Id };
         }
 
+        public void ReorderElements(List<ElementReorder> reorders)
+        {
+            List<Variable> variables = _context
+                .Variables.Where(x => reorders.Select(y => y.Id).Contains(x.Id))
+                .ToList();
+
+            foreach (Variable variable in variables)
+            {
+                variable.ViewPosition = reorders.Single(x => x.Id == variable.Id).ViewPosition;
+            }
+
+            _context.SaveChanges();
+        }
+
         public void UpdateElement(int id, List<ElementUpdate> updates)
         {
             Variable variable = _context.Variables.Single(x => x.Id == id);

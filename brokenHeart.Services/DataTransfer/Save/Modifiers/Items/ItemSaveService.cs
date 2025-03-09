@@ -45,6 +45,20 @@ namespace brokenHeart.Services.DataTransfer.Save.Modifiers.Items
             return new ExecutionResult<int>() { Value = item.Id };
         }
 
+        public void ReorderElements(List<ElementReorder> reorders)
+        {
+            List<Item> items = _context
+                .Items.Where(x => reorders.Select(y => y.Id).Contains(x.Id))
+                .ToList();
+
+            foreach (Item item in items)
+            {
+                item.ViewPosition = reorders.Single(x => x.Id == item.Id).ViewPosition;
+            }
+
+            _context.SaveChanges();
+        }
+
         public void UpdateElement(int id, List<ElementUpdate> updates)
         {
             Item item = _context.Items.Single(x => x.Id == id);

@@ -48,6 +48,22 @@ namespace brokenHeart.Services.DataTransfer.Save.RoundReminders
             return new ExecutionResult<int>() { Value = roundReminder.Id };
         }
 
+        public void ReorderElements(List<ElementReorder> reorders)
+        {
+            List<RoundReminder> roundReminders = _context
+                .RoundReminders.Where(x => reorders.Select(y => y.Id).Contains(x.Id))
+                .ToList();
+
+            foreach (RoundReminder roundReminder in roundReminders)
+            {
+                roundReminder.ViewPosition = reorders
+                    .Single(x => x.Id == roundReminder.Id)
+                    .ViewPosition;
+            }
+
+            _context.SaveChanges();
+        }
+
         public void UpdateElement(int id, List<ElementUpdate> updates)
         {
             RoundReminder roundReminder = _context.RoundReminders.Single(x => x.Id == id);

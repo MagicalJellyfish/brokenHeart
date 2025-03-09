@@ -46,6 +46,20 @@ namespace brokenHeart.Services.DataTransfer.Save.Abilities
             return new ExecutionResult<int>() { Value = ability.Id };
         }
 
+        public void ReorderElements(List<ElementReorder> reorders)
+        {
+            List<Ability> abilities = _context
+                .Abilities.Where(x => reorders.Select(y => y.Id).Contains(x.Id))
+                .ToList();
+
+            foreach (Ability ability in abilities)
+            {
+                ability.ViewPosition = reorders.Single(x => x.Id == ability.Id).ViewPosition;
+            }
+
+            _context.SaveChanges();
+        }
+
         public void UpdateElement(int id, List<ElementUpdate> updates)
         {
             Ability ability = _context.Abilities.Single(x => x.Id == id);

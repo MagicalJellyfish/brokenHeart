@@ -12,6 +12,8 @@ namespace brokenHeart.Services.DataTransfer.Save
             int parentId
         );
 
+        public void ReorderElements(ElementType type, List<ElementReorder> reorders);
+
         public void UpdateElement(ElementType type, int id, List<ElementUpdate> updates);
 
         public void DeleteElement(ElementType type, int id);
