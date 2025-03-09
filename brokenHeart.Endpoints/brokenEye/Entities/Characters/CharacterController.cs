@@ -54,6 +54,20 @@ namespace brokenHeart.Endpoints.brokenEye.Entities.Characters
             return Ok(result.Value);
         }
 
+        [HttpPut("{id}/injuries")]
+        [HttpPatch("{id}")]
+        public ActionResult PatchCharacter(int id, List<InjuryModel> injuries)
+        {
+            ExecutionResult result = _characterSaveService.UpdateInjuries(id, injuries);
+
+            if (!result.Succeeded)
+            {
+                return StatusCode((int)result.StatusCode, result.Message);
+            }
+
+            return Ok();
+        }
+
         [HttpPatch("{id}")]
         public ActionResult PatchCharacter(int id, List<CharacterPatch> patches)
         {

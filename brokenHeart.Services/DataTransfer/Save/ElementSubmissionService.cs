@@ -43,6 +43,11 @@ namespace brokenHeart.Services.DataTransfer.Save
 
         private IElementSaveService GetSaveService(ElementType type)
         {
+            if (type == ElementType.InjuryEffect)
+            {
+                type = ElementType.Effect;
+            }
+
             return _elementSaveServices.Single(x => x.SaveType == type);
         }
     }

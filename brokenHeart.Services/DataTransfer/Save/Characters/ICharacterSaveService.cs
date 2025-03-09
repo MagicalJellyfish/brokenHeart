@@ -7,6 +7,8 @@ namespace brokenHeart.Services.DataTransfer.Save.Characters
     {
         public ExecutionResult<int> CreateCharacter(string username);
 
+        public ExecutionResult UpdateInjuries(int id, List<InjuryModel> injuries);
+
         public ExecutionResult PatchCharacter(int id, List<CharacterPatch> patches);
 
         public void DeleteCharacter(int id);
