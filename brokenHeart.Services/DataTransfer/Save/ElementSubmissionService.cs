@@ -23,6 +23,12 @@ namespace brokenHeart.Services.DataTransfer.Save
             return elementSaveService.CreateElement(parentType, parentId);
         }
 
+        public void ReorderElements(ElementType type, List<ElementReorder> reorders)
+        {
+            IElementSaveService elementSaveService = GetSaveService(type);
+            elementSaveService.ReorderElements(reorders);
+        }
+
         public void UpdateElement(ElementType type, int id, List<ElementUpdate> updates)
         {
             IElementSaveService elementSaveService = GetSaveService(type);

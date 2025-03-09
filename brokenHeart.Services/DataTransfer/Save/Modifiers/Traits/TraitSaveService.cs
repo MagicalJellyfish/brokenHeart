@@ -44,6 +44,20 @@ namespace brokenHeart.Services.DataTransfer.Save.Modifiers.Traits
             return new ExecutionResult<int>() { Value = trait.Id };
         }
 
+        public void ReorderElements(List<ElementReorder> reorders)
+        {
+            List<Trait> traits = _context
+                .Traits.Where(x => reorders.Select(y => y.Id).Contains(x.Id))
+                .ToList();
+
+            foreach (Trait trait in traits)
+            {
+                trait.ViewPosition = reorders.Single(x => x.Id == trait.Id).ViewPosition;
+            }
+
+            _context.SaveChanges();
+        }
+
         public void UpdateElement(int id, List<ElementUpdate> updates)
         {
             Trait trait = _context.Traits.Single(x => x.Id == id);
