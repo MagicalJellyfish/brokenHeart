@@ -6,6 +6,7 @@
         Trait,
         Item,
         Effect,
+        InjuryEffect,
         Counter,
         Reminder,
         Variable,

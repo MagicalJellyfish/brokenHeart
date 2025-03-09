@@ -6,6 +6,7 @@ using brokenHeart.DB;
 using brokenHeart.Models;
 using brokenHeart.Models.DataTransfer.Save;
 using brokenHeart.Services.Utility;
+using Microsoft.EntityFrameworkCore;
 
 namespace brokenHeart.Services.DataTransfer.Save.Characters
 {
@@ -61,6 +62,84 @@ namespace brokenHeart.Services.DataTransfer.Save.Characters
             _context.SaveChanges();
 
             return new ExecutionResult<int>() { Value = c.Id };
+        }
+
+        public ExecutionResult UpdateInjuries(int id, List<InjuryModel> injuries)
+        {
+            Character? c = _context
+                .Characters.Include(x => x.BodypartConditions)
+                .Include(x => x.Effects)
+                .Include(x => x.InjuryEffects)
+                .SingleOrDefault(x => x.Id == id);
+
+            if (c == null)
+            {
+                return new ExecutionResult()
+                {
+                    Succeeded = false,
+                    StatusCode = System.Net.HttpStatusCode.NotFound,
+                    Message = $"No character found for id {id}."
+                };
+            }
+
+            foreach (InjuryModel injury in injuries)
+            {
+                BodypartCondition targetCondition = c.BodypartConditions.Single(x =>
+                    x.Id == injury.Bodypart
+                );
+
+                if (targetCondition.InjuryLevel != injury.InjuryLevel)
+                {
+                    if (targetCondition.InjuryLevel > injury.InjuryLevel)
+                    {
+                        for (
+                            int i = (int)targetCondition.InjuryLevel;
+                            i > (int)injury.InjuryLevel;
+                            i--
+                        )
+                        {
+                            if (
+                                i != 0
+                                && !(i == (int)InjuryLevel.Dismember && injury.Bodypart == 1)
+                            )
+                            {
+                                c.Effects.Remove(
+                                    c.InjuryEffects.Single(x =>
+                                        x.BodypartId == injury.Bodypart && (int)x.InjuryLevel == i
+                                    )
+                                );
+                            }
+                        }
+                    }
+                    else
+                    {
+                        for (
+                            int i = (int)targetCondition.InjuryLevel;
+                            i <= (int)injury.InjuryLevel;
+                            i++
+                        )
+                        {
+                            if (
+                                i != 0
+                                && !(i == (int)InjuryLevel.Dismember && injury.Bodypart == 1)
+                            )
+                            {
+                                c.Effects.Add(
+                                    c.InjuryEffects.Single(x =>
+                                        x.BodypartId == injury.Bodypart && (int)x.InjuryLevel == i
+                                    )
+                                );
+                            }
+                        }
+                    }
+
+                    targetCondition.InjuryLevel = injury.InjuryLevel;
+                }
+            }
+
+            _context.SaveChanges();
+
+            return new ExecutionResult();
         }
 
         public ExecutionResult PatchCharacter(int id, List<CharacterPatch> patches)

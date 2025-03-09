@@ -78,6 +78,11 @@ namespace brokenHeart.Endpoints.brokenEye.Entities
         [HttpDelete("{type}/{id}")]
         public ActionResult DeleteElement(ElementType type, int id)
         {
+            if (type == ElementType.InjuryEffect)
+            {
+                return BadRequest("Cannot delete injury effects");
+            }
+
             _elementSubmissionService.DeleteElement(type, id);
 
             return Ok();
