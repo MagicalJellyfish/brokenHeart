@@ -1,14 +1,16 @@
-﻿using brokenHeart.Database.DAO.Abilities.Abilities;
+﻿using brokenHeart.Database.DAO.Abilities;
+using brokenHeart.Database.DAO.Abilities.Abilities;
 using brokenHeart.DB;
 using brokenHeart.Models;
 using brokenHeart.Models.DataTransfer;
 using brokenHeart.Models.DataTransfer.Save;
 using brokenHeart.Models.DataTransfer.Save.ElementFields.Abilities;
 using brokenHeart.Services.Utility;
+using Microsoft.EntityFrameworkCore;
 
 namespace brokenHeart.Services.DataTransfer.Save.Abilities
 {
-    internal class AbilitySaveService : IElementSaveService
+    internal class AbilitySaveService : IElementSaveService, IAbilitySaveService
     {
         public ElementType SaveType => ElementType.Ability;
 
@@ -17,6 +19,40 @@ namespace brokenHeart.Services.DataTransfer.Save.Abilities
         public AbilitySaveService(BrokenDbContext context)
         {
             _context = context;
+        }
+
+        public void UpdateRolls(int id, List<RollModel> rolls)
+        {
+            Ability ability = _context.Abilities.Include(x => x.Rolls).Single(x => x.Id == id);
+
+            foreach (RollModel roll in rolls)
+            {
+                Roll? abilityRoll = ability.Rolls.SingleOrDefault(x => x.Id == roll.Id);
+                if (abilityRoll == null)
+                {
+                    abilityRoll = new Roll() { AbilityId = ability.Id };
+                    _context.Rolls.Add(abilityRoll);
+                }
+
+                abilityRoll.Name = roll.Name;
+                abilityRoll.Instruction = roll.Value;
+            }
+
+            List<Roll> rollsToRemove = new List<Roll>();
+            foreach (Roll roll in ability.Rolls)
+            {
+                if (!rolls.Select(x => x.Id).Contains(roll.Id))
+                {
+                    rollsToRemove.Add(roll);
+                }
+            }
+
+            foreach (Roll roll in rollsToRemove)
+            {
+                _context.Rolls.Remove(roll);
+            }
+
+            _context.SaveChanges();
         }
 
         public ExecutionResult<int> CreateElement(ElementParentType parentType, int parentId)
