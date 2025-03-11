@@ -84,7 +84,7 @@ namespace brokenHeart.Controllers
 
         [HttpGet("discord")]
         [Authorize]
-        public ActionResult<object> GetId()
+        public ActionResult<string> GetDiscordId()
         {
             var user = _context.Users.Single(x =>
                 x.Username.ToLower() == User.Identity.Name.ToLower()
@@ -95,12 +95,12 @@ namespace brokenHeart.Controllers
                 return NotFound("User not found!");
             }
 
-            return new { discordId = user.DiscordId.ToString() };
+            return user.DiscordId.ToString();
         }
 
-        [HttpPatch("discord/{discordId}")]
+        [HttpPut("discord")]
         [Authorize]
-        public ActionResult ChangeId(ulong discordId)
+        public ActionResult ChangeDiscordId([FromBody] DiscordIdUpdate update)
         {
             var user = _context.Users.Single(x =>
                 x.Username.ToLower() == User.Identity.Name.ToLower()
@@ -111,17 +111,22 @@ namespace brokenHeart.Controllers
                 return NotFound("User not found!");
             }
 
-            user.DiscordId = discordId;
+            user.DiscordId = ulong.Parse(update.DiscordId);
             _context.Users.Update(user);
             _context.SaveChanges();
 
             UserSimplified userSimple = _brokenDbContext.UserSimplified.Single(x =>
                 x.Username == user.Username
             );
-            userSimple.DiscordId = discordId;
+            userSimple.DiscordId = ulong.Parse(update.DiscordId);
             _brokenDbContext.SaveChanges();
 
             return NoContent();
+        }
+
+        public struct DiscordIdUpdate
+        {
+            public string DiscordId { get; set; }
         }
     }
 }
