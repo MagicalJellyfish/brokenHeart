@@ -44,6 +44,7 @@ namespace brokenHeart.Models.DataTransfer.Projection
         public class DeathCounterModel
         {
             public int Id { get; set; }
+            public int ValueFieldId { get; set; }
             public int Value { get; set; }
             public int Max { get; set; }
         }
