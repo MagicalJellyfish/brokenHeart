@@ -2,10 +2,11 @@
 using System.Text.Json.Serialization;
 using brokenHeart.Database.DAO.Counters;
 using brokenHeart.Database.DAO.Modifiers;
+using brokenHeart.Database.Interfaces;
 
 namespace brokenHeart.Database.DAO.RoundReminders
 {
-    public class RoundReminder
+    public class RoundReminder : IDao, IOrderableElement
     {
         [JsonConstructor]
         public RoundReminder() { }

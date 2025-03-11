@@ -4,10 +4,11 @@ using brokenHeart.Database.DAO.Abilities.Abilities;
 using brokenHeart.Database.DAO.Counters;
 using brokenHeart.Database.DAO.RoundReminders;
 using brokenHeart.Database.DAO.Stats;
+using brokenHeart.Database.Interfaces;
 
 namespace brokenHeart.Database.DAO.Modifiers
 {
-    public class ModifierTemplate
+    public class ModifierTemplate : IDao, IElement
     {
         [JsonConstructor]
         public ModifierTemplate() { }

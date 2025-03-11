@@ -1,8 +1,9 @@
 ﻿using System.Text.Json.Serialization;
+using brokenHeart.Database.Interfaces;
 
 namespace brokenHeart.Database.DAO
 {
-    public class UserSimplified
+    public class UserSimplified : IDao
     {
         [JsonConstructor]
         public UserSimplified() { }

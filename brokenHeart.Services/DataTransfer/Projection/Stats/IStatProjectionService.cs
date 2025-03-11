@@ -5,6 +5,6 @@ namespace brokenHeart.Services.DataTransfer.Projection.Stats
 {
     public interface IStatProjectionService
     {
-        public List<StatModel> GetStats(StatSearch search);
+        public List<StatModel> GetStats(DaoSearch? search = null);
     }
 }

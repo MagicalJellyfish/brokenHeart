@@ -3,10 +3,11 @@ using System.Text.Json.Serialization;
 using brokenHeart.Database.DAO.Characters;
 using brokenHeart.Database.DAO.Modifiers;
 using brokenHeart.Database.DAO.RoundReminders;
+using brokenHeart.Database.Interfaces;
 
 namespace brokenHeart.Database.DAO.Counters
 {
-    public class CounterTemplate
+    public class CounterTemplate : IDao, IElement
     {
         [JsonConstructor]
         public CounterTemplate() { }

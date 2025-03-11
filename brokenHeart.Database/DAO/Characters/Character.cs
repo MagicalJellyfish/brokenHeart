@@ -10,10 +10,11 @@ using brokenHeart.Database.DAO.Modifiers.Items;
 using brokenHeart.Database.DAO.Modifiers.Traits;
 using brokenHeart.Database.DAO.RoundReminders;
 using brokenHeart.Database.DAO.Stats;
+using brokenHeart.Database.Interfaces;
 
 namespace brokenHeart.Database.DAO
 {
-    public class Character
+    public class Character : IDao
     {
         [JsonConstructor]
         public Character() { }

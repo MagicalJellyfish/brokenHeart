@@ -3,7 +3,7 @@ using brokenHeart.Models.DataTransfer;
 using brokenHeart.Models.DataTransfer.Projection;
 using brokenHeart.Models.DataTransfer.Save.ElementFields.Counters;
 using brokenHeart.Models.DataTransfer.Search;
-using brokenHeart.Services.DataTransfer.Search.Abilities;
+using brokenHeart.Services.DataTransfer.Search;
 
 namespace brokenHeart.Services.DataTransfer.Projection.Abilities
 {
@@ -11,23 +11,18 @@ namespace brokenHeart.Services.DataTransfer.Projection.Abilities
     {
         public ElementType ProjectionType => ElementType.Counter;
 
-        private readonly ICounterSearchService _counterSearchService;
+        private readonly IDaoSearchService _daoSearchService;
 
-        public CounterProjectionService(ICounterSearchService counterSearchService)
+        public CounterProjectionService(IDaoSearchService daoSearchService)
         {
-            _counterSearchService = counterSearchService;
+            _daoSearchService = daoSearchService;
         }
 
         public dynamic? GetElement(int id)
         {
-            IQueryable<Counter> counters = _counterSearchService.GetCounters(
-                new CounterSearch() { Id = id }
+            IQueryable<Counter> counters = _daoSearchService.GetSingleElement<Counter>(
+                new DaoSearch() { Id = id }
             );
-
-            if (counters.Count() == 0 || counters.Count() > 1)
-            {
-                return null;
-            }
 
             return counters
                 .Select(x => new ElementView()

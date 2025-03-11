@@ -1,8 +1,9 @@
 ﻿using System.Text.Json.Serialization;
+using brokenHeart.Database.Interfaces;
 
 namespace brokenHeart.Database.DAO.Combat
 {
-    public class CombatEntry
+    public class CombatEntry : IDao
     {
         [JsonConstructor]
         public CombatEntry() { }

@@ -1,4 +1,4 @@
-﻿namespace brokenHeart.Models.DataTransfer.Search.Characters
+﻿namespace brokenHeart.Models.DataTransfer.Search
 {
     public class CharacterSearch
     {

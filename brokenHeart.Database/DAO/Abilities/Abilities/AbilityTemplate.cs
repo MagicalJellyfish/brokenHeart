@@ -3,10 +3,11 @@ using System.Text.Json.Serialization;
 using brokenHeart.Database.DAO.Characters;
 using brokenHeart.Database.DAO.Modifiers;
 using brokenHeart.Database.DAO.Modifiers.Effects;
+using brokenHeart.Database.Interfaces;
 
 namespace brokenHeart.Database.DAO.Abilities.Abilities
 {
-    public class AbilityTemplate
+    public class AbilityTemplate : IDao, IElement
     {
         [JsonConstructor]
         public AbilityTemplate() { }
@@ -44,7 +45,9 @@ namespace brokenHeart.Database.DAO.Abilities.Abilities
 
         public int Id { get; set; }
         public string Name { get; set; }
+        public string Abstract { get; set; }
         public string Description { get; set; }
+        public string Shortcut { get; set; }
 
         public TargetType TargetType { get; set; }
 
