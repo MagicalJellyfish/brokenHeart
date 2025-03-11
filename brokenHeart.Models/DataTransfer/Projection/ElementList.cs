@@ -11,6 +11,7 @@
         public class ElementColumn
         {
             public string Title { get; set; }
+            public int? FieldId { get; set; }
             public string Property { get; set; }
             public string? PropertyOf { get; set; }
             public ElementColumnType ColumnType { get; set; } = ElementColumnType.Text;
