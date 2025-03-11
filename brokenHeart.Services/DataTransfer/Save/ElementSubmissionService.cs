@@ -32,6 +32,8 @@ namespace brokenHeart.Services.DataTransfer.Save
         public void UpdateElement(ElementType type, int id, List<ElementUpdate> updates)
         {
             IElementSaveService elementSaveService = GetSaveService(type);
+
+            updates = updates.Where(x => x.FieldId != null).ToList();
             elementSaveService.UpdateElement(id, updates);
         }
 

@@ -3,7 +3,6 @@ using brokenHeart.DB;
 using brokenHeart.Models;
 using brokenHeart.Models.DataTransfer;
 using brokenHeart.Models.DataTransfer.Save;
-using brokenHeart.Models.DataTransfer.Save.ElementFields.Counters;
 using brokenHeart.Services.Utility;
 
 namespace brokenHeart.Services.DataTransfer.Save.Counters
@@ -66,21 +65,21 @@ namespace brokenHeart.Services.DataTransfer.Save.Counters
 
             foreach (ElementUpdate update in updates)
             {
-                switch ((CounterField)update.FieldId)
+                switch (update.FieldId)
                 {
-                    case CounterField.Name:
+                    case nameof(Counter.Name):
                         counter.Name = update.Value;
                         break;
-                    case CounterField.Description:
+                    case nameof(Counter.Description):
                         counter.Description = update.Value;
                         break;
-                    case CounterField.Value:
+                    case nameof(Counter.Value):
                         counter.Value = update.Value.SafeParseInt();
                         break;
-                    case CounterField.Max:
+                    case nameof(Counter.Max):
                         counter.Max = update.Value.SafeParseInt();
                         break;
-                    case CounterField.RoundBased:
+                    case nameof(Counter.RoundBased):
                         counter.RoundBased = bool.Parse(update.Value);
                         break;
                 }

@@ -1,8 +1,6 @@
 ﻿using brokenHeart.Database.DAO.Modifiers.Traits;
 using brokenHeart.Models.DataTransfer;
 using brokenHeart.Models.DataTransfer.Projection;
-using brokenHeart.Models.DataTransfer.Save.ElementFields.Modifiers;
-using brokenHeart.Models.DataTransfer.Save.ElementFields.Modifiers.Traits;
 using brokenHeart.Models.DataTransfer.Search;
 using brokenHeart.Services.DataTransfer.Search;
 
@@ -32,13 +30,13 @@ namespace brokenHeart.Services.DataTransfer.Projection.Abilities
                     {
                         new ElementView.Text()
                         {
-                            FieldId = (int)ModifierField.Description,
+                            FieldId = nameof(Trait.Description),
                             Title = "Description",
                             Content = x.Description
                         },
                         new ElementView.Text()
                         {
-                            FieldId = (int)ModifierField.Abstract,
+                            FieldId = nameof(Trait.Abstract),
                             Title = "Abstract",
                             Content = x.Abstract
                         }
@@ -53,42 +51,42 @@ namespace brokenHeart.Services.DataTransfer.Projection.Abilities
                         },
                         new ElementView.Field()
                         {
-                            FieldId = (int)ModifierField.Name,
+                            FieldId = nameof(Trait.Name),
                             Title = "Name",
                             Content = x.Name,
                             Type = ElementView.FieldType.String
                         },
                         new ElementView.Field()
                         {
-                            FieldId = (int)ModifierField.MaxHp,
+                            FieldId = nameof(Trait.MaxHp),
                             Title = "Maximum HP Increase",
                             Content = x.MaxHp,
                             Type = ElementView.FieldType.Number
                         },
                         new ElementView.Field()
                         {
-                            FieldId = (int)ModifierField.MovementSpeed,
+                            FieldId = nameof(Trait.MovementSpeed),
                             Title = "Movement Speed Increase",
                             Content = x.MovementSpeed,
                             Type = ElementView.FieldType.Number
                         },
                         new ElementView.Field()
                         {
-                            FieldId = (int)ModifierField.Evasion,
+                            FieldId = nameof(Trait.Evasion),
                             Title = "Evasion",
                             Content = x.Evasion,
                             Type = ElementView.FieldType.Number
                         },
                         new ElementView.Field()
                         {
-                            FieldId = (int)ModifierField.Armor,
+                            FieldId = nameof(Trait.Armor),
                             Title = "Armor",
                             Content = x.Armor,
                             Type = ElementView.FieldType.Number
                         },
                         new ElementView.Field()
                         {
-                            FieldId = (int)TraitField.Active,
+                            FieldId = nameof(Trait.Active),
                             Title = "Active",
                             Content = x.Active,
                             Type = ElementView.FieldType.Boolean

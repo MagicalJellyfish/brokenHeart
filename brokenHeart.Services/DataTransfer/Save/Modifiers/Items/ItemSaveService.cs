@@ -3,7 +3,6 @@ using brokenHeart.DB;
 using brokenHeart.Models;
 using brokenHeart.Models.DataTransfer;
 using brokenHeart.Models.DataTransfer.Save;
-using brokenHeart.Models.DataTransfer.Save.ElementFields.Modifiers.Items;
 using brokenHeart.Services.Utility;
 
 namespace brokenHeart.Services.DataTransfer.Save.Modifiers.Items
@@ -67,15 +66,15 @@ namespace brokenHeart.Services.DataTransfer.Save.Modifiers.Items
 
             foreach (ElementUpdate update in updates)
             {
-                switch ((ItemField)update.FieldId)
+                switch (update.FieldId)
                 {
-                    case ItemField.Equipped:
+                    case nameof(Item.Equipped):
                         item.Equipped = bool.Parse(update.Value);
                         break;
-                    case ItemField.Amount:
+                    case nameof(Item.Amount):
                         item.Amount = update.Value.SafeParseInt();
                         break;
-                    case ItemField.Unit:
+                    case nameof(Item.Unit):
                         item.Unit = update.Value;
                         break;
                 }

@@ -3,7 +3,6 @@ using brokenHeart.DB;
 using brokenHeart.Models;
 using brokenHeart.Models.DataTransfer;
 using brokenHeart.Models.DataTransfer.Save;
-using brokenHeart.Models.DataTransfer.Save.ElementFields.Characters;
 using brokenHeart.Services.Utility;
 
 namespace brokenHeart.Services.DataTransfer.Save.Characters
@@ -63,12 +62,12 @@ namespace brokenHeart.Services.DataTransfer.Save.Characters
 
             foreach (ElementUpdate update in updates)
             {
-                switch ((VariableField)update.FieldId)
+                switch (update.FieldId)
                 {
-                    case VariableField.Name:
+                    case nameof(Variable.Name):
                         variable.Name = update.Value;
                         break;
-                    case VariableField.Value:
+                    case nameof(Variable.Value):
                         variable.Value = update.Value.SafeParseInt();
                         break;
                 }

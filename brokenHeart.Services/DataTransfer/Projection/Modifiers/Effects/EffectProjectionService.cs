@@ -1,8 +1,6 @@
 using brokenHeart.Database.DAO.Modifiers.Effects;
 using brokenHeart.Models.DataTransfer;
 using brokenHeart.Models.DataTransfer.Projection;
-using brokenHeart.Models.DataTransfer.Save.ElementFields.Modifiers;
-using brokenHeart.Models.DataTransfer.Save.ElementFields.Modifiers.Effects;
 using brokenHeart.Models.DataTransfer.Search;
 using brokenHeart.Services.DataTransfer.Search;
 
@@ -32,13 +30,13 @@ namespace brokenHeart.Services.DataTransfer.Projection.Abilities
                     {
                         new ElementView.Text()
                         {
-                            FieldId = (int)ModifierField.Description,
+                            FieldId = nameof(Effect.Description),
                             Title = "Description",
                             Content = x.Description
                         },
                         new ElementView.Text()
                         {
-                            FieldId = (int)ModifierField.Abstract,
+                            FieldId = nameof(Effect.Abstract),
                             Title = "Abstract",
                             Content = x.Abstract
                         }
@@ -53,56 +51,56 @@ namespace brokenHeart.Services.DataTransfer.Projection.Abilities
                         },
                         new ElementView.Field()
                         {
-                            FieldId = (int)ModifierField.Name,
+                            FieldId = nameof(Effect.Name),
                             Title = "Name",
                             Content = x.Name,
                             Type = ElementView.FieldType.String
                         },
                         new ElementView.Field()
                         {
-                            FieldId = (int)ModifierField.MaxHp,
+                            FieldId = nameof(Effect.MaxHp),
                             Title = "Maximum HP Increase",
                             Content = x.MaxHp,
                             Type = ElementView.FieldType.Number
                         },
                         new ElementView.Field()
                         {
-                            FieldId = (int)ModifierField.MovementSpeed,
+                            FieldId = nameof(Effect.MovementSpeed),
                             Title = "Movement Speed Increase",
                             Content = x.MovementSpeed,
                             Type = ElementView.FieldType.Number
                         },
                         new ElementView.Field()
                         {
-                            FieldId = (int)ModifierField.Evasion,
+                            FieldId = nameof(Effect.Evasion),
                             Title = "Evasion",
                             Content = x.Evasion,
                             Type = ElementView.FieldType.Number
                         },
                         new ElementView.Field()
                         {
-                            FieldId = (int)ModifierField.Armor,
+                            FieldId = nameof(Effect.Armor),
                             Title = "Armor",
                             Content = x.Armor,
                             Type = ElementView.FieldType.Number
                         },
                         new ElementView.Field()
                         {
-                            FieldId = (int)EffectField.Hp,
+                            FieldId = nameof(Effect.Hp),
                             Title = "HP healed per round",
                             Content = x.Hp,
                             Type = ElementView.FieldType.String
                         },
                         new ElementView.Field()
                         {
-                            FieldId = (int)EffectField.MaxTempHp,
+                            FieldId = nameof(Effect.MaxTempHp),
                             Title = "Temporary HP",
                             Content = x.MaxTempHp,
                             Type = ElementView.FieldType.Number
                         },
                         new ElementView.Field()
                         {
-                            FieldId = (int)EffectField.Duration,
+                            FieldId = nameof(Effect.Duration),
                             Title = "Duration",
                             Content = x.Duration,
                             Type = ElementView.FieldType.String

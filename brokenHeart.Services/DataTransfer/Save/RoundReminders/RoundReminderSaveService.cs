@@ -3,7 +3,6 @@ using brokenHeart.DB;
 using brokenHeart.Models;
 using brokenHeart.Models.DataTransfer;
 using brokenHeart.Models.DataTransfer.Save;
-using brokenHeart.Models.DataTransfer.Save.ElementFields.RoundReminders;
 
 namespace brokenHeart.Services.DataTransfer.Save.RoundReminders
 {
@@ -70,12 +69,12 @@ namespace brokenHeart.Services.DataTransfer.Save.RoundReminders
 
             foreach (ElementUpdate update in updates)
             {
-                switch ((RoundReminderField)update.FieldId)
+                switch (update.FieldId)
                 {
-                    case RoundReminderField.Reminding:
+                    case nameof(RoundReminder.Reminding):
                         roundReminder.Reminding = bool.Parse(update.Value);
                         break;
-                    case RoundReminderField.Reminder:
+                    case nameof(RoundReminder.Reminder):
                         roundReminder.Reminder = update.Value;
                         break;
                 }

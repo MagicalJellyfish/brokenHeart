@@ -1,7 +1,6 @@
 ﻿using brokenHeart.Database.DAO.Characters;
 using brokenHeart.Models.DataTransfer;
 using brokenHeart.Models.DataTransfer.Projection;
-using brokenHeart.Models.DataTransfer.Save.ElementFields.Characters;
 using brokenHeart.Models.DataTransfer.Search;
 using brokenHeart.Services.DataTransfer.Search;
 
@@ -38,14 +37,14 @@ namespace brokenHeart.Services.DataTransfer.Projection.Characters
                         },
                         new ElementView.Field()
                         {
-                            FieldId = (int)VariableField.Name,
+                            FieldId = nameof(Variable.Name),
                             Title = "Name",
                             Content = x.Name,
                             Type = ElementView.FieldType.String
                         },
                         new ElementView.Field()
                         {
-                            FieldId = (int)VariableField.Value,
+                            FieldId = nameof(Variable.Value),
                             Title = "Value",
                             Content = x.Value,
                             Type = ElementView.FieldType.Number

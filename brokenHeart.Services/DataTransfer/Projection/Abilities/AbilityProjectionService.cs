@@ -1,7 +1,6 @@
 ﻿using brokenHeart.Database.DAO.Abilities.Abilities;
 using brokenHeart.Models.DataTransfer;
 using brokenHeart.Models.DataTransfer.Projection;
-using brokenHeart.Models.DataTransfer.Save.ElementFields.Abilities;
 using brokenHeart.Models.DataTransfer.Search;
 using brokenHeart.Services.DataTransfer.Search;
 
@@ -31,13 +30,13 @@ namespace brokenHeart.Services.DataTransfer.Projection.Abilities
                     {
                         new ElementView.Text()
                         {
-                            FieldId = (int)AbilityField.Description,
+                            FieldId = nameof(Ability.Description),
                             Title = "Description",
                             Content = x.Description
                         },
                         new ElementView.Text()
                         {
-                            FieldId = (int)AbilityField.Abstract,
+                            FieldId = nameof(Ability.Abstract),
                             Title = "Abstract",
                             Content = x.Abstract
                         }
@@ -52,14 +51,14 @@ namespace brokenHeart.Services.DataTransfer.Projection.Abilities
                         },
                         new ElementView.Field()
                         {
-                            FieldId = (int)AbilityField.Name,
+                            FieldId = nameof(Ability.Name),
                             Title = "Name",
                             Content = x.Name,
                             Type = ElementView.FieldType.String
                         },
                         new ElementView.Field()
                         {
-                            FieldId = (int)AbilityField.TargetType,
+                            FieldId = nameof(Ability.TargetType),
                             Title = "Target Type",
                             Content = new ElementView.Field.EnumContent()
                             {
@@ -70,35 +69,35 @@ namespace brokenHeart.Services.DataTransfer.Projection.Abilities
                         },
                         new ElementView.Field()
                         {
-                            FieldId = (int)AbilityField.Shortcut,
+                            FieldId = nameof(Ability.Shortcut),
                             Title = "Shortcut",
                             Content = x.Shortcut,
                             Type = ElementView.FieldType.String
                         },
                         new ElementView.Field()
                         {
-                            FieldId = (int)AbilityField.Self,
+                            FieldId = nameof(Ability.Self),
                             Title = "Roll",
                             Content = x.Self,
                             Type = ElementView.FieldType.String
                         },
                         new ElementView.Field()
                         {
-                            FieldId = (int)AbilityField.Target,
+                            FieldId = nameof(Ability.Target),
                             Title = "Target's Roll/DC",
                             Content = x.Target,
                             Type = ElementView.FieldType.String
                         },
                         new ElementView.Field()
                         {
-                            FieldId = (int)AbilityField.Damage,
+                            FieldId = nameof(Ability.Damage),
                             Title = "Damage",
                             Content = x.Damage,
                             Type = ElementView.FieldType.String
                         },
                         new ElementView.Field()
                         {
-                            FieldId = (int)AbilityField.Range,
+                            FieldId = nameof(Ability.Range),
                             Title = "Range",
                             Content = x.Range,
                             Type = ElementView.FieldType.String
@@ -113,14 +112,14 @@ namespace brokenHeart.Services.DataTransfer.Projection.Abilities
                                 {
                                     new ElementView.Field()
                                     {
-                                        FieldId = (int)AbilityField.Uses,
+                                        FieldId = nameof(Ability.Uses),
                                         Title = "Uses",
                                         Content = x.Uses,
                                         Type = ElementView.FieldType.Number
                                     },
                                     new ElementView.Field()
                                     {
-                                        FieldId = (int)AbilityField.MaxUses,
+                                        FieldId = nameof(Ability.MaxUses),
                                         Title = "Maximum Uses",
                                         Content = x.MaxUses,
                                         Type = ElementView.FieldType.Number
@@ -131,7 +130,7 @@ namespace brokenHeart.Services.DataTransfer.Projection.Abilities
                         },
                         new ElementView.Field()
                         {
-                            FieldId = (int)AbilityField.ReplenishType,
+                            FieldId = nameof(Ability.ReplenishType),
                             Title = "Replenish Type",
                             Content = new ElementView.Field.EnumContent()
                             {
