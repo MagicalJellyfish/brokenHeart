@@ -1,9 +1,10 @@
 ﻿using System.Text.Json.Serialization;
 using brokenHeart.Database.DAO.Modifiers;
+using brokenHeart.Database.Interfaces;
 
 namespace brokenHeart.Database.DAO.Stats
 {
-    public class StatValue
+    public class StatValue : IDao
     {
         [JsonConstructor]
         public StatValue() { }

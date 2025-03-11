@@ -1,9 +1,10 @@
 ﻿using System.Text.Json.Serialization;
 using brokenHeart.Database.DAO.Abilities.Abilities;
+using brokenHeart.Database.Interfaces;
 
 namespace brokenHeart.Database.DAO.Abilities
 {
-    public class Roll
+    public class Roll : IDao
     {
         [JsonConstructor]
         public Roll() { }

@@ -3,7 +3,7 @@ using brokenHeart.Models.DataTransfer;
 using brokenHeart.Models.DataTransfer.Projection;
 using brokenHeart.Models.DataTransfer.Save.ElementFields.RoundReminders;
 using brokenHeart.Models.DataTransfer.Search;
-using brokenHeart.Services.DataTransfer.Search.RoundReminders;
+using brokenHeart.Services.DataTransfer.Search;
 
 namespace brokenHeart.Services.DataTransfer.Projection.RoundReminders
 {
@@ -11,26 +11,17 @@ namespace brokenHeart.Services.DataTransfer.Projection.RoundReminders
     {
         public ElementType ProjectionType => ElementType.Reminder;
 
-        private readonly IRoundReminderSearchService _roundReminderSearchService;
+        private readonly IDaoSearchService _daoSearchService;
 
-        public RoundReminderProjectionService(
-            IRoundReminderSearchService roundReminderSearchService
-        )
+        public RoundReminderProjectionService(IDaoSearchService daoSearchService)
         {
-            _roundReminderSearchService = roundReminderSearchService;
+            _daoSearchService = daoSearchService;
         }
 
         public dynamic? GetElement(int id)
         {
             IQueryable<RoundReminder> roundReminders =
-                _roundReminderSearchService.GetRoundReminders(
-                    new RoundReminderSearch() { Id = id }
-                );
-
-            if (roundReminders.Count() == 0 || roundReminders.Count() > 1)
-            {
-                return null;
-            }
+                _daoSearchService.GetSingleElement<RoundReminder>(new DaoSearch() { Id = id });
 
             return roundReminders
                 .Select(x => new ElementView()

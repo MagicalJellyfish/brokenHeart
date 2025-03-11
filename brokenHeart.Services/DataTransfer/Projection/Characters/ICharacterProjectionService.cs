@@ -1,5 +1,5 @@
 ﻿using brokenHeart.Models.DataTransfer.Projection;
-using brokenHeart.Models.DataTransfer.Search.Characters;
+using brokenHeart.Models.DataTransfer.Search;
 
 namespace brokenHeart.Services.DataTransfer.Projection.Characters
 {

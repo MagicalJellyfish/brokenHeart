@@ -3,8 +3,8 @@ using brokenHeart.Models.DataTransfer;
 using brokenHeart.Models.DataTransfer.Projection;
 using brokenHeart.Models.DataTransfer.Save.ElementFields.Modifiers;
 using brokenHeart.Models.DataTransfer.Save.ElementFields.Modifiers.Traits;
-using brokenHeart.Models.DataTransfer.Search.Modifiers;
-using brokenHeart.Services.DataTransfer.Search.Abilities;
+using brokenHeart.Models.DataTransfer.Search;
+using brokenHeart.Services.DataTransfer.Search;
 
 namespace brokenHeart.Services.DataTransfer.Projection.Abilities
 {
@@ -12,21 +12,18 @@ namespace brokenHeart.Services.DataTransfer.Projection.Abilities
     {
         public ElementType ProjectionType => ElementType.Trait;
 
-        private readonly ITraitSearchService _traitSearchService;
+        private readonly IDaoSearchService _daoSearchService;
 
-        public TraitProjectionService(ITraitSearchService traitSearchService)
+        public TraitProjectionService(IDaoSearchService daoSearchService)
         {
-            _traitSearchService = traitSearchService;
+            _daoSearchService = daoSearchService;
         }
 
         public dynamic? GetElement(int id)
         {
-            IQueryable<Trait> traits = _traitSearchService.GetTraits(new TraitSearch() { Id = id });
-
-            if (traits.Count() == 0 || traits.Count() > 1)
-            {
-                return null;
-            }
+            IQueryable<Trait> traits = _daoSearchService.GetSingleElement<Trait>(
+                new DaoSearch() { Id = id }
+            );
 
             return traits
                 .Select(x => new ElementView()

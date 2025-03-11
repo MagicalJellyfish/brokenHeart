@@ -1,5 +1,5 @@
 ﻿using brokenHeart.Models.DataTransfer.Projection;
-using brokenHeart.Models.DataTransfer.Search.Characters;
+using brokenHeart.Models.DataTransfer.Search;
 using brokenHeart.Services.DataTransfer.Projection.Characters;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

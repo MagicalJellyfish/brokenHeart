@@ -1,8 +1,9 @@
 ﻿using System.Text.Json.Serialization;
+using brokenHeart.Database.Interfaces;
 
 namespace brokenHeart.Database.DAO.Characters
 {
-    public class Variable
+    public class Variable : IDao, IElement
     {
         [JsonConstructor]
         public Variable() { }

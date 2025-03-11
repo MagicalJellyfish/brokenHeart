@@ -1,8 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using brokenHeart.Database.Interfaces;
 
 namespace brokenHeart.Database.DAO.Combat
 {
-    public class Combat
+    public class Combat : IDao
     {
         public Combat()
         {

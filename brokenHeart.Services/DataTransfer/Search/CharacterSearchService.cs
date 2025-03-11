@@ -1,13 +1,17 @@
 ﻿using brokenHeart.Database.DAO;
 using brokenHeart.DB;
-using brokenHeart.Models.DataTransfer.Search.Characters;
+using brokenHeart.Models.DataTransfer.Search;
 
-namespace brokenHeart.Services.DataTransfer.Search.Characters
+namespace brokenHeart.Services.DataTransfer.Search
 {
-    internal class CharacterSearchService : SearchService, ICharacterSearchService
+    internal class CharacterSearchService : ICharacterSearchService
     {
+        private readonly BrokenDbContext _context;
+
         public CharacterSearchService(BrokenDbContext context)
-            : base(context) { }
+        {
+            _context = context;
+        }
 
         public IQueryable<Character> GetCharacters(CharacterSearch search)
         {
@@ -36,6 +40,18 @@ namespace brokenHeart.Services.DataTransfer.Search.Characters
             if (search.NotOwnedBy != null)
             {
                 characters = characters.Where(x => x.Owner.Username != search.NotOwnedBy);
+            }
+
+            return characters;
+        }
+
+        public IQueryable<Character> GetSingleCharacter(CharacterSearch search)
+        {
+            IQueryable<Character> characters = GetCharacters(search);
+
+            if (characters.Count() < 1 || characters.Count() > 1)
+            {
+                throw new Exception("Found too many elements for search parameters!");
             }
 
             return characters;

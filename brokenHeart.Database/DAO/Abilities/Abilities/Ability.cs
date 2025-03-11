@@ -2,10 +2,11 @@
 using System.Text.Json.Serialization;
 using brokenHeart.Database.DAO.Modifiers;
 using brokenHeart.Database.DAO.Modifiers.Effects;
+using brokenHeart.Database.Interfaces;
 
 namespace brokenHeart.Database.DAO.Abilities.Abilities
 {
-    public class Ability
+    public class Ability : IDao, IOrderableElement
     {
         [JsonConstructor]
         public Ability() { }

@@ -13,10 +13,7 @@ using brokenHeart.Services.DataTransfer.Save.Modifiers.Effects;
 using brokenHeart.Services.DataTransfer.Save.Modifiers.Items;
 using brokenHeart.Services.DataTransfer.Save.Modifiers.Traits;
 using brokenHeart.Services.DataTransfer.Save.RoundReminders;
-using brokenHeart.Services.DataTransfer.Search.Abilities;
-using brokenHeart.Services.DataTransfer.Search.Characters;
-using brokenHeart.Services.DataTransfer.Search.RoundReminders;
-using brokenHeart.Services.DataTransfer.Search.Stats;
+using brokenHeart.Services.DataTransfer.Search;
 using brokenHeart.Services.Endpoints;
 using brokenHeart.Services.Rolling;
 using brokenHeart.Services.SignalR;
@@ -42,15 +39,8 @@ namespace brokenHeart.Services
             serviceCollection.AddScoped<IStatProjectionService, StatProjectionService>();
 
             // Search
+            serviceCollection.AddScoped<IDaoSearchService, DaoSearchService>();
             serviceCollection.AddScoped<ICharacterSearchService, CharacterSearchService>();
-            serviceCollection.AddScoped<IAbilitySearchService, AbilitySearchService>();
-            serviceCollection.AddScoped<ITraitSearchService, TraitSearchService>();
-            serviceCollection.AddScoped<IItemSearchService, ItemSearchService>();
-            serviceCollection.AddScoped<IEffectSearchService, EffectSearchService>();
-            serviceCollection.AddScoped<ICounterSearchService, CounterSearchService>();
-            serviceCollection.AddScoped<IRoundReminderSearchService, RoundReminderSearchService>();
-            serviceCollection.AddScoped<IVariableSearchService, VariableSearchService>();
-            serviceCollection.AddScoped<IStatSearchService, StatSearchService>();
 
             // Element Retrieval
             serviceCollection.AddScoped<IElementRetrievalService, ElementRetrievalService>();

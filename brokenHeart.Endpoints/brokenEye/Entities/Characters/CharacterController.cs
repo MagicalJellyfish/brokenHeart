@@ -1,7 +1,7 @@
 ﻿using brokenHeart.Models;
 using brokenHeart.Models.DataTransfer.Projection;
 using brokenHeart.Models.DataTransfer.Save;
-using brokenHeart.Models.DataTransfer.Search.Characters;
+using brokenHeart.Models.DataTransfer.Search;
 using brokenHeart.Services.DataTransfer.Projection.Characters;
 using brokenHeart.Services.DataTransfer.Save.Characters;
 using Microsoft.AspNetCore.Authorization;
@@ -55,8 +55,7 @@ namespace brokenHeart.Endpoints.brokenEye.Entities.Characters
         }
 
         [HttpPut("{id}/injuries")]
-        [HttpPatch("{id}")]
-        public ActionResult PatchCharacter(int id, List<InjuryModel> injuries)
+        public ActionResult UpdateInjuries(int id, List<InjuryModel> injuries)
         {
             ExecutionResult result = _characterSaveService.UpdateInjuries(id, injuries);
 

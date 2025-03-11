@@ -1,9 +1,10 @@
 ﻿using System.Text.Json.Serialization;
 using brokenHeart.Database.DAO.Modifiers.Effects.Injuries;
+using brokenHeart.Database.Interfaces;
 
 namespace brokenHeart.Database.DAO.Characters
 {
-    public class Bodypart
+    public class Bodypart : IDao
     {
         [JsonConstructor]
         public Bodypart() { }
