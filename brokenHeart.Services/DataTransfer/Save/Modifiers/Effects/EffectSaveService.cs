@@ -3,7 +3,6 @@ using brokenHeart.DB;
 using brokenHeart.Models;
 using brokenHeart.Models.DataTransfer;
 using brokenHeart.Models.DataTransfer.Save;
-using brokenHeart.Models.DataTransfer.Save.ElementFields.Modifiers.Effects;
 using brokenHeart.Services.Utility;
 
 namespace brokenHeart.Services.DataTransfer.Save.Modifiers.Effects
@@ -67,15 +66,15 @@ namespace brokenHeart.Services.DataTransfer.Save.Modifiers.Effects
 
             foreach (ElementUpdate update in updates)
             {
-                switch ((EffectField)update.FieldId)
+                switch (update.FieldId)
                 {
-                    case EffectField.Hp:
+                    case nameof(Effect.Name):
                         effect.Hp = update.Value;
                         break;
-                    case EffectField.MaxTempHp:
+                    case nameof(Effect.MaxTempHp):
                         effect.MaxTempHp = update.Value.SafeParseInt();
                         break;
-                    case EffectField.Duration:
+                    case nameof(Effect.Duration):
                         effect.Duration = update.Value;
                         break;
                 }

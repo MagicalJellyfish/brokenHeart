@@ -4,7 +4,6 @@ using brokenHeart.DB;
 using brokenHeart.Models;
 using brokenHeart.Models.DataTransfer;
 using brokenHeart.Models.DataTransfer.Save;
-using brokenHeart.Models.DataTransfer.Save.ElementFields.Abilities;
 using brokenHeart.Services.Utility;
 using Microsoft.EntityFrameworkCore;
 
@@ -102,45 +101,45 @@ namespace brokenHeart.Services.DataTransfer.Save.Abilities
 
             foreach (ElementUpdate update in updates)
             {
-                switch ((AbilityField)update.FieldId)
+                switch (update.FieldId)
                 {
-                    case AbilityField.Name:
+                    case nameof(Ability.Name):
                         ability.Name = update.Value;
                         break;
-                    case AbilityField.Abstract:
+                    case nameof(Ability.Abstract):
                         ability.Abstract = update.Value;
                         break;
-                    case AbilityField.Description:
+                    case nameof(Ability.Description):
                         ability.Description = update.Value;
                         break;
-                    case AbilityField.Shortcut:
+                    case nameof(Ability.Shortcut):
                         ability.Shortcut = update.Value;
                         break;
-                    case AbilityField.TargetType:
+                    case nameof(Ability.TargetType):
                         ability.TargetType = Enum.Parse<TargetType>(update.Value);
                         break;
-                    case AbilityField.CanInjure:
+                    case nameof(Ability.CanInjure):
                         ability.CanInjure = bool.Parse(update.Value);
                         break;
-                    case AbilityField.Self:
+                    case nameof(Ability.Self):
                         ability.Self = update.Value;
                         break;
-                    case AbilityField.Target:
+                    case nameof(Ability.Target):
                         ability.Target = update.Value;
                         break;
-                    case AbilityField.Damage:
+                    case nameof(Ability.Damage):
                         ability.Damage = update.Value;
                         break;
-                    case AbilityField.Range:
+                    case nameof(Ability.Range):
                         ability.Range = update.Value;
                         break;
-                    case AbilityField.Uses:
+                    case nameof(Ability.Uses):
                         ability.Uses = update.Value.SafeParseInt();
                         break;
-                    case AbilityField.MaxUses:
+                    case nameof(Ability.MaxUses):
                         ability.MaxUses = update.Value.SafeParseInt();
                         break;
-                    case AbilityField.ReplenishType:
+                    case nameof(Ability.ReplenishType):
                         ability.ReplenishType = Enum.Parse<ReplenishType>(update.Value);
                         break;
                 }

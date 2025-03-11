@@ -1,7 +1,6 @@
 ﻿using brokenHeart.Database.DAO.Counters;
 using brokenHeart.Models.DataTransfer;
 using brokenHeart.Models.DataTransfer.Projection;
-using brokenHeart.Models.DataTransfer.Save.ElementFields.Counters;
 using brokenHeart.Models.DataTransfer.Search;
 using brokenHeart.Services.DataTransfer.Search;
 
@@ -31,7 +30,7 @@ namespace brokenHeart.Services.DataTransfer.Projection.Abilities
                     {
                         new ElementView.Text()
                         {
-                            FieldId = (int)CounterField.Description,
+                            FieldId = nameof(Counter.Description),
                             Title = "Description",
                             Content = x.Description
                         },
@@ -46,7 +45,7 @@ namespace brokenHeart.Services.DataTransfer.Projection.Abilities
                         },
                         new ElementView.Field()
                         {
-                            FieldId = (int)CounterField.Name,
+                            FieldId = nameof(Counter.Name),
                             Title = "Name",
                             Content = x.Name,
                             Type = ElementView.FieldType.String
@@ -62,14 +61,14 @@ namespace brokenHeart.Services.DataTransfer.Projection.Abilities
                                 {
                                     new ElementView.Field()
                                     {
-                                        FieldId = (int)CounterField.Value,
+                                        FieldId = nameof(Counter.Value),
                                         Title = "Value",
                                         Content = x.Value,
                                         Type = ElementView.FieldType.Number
                                     },
                                     new ElementView.Field()
                                     {
-                                        FieldId = (int)CounterField.Max,
+                                        FieldId = nameof(Counter.Max),
                                         Title = "Maximum Value",
                                         Content = x.Max,
                                         Type = ElementView.FieldType.Number
@@ -79,7 +78,7 @@ namespace brokenHeart.Services.DataTransfer.Projection.Abilities
                         },
                         new ElementView.Field()
                         {
-                            FieldId = (int)CounterField.RoundBased,
+                            FieldId = nameof(Counter.RoundBased),
                             Title = "Round-Based",
                             Content = x.RoundBased,
                             Type = ElementView.FieldType.Boolean

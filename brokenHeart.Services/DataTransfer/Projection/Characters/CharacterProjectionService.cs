@@ -2,14 +2,11 @@
 using brokenHeart.Database.DAO;
 using brokenHeart.Database.DAO.Abilities.Abilities;
 using brokenHeart.Database.DAO.Counters;
+using brokenHeart.Database.DAO.Modifiers.Items;
+using brokenHeart.Database.DAO.Modifiers.Traits;
 using brokenHeart.Database.DAO.RoundReminders;
 using brokenHeart.Models.DataTransfer;
 using brokenHeart.Models.DataTransfer.Projection;
-using brokenHeart.Models.DataTransfer.Save.ElementFields.Abilities;
-using brokenHeart.Models.DataTransfer.Save.ElementFields.Counters;
-using brokenHeart.Models.DataTransfer.Save.ElementFields.Modifiers.Items;
-using brokenHeart.Models.DataTransfer.Save.ElementFields.Modifiers.Traits;
-using brokenHeart.Models.DataTransfer.Save.ElementFields.RoundReminders;
 using brokenHeart.Models.DataTransfer.Search;
 using brokenHeart.Services.DataTransfer.Search;
 using LinqKit;
@@ -231,7 +228,7 @@ namespace brokenHeart.Services.DataTransfer.Projection.Characters
                     DeathCounter = new CharacterView.DeathCounterModel()
                     {
                         Id = x.DeathCounter.Id,
-                        ValueFieldId = (int)CounterField.Value,
+                        ValueFieldId = nameof(Counter.Value),
                         Max = x.DeathCounter.Max,
                         Value = x.DeathCounter.Value
                     },
@@ -405,7 +402,7 @@ namespace brokenHeart.Services.DataTransfer.Projection.Characters
                 new ElementList.ElementColumn()
                 {
                     Title = "Uses",
-                    FieldId = (int)AbilityField.Uses,
+                    FieldId = nameof(Ability.Uses),
                     Property = "uses",
                     PropertyOf = "maxUses",
                     ColumnType = ElementList.ElementColumnType.InputOf,
@@ -436,7 +433,7 @@ namespace brokenHeart.Services.DataTransfer.Projection.Characters
                 new ElementList.ElementColumn()
                 {
                     Title = "Active",
-                    FieldId = (int)TraitField.Active,
+                    FieldId = nameof(Trait.Active),
                     Property = "active",
                     ColumnType = ElementList.ElementColumnType.Checkbox,
                 }
@@ -460,14 +457,14 @@ namespace brokenHeart.Services.DataTransfer.Projection.Characters
                 new ElementList.ElementColumn()
                 {
                     Title = "Equipped",
-                    FieldId = (int)ItemField.Equipped,
+                    FieldId = nameof(Item.Equipped),
                     Property = "equipped",
                     ColumnType = ElementList.ElementColumnType.Checkbox,
                 },
                 new ElementList.ElementColumn()
                 {
                     Title = "Amount",
-                    FieldId = (int)ItemField.Amount,
+                    FieldId = nameof(Item.Amount),
                     Property = "amount",
                     ColumnType = ElementList.ElementColumnType.Input,
                 }
@@ -508,7 +505,7 @@ namespace brokenHeart.Services.DataTransfer.Projection.Characters
                 new ElementList.ElementColumn()
                 {
                     Title = "Value",
-                    FieldId = (int)CounterField.Value,
+                    FieldId = nameof(Counter.Value),
                     Property = "value",
                     PropertyOf = "max",
                     ColumnType = ElementList.ElementColumnType.InputOf,
@@ -533,7 +530,7 @@ namespace brokenHeart.Services.DataTransfer.Projection.Characters
                 new ElementList.ElementColumn()
                 {
                     Title = "Reminding",
-                    FieldId = (int)RoundReminderField.Reminding,
+                    FieldId = nameof(RoundReminder.Reminding),
                     Property = "reminding",
                     ColumnType = ElementList.ElementColumnType.Checkbox,
                 },

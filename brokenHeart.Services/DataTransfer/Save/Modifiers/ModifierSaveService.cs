@@ -3,7 +3,6 @@ using brokenHeart.Database.DAO.Stats;
 using brokenHeart.DB;
 using brokenHeart.Models.DataTransfer;
 using brokenHeart.Models.DataTransfer.Save;
-using brokenHeart.Models.DataTransfer.Save.ElementFields.Modifiers;
 using brokenHeart.Services.Utility;
 using Microsoft.EntityFrameworkCore;
 
@@ -59,27 +58,27 @@ namespace brokenHeart.Services.DataTransfer.Save.Modifiers
         {
             foreach (ElementUpdate update in updates)
             {
-                switch ((ModifierField)update.FieldId)
+                switch (update.FieldId)
                 {
-                    case ModifierField.Name:
+                    case nameof(Modifier.Name):
                         modifier.Name = update.Value;
                         break;
-                    case ModifierField.Abstract:
+                    case nameof(Modifier.Abstract):
                         modifier.Abstract = update.Value;
                         break;
-                    case ModifierField.Description:
+                    case nameof(Modifier.Description):
                         modifier.Description = update.Value;
                         break;
-                    case ModifierField.MaxHp:
+                    case nameof(Modifier.MaxHp):
                         modifier.MaxHp = update.Value.SafeParseInt();
                         break;
-                    case ModifierField.MovementSpeed:
+                    case nameof(Modifier.MovementSpeed):
                         modifier.MovementSpeed = update.Value.SafeParseInt();
                         break;
-                    case ModifierField.Armor:
+                    case nameof(Modifier.Armor):
                         modifier.Armor = update.Value.SafeParseInt();
                         break;
-                    case ModifierField.Evasion:
+                    case nameof(Modifier.Evasion):
                         modifier.Evasion = update.Value.SafeParseInt();
                         break;
                 }

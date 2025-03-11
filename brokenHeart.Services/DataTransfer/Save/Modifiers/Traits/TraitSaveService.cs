@@ -3,7 +3,6 @@ using brokenHeart.DB;
 using brokenHeart.Models;
 using brokenHeart.Models.DataTransfer;
 using brokenHeart.Models.DataTransfer.Save;
-using brokenHeart.Models.DataTransfer.Save.ElementFields.Modifiers.Traits;
 
 namespace brokenHeart.Services.DataTransfer.Save.Modifiers.Traits
 {
@@ -66,9 +65,9 @@ namespace brokenHeart.Services.DataTransfer.Save.Modifiers.Traits
 
             foreach (ElementUpdate update in updates)
             {
-                switch ((TraitField)update.FieldId)
+                switch (update.FieldId)
                 {
-                    case TraitField.Active:
+                    case nameof(Trait.Active):
                         trait.Active = bool.Parse(update.Value);
                         break;
                 }
