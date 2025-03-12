@@ -1,5 +1,6 @@
-﻿using brokenHeart.Models.DataTransfer;
-using brokenHeart.Services.DataTransfer.Save.Abilities;
+﻿using brokenHeart.Database.DAO.Abilities.Abilities;
+using brokenHeart.Models.DataTransfer;
+using brokenHeart.Services.DataTransfer.Save.Auxiliary;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,17 +11,17 @@ namespace brokenHeart.Endpoints.brokenEye.Entities
     [Authorize]
     public class AbilityController : ControllerBase
     {
-        private readonly IAbilitySaveService _abilitySaveService;
+        private readonly IRollingSaveService _rollingSaveService;
 
-        public AbilityController(IAbilitySaveService abilitySaveService)
+        public AbilityController(IRollingSaveService rollingSaveService)
         {
-            _abilitySaveService = abilitySaveService;
+            _rollingSaveService = rollingSaveService;
         }
 
         [HttpPut("rolls/{id}")]
         public ActionResult UpdateRolls(int id, List<RollModel> rolls)
         {
-            _abilitySaveService.UpdateRolls(id, rolls);
+            _rollingSaveService.UpdateRolls<Ability>(id, rolls);
 
             return Ok();
         }

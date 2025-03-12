@@ -2,7 +2,7 @@
 using brokenHeart.Models.DataTransfer;
 using brokenHeart.Models.DataTransfer.Save;
 
-namespace brokenHeart.Services.DataTransfer.Save
+namespace brokenHeart.Services.DataTransfer.Save.Entities
 {
     internal class ElementSubmissionService : IElementSubmissionService
     {
@@ -26,6 +26,7 @@ namespace brokenHeart.Services.DataTransfer.Save
         public void ReorderElements(ElementType type, List<ElementReorder> reorders)
         {
             IElementSaveService elementSaveService = GetSaveService(type);
+
             elementSaveService.ReorderElements(reorders);
         }
 

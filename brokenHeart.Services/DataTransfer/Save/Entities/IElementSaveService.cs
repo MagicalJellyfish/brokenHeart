@@ -2,7 +2,7 @@
 using brokenHeart.Models.DataTransfer;
 using brokenHeart.Models.DataTransfer.Save;
 
-namespace brokenHeart.Services.DataTransfer.Save
+namespace brokenHeart.Services.DataTransfer.Save.Entities
 {
     internal interface IElementSaveService
     {

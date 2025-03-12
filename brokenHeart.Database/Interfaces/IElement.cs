@@ -1,4 +1,4 @@
 ﻿namespace brokenHeart.Database.Interfaces
 {
-    public interface IElement { }
+    public interface IElement : IDao { }
 }
