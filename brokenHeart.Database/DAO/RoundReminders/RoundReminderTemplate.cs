@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 using brokenHeart.Database.DAO.Characters;
 using brokenHeart.Database.DAO.Counters;
 using brokenHeart.Database.DAO.Modifiers;
@@ -22,18 +21,12 @@ namespace brokenHeart.Database.DAO.RoundReminders
         public bool Reminding { get; set; }
         public string Reminder { get; set; }
 
-        [NotMapped]
-        public ICollection<int>? CounterTemplatesIds { get; set; } = new List<int>();
         public virtual ICollection<CounterTemplate> CounterTemplates { get; set; } =
             new List<CounterTemplate>();
 
-        [NotMapped]
-        public ICollection<int>? ModifierTemplatesIds { get; set; } = new List<int>();
         public virtual ICollection<ModifierTemplate> ModifierTemplates { get; set; } =
             new List<ModifierTemplate>();
 
-        [NotMapped]
-        public ICollection<int>? CharacterTemplatesIds { get; set; } = new List<int>();
         public virtual ICollection<CharacterTemplate> CharacterTemplates { get; set; } =
             new List<CharacterTemplate>();
 

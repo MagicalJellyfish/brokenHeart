@@ -1,9 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 using brokenHeart.Database.DAO.Abilities.Abilities;
 using brokenHeart.Database.DAO.Characters;
 using brokenHeart.Database.DAO.Counters;
-using brokenHeart.Database.DAO.Modifiers;
 using brokenHeart.Database.DAO.RoundReminders;
 using brokenHeart.Database.DAO.Stats;
 
@@ -61,17 +59,11 @@ namespace brokenHeart.Database.DAO.Modifiers.Effects
         public int? EffectCounterTemplateId { get; set; }
         public virtual EffectCounterTemplate? EffectCounterTemplate { get; set; }
 
-        [NotMapped]
-        public ICollection<int>? CharacterTemplatesIds { get; set; } = new List<int>();
         public virtual ICollection<CharacterTemplate> CharacterTemplates { get; set; } =
             new List<CharacterTemplate>();
 
-        [NotMapped]
-        public ICollection<int>? ApplyingAbilitiesIds { get; set; } = new List<int>();
         public virtual ICollection<Ability> ApplyingAbilities { get; set; } = new List<Ability>();
 
-        [NotMapped]
-        public ICollection<int>? ApplyingAbilityTemplatesIds { get; set; } = new List<int>();
         public virtual ICollection<AbilityTemplate> ApplyingAbilityTemplates { get; set; } =
             new List<AbilityTemplate>();
 

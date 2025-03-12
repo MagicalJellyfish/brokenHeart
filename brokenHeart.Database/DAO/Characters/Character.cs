@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 using brokenHeart.Database.DAO.Abilities.Abilities;
 using brokenHeart.Database.DAO.Characters;
 using brokenHeart.Database.DAO.Counters;
@@ -95,41 +94,24 @@ namespace brokenHeart.Database.DAO
         public virtual ICollection<BodypartCondition> BodypartConditions { get; set; } =
             new List<BodypartCondition>();
 
-        [NotMapped]
-        public ICollection<int>? VariablesIds { get; set; } = new List<int>();
         public virtual ICollection<Variable> Variables { get; set; } = new List<Variable>();
 
-        [NotMapped]
-        public ICollection<int>? AbilitiesIds { get; set; } = new List<int>();
         public virtual ICollection<Ability> Abilities { get; set; } = new List<Ability>();
 
-        [NotMapped]
-        public ICollection<int>? ItemsIds { get; set; } = new List<int>();
         public virtual ICollection<Item> Items { get; set; } = new List<Item>();
-
-        [NotMapped]
-        public ICollection<int>? TraitsIds { get; set; } = new List<int>();
 
         public virtual ICollection<Trait> Traits { get; set; } = new List<Trait>();
 
-        [NotMapped]
-        public ICollection<int>? EffectsIds { get; set; } = new List<int>();
         public virtual ICollection<Effect> Effects { get; set; } = new List<Effect>();
 
-        [NotMapped]
-        public ICollection<int>? InjuryEffectsIds { get; set; } = new List<int>();
         public virtual ICollection<InjuryEffect> InjuryEffects { get; set; } =
             new List<InjuryEffect>();
 
-        [NotMapped]
-        public ICollection<int>? CountersIds { get; set; } = new List<int>();
         public virtual ICollection<Counter> Counters { get; set; } = new List<Counter>();
 
         public int? DeathCounterId { get; set; }
         public virtual Counter? DeathCounter { get; set; }
 
-        [NotMapped]
-        public ICollection<int>? RoundRemindersIds { get; set; } = new List<int>();
         public virtual ICollection<RoundReminder> RoundReminders { get; set; } =
             new List<RoundReminder>();
 
