@@ -7,7 +7,7 @@ using brokenHeart.Database.Interfaces;
 
 namespace brokenHeart.Database.DAO.Abilities.Abilities
 {
-    public class AbilityTemplate : IDao, IElement
+    public class AbilityTemplate : IDao, IElement, IRolling
     {
         [JsonConstructor]
         public AbilityTemplate() { }

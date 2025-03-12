@@ -3,6 +3,8 @@ using brokenHeart.DB;
 using brokenHeart.Models;
 using brokenHeart.Models.DataTransfer;
 using brokenHeart.Models.DataTransfer.Save;
+using brokenHeart.Services.DataTransfer.Save.Auxiliary;
+using brokenHeart.Services.DataTransfer.Save.Entities;
 
 namespace brokenHeart.Services.DataTransfer.Save.Modifiers.Traits
 {
@@ -12,11 +14,17 @@ namespace brokenHeart.Services.DataTransfer.Save.Modifiers.Traits
 
         private readonly BrokenDbContext _context;
         private readonly IModifierSaveService _modifierSaveService;
+        private readonly IOrderableSaveService _orderableSaveService;
 
-        public TraitSaveService(BrokenDbContext context, IModifierSaveService modifierSaveService)
+        public TraitSaveService(
+            BrokenDbContext context,
+            IModifierSaveService modifierSaveService,
+            IOrderableSaveService orderableSaveService
+        )
         {
             _context = context;
             _modifierSaveService = modifierSaveService;
+            _orderableSaveService = orderableSaveService;
         }
 
         public ExecutionResult<int> CreateElement(ElementParentType parentType, int parentId)
@@ -45,16 +53,7 @@ namespace brokenHeart.Services.DataTransfer.Save.Modifiers.Traits
 
         public void ReorderElements(List<ElementReorder> reorders)
         {
-            List<Trait> traits = _context
-                .Traits.Where(x => reorders.Select(y => y.Id).Contains(x.Id))
-                .ToList();
-
-            foreach (Trait trait in traits)
-            {
-                trait.ViewPosition = reorders.Single(x => x.Id == trait.Id).ViewPosition;
-            }
-
-            _context.SaveChanges();
+            _orderableSaveService.ReorderElements<Trait>(reorders);
         }
 
         public void UpdateElement(int id, List<ElementUpdate> updates)

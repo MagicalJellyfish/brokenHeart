@@ -3,6 +3,8 @@ using brokenHeart.DB;
 using brokenHeart.Models;
 using brokenHeart.Models.DataTransfer;
 using brokenHeart.Models.DataTransfer.Save;
+using brokenHeart.Services.DataTransfer.Save.Auxiliary;
+using brokenHeart.Services.DataTransfer.Save.Entities;
 
 namespace brokenHeart.Services.DataTransfer.Save.RoundReminders
 {
@@ -11,10 +13,15 @@ namespace brokenHeart.Services.DataTransfer.Save.RoundReminders
         public ElementType SaveType => ElementType.Reminder;
 
         private readonly BrokenDbContext _context;
+        private readonly IOrderableSaveService _orderableSaveService;
 
-        public RoundReminderSaveService(BrokenDbContext context)
+        public RoundReminderSaveService(
+            BrokenDbContext context,
+            IOrderableSaveService orderableSaveService
+        )
         {
             _context = context;
+            _orderableSaveService = orderableSaveService;
         }
 
         public ExecutionResult<int> CreateElement(ElementParentType parentType, int parentId)
@@ -49,18 +56,7 @@ namespace brokenHeart.Services.DataTransfer.Save.RoundReminders
 
         public void ReorderElements(List<ElementReorder> reorders)
         {
-            List<RoundReminder> roundReminders = _context
-                .RoundReminders.Where(x => reorders.Select(y => y.Id).Contains(x.Id))
-                .ToList();
-
-            foreach (RoundReminder roundReminder in roundReminders)
-            {
-                roundReminder.ViewPosition = reorders
-                    .Single(x => x.Id == roundReminder.Id)
-                    .ViewPosition;
-            }
-
-            _context.SaveChanges();
+            _orderableSaveService.ReorderElements<RoundReminder>(reorders);
         }
 
         public void UpdateElement(int id, List<ElementUpdate> updates)

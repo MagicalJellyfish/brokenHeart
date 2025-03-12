@@ -3,6 +3,8 @@ using brokenHeart.DB;
 using brokenHeart.Models;
 using brokenHeart.Models.DataTransfer;
 using brokenHeart.Models.DataTransfer.Save;
+using brokenHeart.Services.DataTransfer.Save.Auxiliary;
+using brokenHeart.Services.DataTransfer.Save.Entities;
 using brokenHeart.Services.Utility;
 
 namespace brokenHeart.Services.DataTransfer.Save.Counters
@@ -12,10 +14,15 @@ namespace brokenHeart.Services.DataTransfer.Save.Counters
         public ElementType SaveType => ElementType.Counter;
 
         private readonly BrokenDbContext _context;
+        private readonly IOrderableSaveService _orderableSaveService;
 
-        public CounterSaveService(BrokenDbContext context)
+        public CounterSaveService(
+            BrokenDbContext context,
+            IOrderableSaveService orderableSaveService
+        )
         {
             _context = context;
+            _orderableSaveService = orderableSaveService;
         }
 
         public ExecutionResult<int> CreateElement(ElementParentType parentType, int parentId)
@@ -47,16 +54,7 @@ namespace brokenHeart.Services.DataTransfer.Save.Counters
 
         public void ReorderElements(List<ElementReorder> reorders)
         {
-            List<Counter> counters = _context
-                .Counters.Where(x => reorders.Select(y => y.Id).Contains(x.Id))
-                .ToList();
-
-            foreach (Counter counter in counters)
-            {
-                counter.ViewPosition = reorders.Single(x => x.Id == counter.Id).ViewPosition;
-            }
-
-            _context.SaveChanges();
+            _orderableSaveService.ReorderElements<Counter>(reorders);
         }
 
         public void UpdateElement(int id, List<ElementUpdate> updates)

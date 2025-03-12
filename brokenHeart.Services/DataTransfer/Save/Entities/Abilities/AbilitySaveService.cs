@@ -1,57 +1,28 @@
-﻿using brokenHeart.Database.DAO.Abilities;
-using brokenHeart.Database.DAO.Abilities.Abilities;
+﻿using brokenHeart.Database.DAO.Abilities.Abilities;
 using brokenHeart.DB;
 using brokenHeart.Models;
 using brokenHeart.Models.DataTransfer;
 using brokenHeart.Models.DataTransfer.Save;
+using brokenHeart.Services.DataTransfer.Save.Auxiliary;
+using brokenHeart.Services.DataTransfer.Save.Entities;
 using brokenHeart.Services.Utility;
-using Microsoft.EntityFrameworkCore;
 
 namespace brokenHeart.Services.DataTransfer.Save.Abilities
 {
-    internal class AbilitySaveService : IElementSaveService, IAbilitySaveService
+    internal class AbilitySaveService : IElementSaveService
     {
         public ElementType SaveType => ElementType.Ability;
 
         private readonly BrokenDbContext _context;
+        private readonly IOrderableSaveService _orderableSaveService;
 
-        public AbilitySaveService(BrokenDbContext context)
+        public AbilitySaveService(
+            BrokenDbContext context,
+            IOrderableSaveService orderableSaveService
+        )
         {
             _context = context;
-        }
-
-        public void UpdateRolls(int id, List<RollModel> rolls)
-        {
-            Ability ability = _context.Abilities.Include(x => x.Rolls).Single(x => x.Id == id);
-
-            foreach (RollModel roll in rolls)
-            {
-                Roll? abilityRoll = ability.Rolls.SingleOrDefault(x => x.Id == roll.Id);
-                if (abilityRoll == null)
-                {
-                    abilityRoll = new Roll() { AbilityId = ability.Id };
-                    _context.Rolls.Add(abilityRoll);
-                }
-
-                abilityRoll.Name = roll.Name;
-                abilityRoll.Instruction = roll.Value;
-            }
-
-            List<Roll> rollsToRemove = new List<Roll>();
-            foreach (Roll roll in ability.Rolls)
-            {
-                if (!rolls.Select(x => x.Id).Contains(roll.Id))
-                {
-                    rollsToRemove.Add(roll);
-                }
-            }
-
-            foreach (Roll roll in rollsToRemove)
-            {
-                _context.Rolls.Remove(roll);
-            }
-
-            _context.SaveChanges();
+            _orderableSaveService = orderableSaveService;
         }
 
         public ExecutionResult<int> CreateElement(ElementParentType parentType, int parentId)
@@ -83,16 +54,7 @@ namespace brokenHeart.Services.DataTransfer.Save.Abilities
 
         public void ReorderElements(List<ElementReorder> reorders)
         {
-            List<Ability> abilities = _context
-                .Abilities.Where(x => reorders.Select(y => y.Id).Contains(x.Id))
-                .ToList();
-
-            foreach (Ability ability in abilities)
-            {
-                ability.ViewPosition = reorders.Single(x => x.Id == ability.Id).ViewPosition;
-            }
-
-            _context.SaveChanges();
+            _orderableSaveService.ReorderElements<Ability>(reorders);
         }
 
         public void UpdateElement(int id, List<ElementUpdate> updates)

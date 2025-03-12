@@ -3,6 +3,8 @@ using brokenHeart.DB;
 using brokenHeart.Models;
 using brokenHeart.Models.DataTransfer;
 using brokenHeart.Models.DataTransfer.Save;
+using brokenHeart.Services.DataTransfer.Save.Auxiliary;
+using brokenHeart.Services.DataTransfer.Save.Entities;
 using brokenHeart.Services.Utility;
 
 namespace brokenHeart.Services.DataTransfer.Save.Modifiers.Items
@@ -13,11 +15,17 @@ namespace brokenHeart.Services.DataTransfer.Save.Modifiers.Items
 
         private readonly BrokenDbContext _context;
         private readonly IModifierSaveService _modifierSaveService;
+        private readonly IOrderableSaveService _orderableSaveService;
 
-        public ItemSaveService(BrokenDbContext context, IModifierSaveService modifierSaveService)
+        public ItemSaveService(
+            BrokenDbContext context,
+            IModifierSaveService modifierSaveService,
+            IOrderableSaveService orderableSaveService
+        )
         {
             _context = context;
             _modifierSaveService = modifierSaveService;
+            _orderableSaveService = orderableSaveService;
         }
 
         public ExecutionResult<int> CreateElement(ElementParentType parentType, int parentId)
@@ -46,16 +54,7 @@ namespace brokenHeart.Services.DataTransfer.Save.Modifiers.Items
 
         public void ReorderElements(List<ElementReorder> reorders)
         {
-            List<Item> items = _context
-                .Items.Where(x => reorders.Select(y => y.Id).Contains(x.Id))
-                .ToList();
-
-            foreach (Item item in items)
-            {
-                item.ViewPosition = reorders.Single(x => x.Id == item.Id).ViewPosition;
-            }
-
-            _context.SaveChanges();
+            _orderableSaveService.ReorderElements<Item>(reorders);
         }
 
         public void UpdateElement(int id, List<ElementUpdate> updates)
