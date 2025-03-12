@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 using brokenHeart.Database.DAO.Abilities.Abilities;
 using brokenHeart.Database.DAO.Counters;
 using brokenHeart.Database.DAO.Modifiers.Effects;
@@ -57,38 +56,23 @@ namespace brokenHeart.Database.DAO.Characters
         public string Notes { get; set; }
         public string Experience { get; set; }
 
-        [NotMapped]
-        public ICollection<int>? VariablesIds { get; set; } = new List<int>();
         public virtual ICollection<Variable> Variables { get; set; } = new List<Variable>();
 
-        [NotMapped]
-        public ICollection<int>? AbilityTemplatesIds { get; set; } = new List<int>();
         public virtual ICollection<AbilityTemplate> AbilityTemplates { get; set; } =
             new List<AbilityTemplate>();
 
-        [NotMapped]
-        public ICollection<int>? ItemTemplatesIds { get; set; } = new List<int>();
         public virtual ICollection<ItemTemplate> ItemTemplates { get; set; } =
             new List<ItemTemplate>();
-
-        [NotMapped]
-        public ICollection<int>? TraitTemplatesIds { get; set; } = new List<int>();
 
         public virtual ICollection<TraitTemplate> TraitTemplates { get; set; } =
             new List<TraitTemplate>();
 
-        [NotMapped]
-        public ICollection<int>? EffectTemplatesIds { get; set; } = new List<int>();
         public virtual ICollection<EffectTemplate> EffectTemplates { get; set; } =
             new List<EffectTemplate>();
 
-        [NotMapped]
-        public ICollection<int>? CounterTemplatesIds { get; set; } = new List<int>();
         public virtual ICollection<CounterTemplate> CounterTemplates { get; set; } =
             new List<CounterTemplate>();
 
-        [NotMapped]
-        public ICollection<int>? RoundReminderTemplatesIds { get; set; } = new List<int>();
         public virtual ICollection<RoundReminderTemplate> RoundReminderTemplates { get; set; } =
             new List<RoundReminderTemplate>();
 

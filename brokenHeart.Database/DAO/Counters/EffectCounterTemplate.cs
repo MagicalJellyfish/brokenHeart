@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 using brokenHeart.Database.DAO.Modifiers.Effects;
 
 namespace brokenHeart.Database.DAO.Counters
@@ -23,8 +22,6 @@ namespace brokenHeart.Database.DAO.Counters
 
         public bool EndEffect { get; set; }
 
-        [NotMapped]
-        public ICollection<int> EffectTemplatesIds { get; set; } = new List<int>();
         public virtual ICollection<EffectTemplate> EffectTemplates { get; set; } =
             new List<EffectTemplate>();
 

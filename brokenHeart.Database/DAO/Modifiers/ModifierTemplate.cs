@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 using brokenHeart.Database.DAO.Abilities.Abilities;
 using brokenHeart.Database.DAO.Counters;
 using brokenHeart.Database.DAO.RoundReminders;
@@ -49,17 +48,11 @@ namespace brokenHeart.Database.DAO.Modifiers
         public int Armor { get; set; }
         public int Evasion { get; set; }
 
-        [NotMapped]
-        public ICollection<int>? StatIncreasesIds { get; set; } = new List<int>();
         public virtual ICollection<StatValue> StatIncreases { get; set; } = new List<StatValue>();
 
-        [NotMapped]
-        public ICollection<int>? CounterTemplatesIds { get; set; } = new List<int>();
         public virtual ICollection<CounterTemplate> CounterTemplates { get; set; } =
             new List<CounterTemplate>();
 
-        [NotMapped]
-        public ICollection<int>? AbilityTemplatesIds { get; set; } = new List<int>();
         public virtual ICollection<AbilityTemplate> AbilityTemplates { get; set; } =
             new List<AbilityTemplate>();
 

@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 using brokenHeart.Database.DAO.Abilities.Abilities;
 using brokenHeart.Database.DAO.Characters;
 using brokenHeart.Database.DAO.Counters;
@@ -50,8 +49,6 @@ namespace brokenHeart.Database.DAO.Modifiers.Items
         public int Amount { get; set; }
         public string Unit { get; set; }
 
-        [NotMapped]
-        public ICollection<int>? CharacterTemplatesIds { get; set; } = new List<int>();
         public virtual ICollection<CharacterTemplate> CharacterTemplates { get; set; } =
             new List<CharacterTemplate>();
 

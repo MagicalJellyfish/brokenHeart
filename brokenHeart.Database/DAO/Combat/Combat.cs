@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using brokenHeart.Database.Interfaces;
+﻿using brokenHeart.Database.Interfaces;
 
 namespace brokenHeart.Database.DAO.Combat
 {
@@ -17,8 +16,6 @@ namespace brokenHeart.Database.DAO.Combat
         public int CurrentTurn { get; set; }
         public bool Active { get; set; }
 
-        [NotMapped]
-        public ICollection<int>? EntriesIds { get; set; } = new List<int>();
         public virtual ICollection<CombatEntry> Entries { get; set; } = new List<CombatEntry>();
     }
 }

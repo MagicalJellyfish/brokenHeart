@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 using brokenHeart.Database.DAO.Modifiers;
 using brokenHeart.Database.DAO.Modifiers.Effects;
 using brokenHeart.Database.Interfaces;
@@ -73,12 +72,8 @@ namespace brokenHeart.Database.DAO.Abilities.Abilities
         public int MaxUses { get; set; } = 0;
         public ReplenishType ReplenishType { get; set; } = ReplenishType.None;
 
-        [NotMapped]
-        public ICollection<int>? RollsIds { get; set; } = new List<int>();
         public virtual ICollection<Roll>? Rolls { get; set; } = new List<Roll>();
 
-        [NotMapped]
-        public ICollection<int>? AppliedEffectTemplatesIds { get; set; } = new List<int>();
         public virtual ICollection<EffectTemplate>? AppliedEffectTemplates { get; set; } =
             new List<EffectTemplate>();
 
