@@ -54,6 +54,10 @@ namespace brokenHeart.Services
             serviceCollection.AddScoped<IElementProjectionService, CounterProjectionService>();
             serviceCollection.AddScoped<
                 IElementProjectionService,
+                EffectCounterProjectionService
+            >();
+            serviceCollection.AddScoped<
+                IElementProjectionService,
                 RoundReminderProjectionService
             >();
             serviceCollection.AddScoped<IElementProjectionService, VariableProjectionService>();
@@ -66,6 +70,7 @@ namespace brokenHeart.Services
             serviceCollection.AddScoped<IElementSaveService, ItemSaveService>();
             serviceCollection.AddScoped<IElementSaveService, EffectSaveService>();
             serviceCollection.AddScoped<IElementSaveService, CounterSaveService>();
+            serviceCollection.AddScoped<IElementSaveService, EffectCounterSaveService>();
             serviceCollection.AddScoped<IElementSaveService, RoundReminderSaveService>();
             serviceCollection.AddScoped<IElementSaveService, VariableSaveService>();
 
