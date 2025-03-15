@@ -6,6 +6,7 @@ using brokenHeart.Database.DAO.Modifiers.Effects;
 using brokenHeart.DB;
 using brokenHeart.Models.brokenHand;
 using brokenHeart.Models.Rolling;
+using brokenHeart.Services.DataTransfer.Save;
 using brokenHeart.Services.Endpoints;
 using brokenHeart.Services.Rolling;
 using Microsoft.AspNetCore.Mvc;
@@ -20,11 +21,17 @@ namespace brokenHeart.Controllers
     {
         private readonly BrokenDbContext _context;
         private readonly IRollService _rollService;
+        private readonly IElementSubmissionService _elementSubmissionService;
 
-        public ActionsController(BrokenDbContext brokenDbContext, IRollService rollService)
+        public ActionsController(
+            BrokenDbContext brokenDbContext,
+            IRollService rollService,
+            IElementSubmissionService elementSubmissionService
+        )
         {
             _context = brokenDbContext;
             _rollService = rollService;
+            _elementSubmissionService = elementSubmissionService;
         }
 
         [HttpGet("roll")]
@@ -175,7 +182,7 @@ namespace brokenHeart.Controllers
                 return BadRequest($"Shortcuts of abilities {conflictList[..1]} are conflicting!");
             }
 
-            if (ability.Uses != null)
+            if (ability.MaxUses != 0)
             {
                 if (ability.Uses == 0)
                 {
@@ -353,7 +360,12 @@ namespace brokenHeart.Controllers
                                 }
                                 foreach (EffectTemplate template in ability.AppliedEffectTemplates)
                                 {
-                                    //TODO: target.Effects.Add(template.Instantiate());
+                                    _elementSubmissionService.InstantiateTemplate(
+                                        Models.DataTransfer.ElementType.EffectTemplate,
+                                        template.Id,
+                                        Models.DataTransfer.ElementType.Character,
+                                        target.Id
+                                    );
                                     message.Description += $"\"{template.Name}\" ";
                                 }
                             }
@@ -405,7 +417,12 @@ namespace brokenHeart.Controllers
                         message.Title += $"\"{template.Name}\" ";
                         foreach (Character target in targetChars)
                         {
-                            //TODO: target.Effects.Add(template.Instantiate());
+                            _elementSubmissionService.InstantiateTemplate(
+                                Models.DataTransfer.ElementType.EffectTemplate,
+                                template.Id,
+                                Models.DataTransfer.ElementType.Character,
+                                target.Id
+                            );
                         }
                     }
 
