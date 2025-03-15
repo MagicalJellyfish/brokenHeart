@@ -1,4 +1,5 @@
 ﻿using brokenHeart.Database.DAO;
+using brokenHeart.Database.DAO.Abilities.Abilities;
 using brokenHeart.Database.DAO.Characters;
 using brokenHeart.Database.DAO.Counters;
 using brokenHeart.Database.DAO.Modifiers.Effects.Injuries;
@@ -152,6 +153,53 @@ namespace brokenHeart.Services.DataTransfer.Save.Characters
             _context.SaveChanges();
 
             return new ExecutionResult();
+        }
+
+        public void Rest(int id, RestType restType)
+        {
+            IQueryable<Character> characterQueryable = _context.Characters.Where(x => x.Id == id);
+            Character character = characterQueryable.Single();
+
+            List<Ability> abilities = characterQueryable
+                .SelectMany(x => x.Abilities)
+                .ToList()
+                .Concat(characterQueryable.SelectMany(x => x.Traits.SelectMany(y => y.Abilities)))
+                .Concat(characterQueryable.SelectMany(x => x.Items.SelectMany(y => y.Abilities)))
+                .Concat(characterQueryable.SelectMany(x => x.Effects.SelectMany(y => y.Abilities)))
+                .ToList();
+
+            foreach (Ability ability in abilities)
+            {
+                if (
+                    ability.ReplenishType == ReplenishType.ShortRest
+                    || ability.ReplenishType == ReplenishType.CombatRound
+                )
+                {
+                    ability.Uses = ability.MaxUses;
+                }
+
+                if (ability.ReplenishType <= ReplenishType.LongRest && restType == RestType.Long)
+                {
+                    ability.Uses = ability.MaxUses;
+                }
+            }
+
+            if (restType == RestType.Long)
+            {
+                if (character.Hp < character.MaxHp)
+                {
+                    if (character.Hp > (character.MaxHp / 2))
+                    {
+                        character.Hp = character.MaxHp;
+                    }
+                    else
+                    {
+                        character.Hp += (character.MaxHp / 2);
+                    }
+                }
+            }
+
+            _context.SaveChanges();
         }
 
         public ExecutionResult PatchCharacter(int id, List<CharacterPatch> patches)

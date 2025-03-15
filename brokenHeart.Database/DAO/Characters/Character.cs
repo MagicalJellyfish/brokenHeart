@@ -165,45 +165,6 @@ namespace brokenHeart.Database.DAO
             }
         }
 
-        public void ShortRest()
-        {
-            AbilityReplenish(ReplenishType.ShortRest);
-        }
-
-        public void LongRest()
-        {
-            if (Hp < MaxHp)
-            {
-                if (Hp > (MaxHp / 2))
-                {
-                    Hp = MaxHp;
-                }
-                else
-                {
-                    Hp += (MaxHp / 2);
-                }
-            }
-
-            AbilityReplenish(ReplenishType.LongRest);
-        }
-
-        private void AbilityReplenish(ReplenishType replenishType)
-        {
-            List<Ability> allAbilities = Abilities
-                .Concat(Traits.SelectMany(x => x.Abilities))
-                .Concat(Items.SelectMany(x => x.Abilities))
-                .Concat(Effects.SelectMany(x => x.Abilities))
-                .ToList();
-
-            foreach (Ability ability in allAbilities)
-            {
-                if (ability.ReplenishType <= replenishType)
-                {
-                    ability.Uses = ability.MaxUses;
-                }
-            }
-        }
-
         public List<Counter> GetAllCounters()
         {
             List<Counter?> counterList = new List<Counter?>();
