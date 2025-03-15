@@ -9,5 +9,7 @@ namespace brokenHeart.Services.DataTransfer.Save
         public void RelateTemplate(int id, ElementParentType parentType, int parentId);
 
         public void UnrelateTemplate(int id, ElementParentType parentType, int parentId);
+
+        public int InstantiateTemplate(int id, ElementParentType parentType, int parentId);
     }
 }

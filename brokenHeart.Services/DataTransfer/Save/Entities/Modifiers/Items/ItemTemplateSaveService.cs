@@ -4,6 +4,7 @@ using brokenHeart.Models.DataTransfer;
 using brokenHeart.Models.DataTransfer.Save;
 using brokenHeart.Services.DataTransfer.Save.Auxiliary;
 using brokenHeart.Services.Utility;
+using LinqKit;
 using Microsoft.EntityFrameworkCore;
 
 namespace brokenHeart.Services.DataTransfer.Save.Entities.Modifiers.Items
@@ -101,6 +102,27 @@ namespace brokenHeart.Services.DataTransfer.Save.Entities.Modifiers.Items
             }
 
             _context.SaveChanges();
+        }
+
+        public int InstantiateTemplate(int id, ElementParentType parentType, int parentId)
+        {
+            IQueryable<ItemTemplate> itemTemplate = _context.ItemTemplates.Where(x => x.Id == id);
+
+            Item item = itemTemplate.Select(x => Instantiation.InstantiateItem.Invoke(x)).Single();
+
+            switch (parentType)
+            {
+                case ElementParentType.Character:
+                    item.CharacterId = parentId;
+                    break;
+                default:
+                    throw new Exception($"Parent type {parentType.ToString()} is invalid");
+            }
+
+            _context.Items.Add(item);
+            _context.SaveChanges();
+
+            return item.Id;
         }
 
         private void Assign(ItemTemplate itemTemplate, ElementParentType parentType, int parentId)

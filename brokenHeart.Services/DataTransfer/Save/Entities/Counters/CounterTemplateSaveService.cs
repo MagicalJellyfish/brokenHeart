@@ -4,6 +4,7 @@ using brokenHeart.Models.DataTransfer;
 using brokenHeart.Models.DataTransfer.Save;
 using brokenHeart.Services.DataTransfer.Save.Auxiliary;
 using brokenHeart.Services.Utility;
+using LinqKit;
 using Microsoft.EntityFrameworkCore;
 
 namespace brokenHeart.Services.DataTransfer.Save.Entities.Counters
@@ -108,6 +109,34 @@ namespace brokenHeart.Services.DataTransfer.Save.Entities.Counters
             }
 
             _context.SaveChanges();
+        }
+
+        public int InstantiateTemplate(int id, ElementParentType parentType, int parentId)
+        {
+            IQueryable<CounterTemplate> counterTemplate = _context.CounterTemplates.Where(x =>
+                x.Id == id
+            );
+
+            Counter counter = counterTemplate
+                .Select(x => Instantiation.InstantiateCounter.Invoke(x))
+                .Single();
+
+            switch (parentType)
+            {
+                case ElementParentType.Character:
+                    counter.CharacterId = parentId;
+                    break;
+                case ElementParentType.Modifier:
+                    counter.ModifierId = parentId;
+                    break;
+                default:
+                    throw new Exception($"Parent type {parentType.ToString()} is invalid");
+            }
+
+            _context.Counters.Add(counter);
+            _context.SaveChanges();
+
+            return counter.Id;
         }
 
         private void Assign(

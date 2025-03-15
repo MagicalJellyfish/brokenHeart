@@ -109,6 +109,21 @@ namespace brokenHeart.Services.DataTransfer.Save
             );
         }
 
+        public int InstantiateTemplate(
+            ElementType type,
+            int id,
+            ElementType parentType,
+            int parentId
+        )
+        {
+            ITemplateSaveService templateSaveService = GetTemplateSaveService(type);
+            return templateSaveService.InstantiateTemplate(
+                id,
+                _elementDeterminationService.ConvertToParentType(parentType),
+                parentId
+            );
+        }
+
         private IElementSaveService GetElementSaveService(ElementType type)
         {
             type = _elementDeterminationService.ConvertBaseTypes(type);

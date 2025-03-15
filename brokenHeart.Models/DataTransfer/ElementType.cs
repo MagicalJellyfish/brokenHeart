@@ -2,6 +2,8 @@
 {
     public enum ElementType
     {
+        Character,
+
         Ability,
         Trait,
         Item,

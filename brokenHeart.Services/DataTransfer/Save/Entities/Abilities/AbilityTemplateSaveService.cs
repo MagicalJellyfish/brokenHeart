@@ -3,7 +3,9 @@ using brokenHeart.DB;
 using brokenHeart.Models.DataTransfer;
 using brokenHeart.Models.DataTransfer.Save;
 using brokenHeart.Services.DataTransfer.Save.Auxiliary;
+using brokenHeart.Services.DataTransfer.Save.Entities;
 using brokenHeart.Services.Utility;
+using LinqKit;
 using Microsoft.EntityFrameworkCore;
 
 namespace brokenHeart.Services.DataTransfer.Save.Abilities
@@ -132,6 +134,34 @@ namespace brokenHeart.Services.DataTransfer.Save.Abilities
             }
 
             _context.SaveChanges();
+        }
+
+        public int InstantiateTemplate(int id, ElementParentType parentType, int parentId)
+        {
+            IQueryable<AbilityTemplate> abilityTemplate = _context.AbilityTemplates.Where(x =>
+                x.Id == id
+            );
+
+            Ability ability = abilityTemplate
+                .Select(x => Instantiation.InstantiateAbility.Invoke(x))
+                .Single();
+
+            switch (parentType)
+            {
+                case ElementParentType.Character:
+                    ability.CharacterId = parentId;
+                    break;
+                case ElementParentType.Modifier:
+                    ability.ModifierId = parentId;
+                    break;
+                default:
+                    throw new Exception($"Parent type {parentType.ToString()} is invalid");
+            }
+
+            _context.Abilities.Add(ability);
+            _context.SaveChanges();
+
+            return ability.Id;
         }
 
         private void Assign(

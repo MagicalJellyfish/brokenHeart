@@ -3,6 +3,7 @@ using brokenHeart.DB;
 using brokenHeart.Models.DataTransfer;
 using brokenHeart.Models.DataTransfer.Save;
 using brokenHeart.Services.DataTransfer.Save.Auxiliary;
+using LinqKit;
 using Microsoft.EntityFrameworkCore;
 
 namespace brokenHeart.Services.DataTransfer.Save.Entities.Modifiers.Traits
@@ -87,6 +88,31 @@ namespace brokenHeart.Services.DataTransfer.Save.Entities.Modifiers.Traits
             }
 
             _context.SaveChanges();
+        }
+
+        public int InstantiateTemplate(int id, ElementParentType parentType, int parentId)
+        {
+            IQueryable<TraitTemplate> traitTemplate = _context.TraitTemplates.Where(x =>
+                x.Id == id
+            );
+
+            Trait trait = traitTemplate
+                .Select(x => Instantiation.InstantiateTrait.Invoke(x))
+                .Single();
+
+            switch (parentType)
+            {
+                case ElementParentType.Character:
+                    trait.CharacterId = parentId;
+                    break;
+                default:
+                    throw new Exception($"Parent type {parentType.ToString()} is invalid");
+            }
+
+            _context.Traits.Add(trait);
+            _context.SaveChanges();
+
+            return trait.Id;
         }
 
         private void Assign(TraitTemplate traitTemplate, ElementParentType parentType, int parentId)
