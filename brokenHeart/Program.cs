@@ -167,6 +167,18 @@ static void AddAuthentication(WebApplicationBuilder builder)
                         context.Token = accessToken;
                     }
                     return Task.CompletedTask;
+                },
+
+                OnChallenge = context =>
+                {
+                    context.Response.OnStarting(async () =>
+                    {
+                        await context.Response.WriteAsync(
+                            "Access unauthorized - Log in to gain access"
+                        );
+                    });
+
+                    return Task.CompletedTask;
                 }
             };
         });
