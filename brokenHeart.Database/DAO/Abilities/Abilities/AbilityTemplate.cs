@@ -43,22 +43,22 @@ namespace brokenHeart.Database.DAO.Abilities.Abilities
         }
 
         public int Id { get; set; }
-        public string Name { get; set; }
-        public string Abstract { get; set; }
-        public string Description { get; set; }
-        public string Shortcut { get; set; }
+        public string Name { get; set; } = "New Ability Template";
+        public string Abstract { get; set; } = "";
+        public string Description { get; set; } = "";
+        public string Shortcut { get; set; } = "";
 
-        public TargetType TargetType { get; set; }
+        public TargetType TargetType { get; set; } = TargetType.Target;
 
-        public bool CanInjure { get; set; }
-        public string Self { get; set; }
-        public string Target { get; set; }
-        public string Damage { get; set; }
+        public bool CanInjure { get; set; } = true;
+        public string Self { get; set; } = "";
+        public string Target { get; set; } = "";
+        public string Damage { get; set; } = "";
 
-        public string Range { get; set; }
+        public string Range { get; set; } = "";
 
-        public int MaxUses { get; set; }
-        public ReplenishType ReplenishType { get; set; }
+        public int MaxUses { get; set; } = 0;
+        public ReplenishType ReplenishType { get; set; } = ReplenishType.None;
 
         public ICollection<Roll>? Rolls { get; set; } = new List<Roll>();
 

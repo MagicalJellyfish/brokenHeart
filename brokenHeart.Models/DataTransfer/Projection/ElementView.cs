@@ -82,6 +82,8 @@
         {
             SingleElement,
             MultipleElements,
+            SingleTemplate,
+            MultipleTemplates,
             Stats,
             Roll
         }

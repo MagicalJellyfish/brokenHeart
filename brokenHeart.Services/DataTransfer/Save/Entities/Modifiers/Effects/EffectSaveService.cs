@@ -1,10 +1,8 @@
 ﻿using brokenHeart.Database.DAO.Modifiers.Effects;
 using brokenHeart.DB;
-using brokenHeart.Models;
 using brokenHeart.Models.DataTransfer;
 using brokenHeart.Models.DataTransfer.Save;
 using brokenHeart.Services.DataTransfer.Save.Auxiliary;
-using brokenHeart.Services.DataTransfer.Save.Entities;
 using brokenHeart.Services.Utility;
 
 namespace brokenHeart.Services.DataTransfer.Save.Modifiers.Effects
@@ -28,7 +26,7 @@ namespace brokenHeart.Services.DataTransfer.Save.Modifiers.Effects
             _orderableSaveService = orderableSaveService;
         }
 
-        public ExecutionResult<int> CreateElement(ElementParentType parentType, int parentId)
+        public int CreateElement(ElementParentType parentType, int? parentId)
         {
             Effect effect = new Effect();
 
@@ -38,18 +36,13 @@ namespace brokenHeart.Services.DataTransfer.Save.Modifiers.Effects
                     effect.CharacterId = parentId;
                     break;
                 default:
-                    return new ExecutionResult<int>()
-                    {
-                        Succeeded = false,
-                        Message = $"Parent type {parentType.ToString()} is invalid",
-                        StatusCode = System.Net.HttpStatusCode.BadRequest
-                    };
+                    throw new Exception($"Parent type {parentType.ToString()} is invalid");
             }
 
             _context.Effects.Add(effect);
             _context.SaveChanges();
 
-            return new ExecutionResult<int>() { Value = effect.Id };
+            return effect.Id;
         }
 
         public void ReorderElements(List<ElementReorder> reorders)
@@ -67,7 +60,7 @@ namespace brokenHeart.Services.DataTransfer.Save.Modifiers.Effects
             {
                 switch (update.FieldId)
                 {
-                    case nameof(Effect.Name):
+                    case nameof(Effect.Hp):
                         effect.Hp = update.Value;
                         break;
                     case nameof(Effect.MaxTempHp):

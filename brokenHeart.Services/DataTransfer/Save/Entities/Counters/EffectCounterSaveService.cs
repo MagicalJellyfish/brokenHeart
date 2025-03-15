@@ -1,10 +1,8 @@
 ﻿using brokenHeart.Database.DAO.Counters;
 using brokenHeart.DB;
-using brokenHeart.Models;
 using brokenHeart.Models.DataTransfer;
 using brokenHeart.Models.DataTransfer.Save;
 using brokenHeart.Services.DataTransfer.Save.Auxiliary;
-using brokenHeart.Services.DataTransfer.Save.Entities;
 using brokenHeart.Services.Utility;
 
 namespace brokenHeart.Services.DataTransfer.Save.Counters
@@ -25,28 +23,23 @@ namespace brokenHeart.Services.DataTransfer.Save.Counters
             _orderableSaveService = orderableSaveService;
         }
 
-        public ExecutionResult<int> CreateElement(ElementParentType parentType, int parentId)
+        public int CreateElement(ElementParentType parentType, int? parentId)
         {
             EffectCounter effectCounter = new EffectCounter();
 
             switch (parentType)
             {
                 case ElementParentType.Modifier:
-                    effectCounter.EffectId = parentId;
+                    effectCounter.EffectId = (int)parentId;
                     break;
                 default:
-                    return new ExecutionResult<int>()
-                    {
-                        Succeeded = false,
-                        Message = $"Parent type {parentType.ToString()} is invalid",
-                        StatusCode = System.Net.HttpStatusCode.BadRequest
-                    };
+                    throw new Exception($"Parent type {parentType.ToString()} is invalid");
             }
 
             _context.Counters.Add(effectCounter);
             _context.SaveChanges();
 
-            return new ExecutionResult<int>() { Value = effectCounter.Id };
+            return effectCounter.Id;
         }
 
         public void ReorderElements(List<ElementReorder> reorders)

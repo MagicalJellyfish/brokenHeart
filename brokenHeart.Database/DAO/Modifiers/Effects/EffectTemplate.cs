@@ -50,11 +50,11 @@ namespace brokenHeart.Database.DAO.Modifiers.Effects
         }
 
         //Per round
-        public string Hp { get; set; }
+        public string Hp { get; set; } = "";
 
         //Total for the duration
-        public int MaxTempHp { get; set; }
-        public string Duration { get; set; }
+        public int MaxTempHp { get; set; } = 0;
+        public string Duration { get; set; } = "";
 
         public int? EffectCounterTemplateId { get; set; }
         public virtual EffectCounterTemplate? EffectCounterTemplate { get; set; }

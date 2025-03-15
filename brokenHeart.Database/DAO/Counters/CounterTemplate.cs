@@ -27,10 +27,10 @@ namespace brokenHeart.Database.DAO.Counters
         }
 
         public int Id { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
-        public int Max { get; set; }
-        public bool RoundBased { get; set; }
+        public string Name { get; set; } = "New Counter Template";
+        public string Description { get; set; } = "";
+        public int Max { get; set; } = 0;
+        public bool RoundBased { get; set; } = false;
 
         public int? RoundReminderTemplateId { get; set; }
         public virtual RoundReminderTemplate? RoundReminderTemplate { get; set; }

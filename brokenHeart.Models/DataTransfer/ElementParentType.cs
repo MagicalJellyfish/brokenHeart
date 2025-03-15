@@ -3,7 +3,14 @@
     public enum ElementParentType
     {
         Character,
+        Ability,
         Modifier,
-        Counter
+        Counter,
+
+        None,
+        CharacterTemplate,
+        AbilityTemplate,
+        ModifierTemplate,
+        CounterTemplate,
     }
 }

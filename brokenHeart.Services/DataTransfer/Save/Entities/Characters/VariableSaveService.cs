@@ -1,10 +1,8 @@
 ﻿using brokenHeart.Database.DAO.Characters;
 using brokenHeart.DB;
-using brokenHeart.Models;
 using brokenHeart.Models.DataTransfer;
 using brokenHeart.Models.DataTransfer.Save;
 using brokenHeart.Services.DataTransfer.Save.Auxiliary;
-using brokenHeart.Services.DataTransfer.Save.Entities;
 using brokenHeart.Services.Utility;
 
 namespace brokenHeart.Services.DataTransfer.Save.Characters
@@ -25,7 +23,7 @@ namespace brokenHeart.Services.DataTransfer.Save.Characters
             _orderableSaveService = orderableSaveService;
         }
 
-        public ExecutionResult<int> CreateElement(ElementParentType parentType, int parentId)
+        public int CreateElement(ElementParentType parentType, int? parentId)
         {
             Variable variable = new Variable();
 
@@ -35,18 +33,13 @@ namespace brokenHeart.Services.DataTransfer.Save.Characters
                     variable.CharacterId = parentId;
                     break;
                 default:
-                    return new ExecutionResult<int>()
-                    {
-                        Succeeded = false,
-                        Message = $"Parent type {parentType.ToString()} is invalid",
-                        StatusCode = System.Net.HttpStatusCode.BadRequest
-                    };
+                    throw new Exception($"Parent type {parentType.ToString()} is invalid");
             }
 
             _context.Variables.Add(variable);
             _context.SaveChanges();
 
-            return new ExecutionResult<int>() { Value = variable.Id };
+            return variable.Id;
         }
 
         public void ReorderElements(List<ElementReorder> reorders)

@@ -47,6 +47,7 @@ namespace brokenHeart.DB
         public DbSet<Trait> Traits { get; set; }
         public DbSet<TraitTemplate> TraitTemplates { get; set; }
 
+        public DbSet<ModifierTemplate> ModifierTemplates { get; set; }
         public DbSet<Modifier> Modifiers { get; set; }
 
         public DbSet<Stat> Stats { get; set; }
