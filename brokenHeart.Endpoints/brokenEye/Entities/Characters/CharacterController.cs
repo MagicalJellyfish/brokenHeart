@@ -67,6 +67,13 @@ namespace brokenHeart.Endpoints.brokenEye.Entities.Characters
             return Ok();
         }
 
+        [HttpPost("{id}/rest/{restType}")]
+        public ActionResult Rest(int id, RestType restType)
+        {
+            _characterSaveService.Rest(id, restType);
+            return Ok();
+        }
+
         [HttpPatch("{id}")]
         public ActionResult PatchCharacter(int id, List<CharacterPatch> patches)
         {
