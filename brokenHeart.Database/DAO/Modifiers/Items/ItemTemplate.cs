@@ -46,8 +46,8 @@ namespace brokenHeart.Database.DAO.Modifiers.Items
             AbilityTemplates = abilityTemplates ?? new List<AbilityTemplate>();
         }
 
-        public int Amount { get; set; }
-        public string Unit { get; set; }
+        public int Amount { get; set; } = 1;
+        public string Unit { get; set; } = "";
 
         public virtual ICollection<CharacterTemplate> CharacterTemplates { get; set; } =
             new List<CharacterTemplate>();

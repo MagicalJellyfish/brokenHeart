@@ -1,10 +1,8 @@
 ﻿using brokenHeart.Database.DAO.Modifiers.Traits;
 using brokenHeart.DB;
-using brokenHeart.Models;
 using brokenHeart.Models.DataTransfer;
 using brokenHeart.Models.DataTransfer.Save;
 using brokenHeart.Services.DataTransfer.Save.Auxiliary;
-using brokenHeart.Services.DataTransfer.Save.Entities;
 
 namespace brokenHeart.Services.DataTransfer.Save.Modifiers.Traits
 {
@@ -27,28 +25,23 @@ namespace brokenHeart.Services.DataTransfer.Save.Modifiers.Traits
             _orderableSaveService = orderableSaveService;
         }
 
-        public ExecutionResult<int> CreateElement(ElementParentType parentType, int parentId)
+        public int CreateElement(ElementParentType parentType, int? parentId)
         {
             Trait trait = new Trait();
 
             switch (parentType)
             {
                 case ElementParentType.Character:
-                    trait.CharacterId = parentId;
+                    trait.CharacterId = (int)parentId;
                     break;
                 default:
-                    return new ExecutionResult<int>()
-                    {
-                        Succeeded = false,
-                        Message = $"Parent type {parentType.ToString()} is invalid",
-                        StatusCode = System.Net.HttpStatusCode.BadRequest
-                    };
+                    throw new Exception($"Parent type {parentType.ToString()} is invalid");
             }
 
             _context.Traits.Add(trait);
             _context.SaveChanges();
 
-            return new ExecutionResult<int>() { Value = trait.Id };
+            return trait.Id;
         }
 
         public void ReorderElements(List<ElementReorder> reorders)

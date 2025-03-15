@@ -1,8 +1,7 @@
-﻿using brokenHeart.Models;
-using brokenHeart.Models.DataTransfer;
+﻿using brokenHeart.Models.DataTransfer;
 using brokenHeart.Models.DataTransfer.Save;
 using brokenHeart.Services.DataTransfer.Projection;
-using brokenHeart.Services.DataTransfer.Save.Entities;
+using brokenHeart.Services.DataTransfer.Save;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -41,7 +40,7 @@ namespace brokenHeart.Endpoints.brokenEye.Entities
         [HttpPost("{type}")]
         public ActionResult<int> CreateElement(ElementType type, ElementCreate elementCreate)
         {
-            ExecutionResult<int> result = _elementSubmissionService.CreateElement(
+            int result = _elementSubmissionService.CreateElement(
                 type,
                 elementCreate.ParentType,
                 elementCreate.ParentId
@@ -52,11 +51,11 @@ namespace brokenHeart.Endpoints.brokenEye.Entities
 
         [HttpPut("reorder/{type}")]
         public ActionResult ReorderElements(ElementType type, List<ElementReorder> elementReorder)
-            {
+        {
             _elementSubmissionService.ReorderElements(type, elementReorder);
 
             return Ok();
-            }
+        }
 
         [HttpPut("rolls/{type}/{id}")]
         public ActionResult UpdateRolls(ElementType type, int id, List<RollModel> rolls)

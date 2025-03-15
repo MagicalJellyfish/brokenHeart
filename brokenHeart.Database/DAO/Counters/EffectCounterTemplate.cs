@@ -20,7 +20,7 @@ namespace brokenHeart.Database.DAO.Counters
             EndEffect = endEffect;
         }
 
-        public bool EndEffect { get; set; }
+        public bool EndEffect { get; set; } = true;
 
         public virtual ICollection<EffectTemplate> EffectTemplates { get; set; } =
             new List<EffectTemplate>();

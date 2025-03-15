@@ -22,7 +22,7 @@ namespace brokenHeart.Database.DAO.Counters
             EndEffect = endEffect;
         }
 
-        public bool EndEffect { get; set; }
+        public bool EndEffect { get; set; } = true;
 
         [ForeignKey("Effect")]
         public int EffectId { get; set; }

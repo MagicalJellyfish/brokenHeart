@@ -6,11 +6,19 @@
         Trait,
         Item,
         Effect,
+        EffectCounter,
         InjuryEffect,
         Counter,
         Reminder,
         Variable,
-        EffectCounter,
-        EffectTemplate
+
+        AbilityTemplate,
+        TraitTemplate,
+        ItemTemplate,
+        EffectTemplate,
+        EffectCounterTemplate,
+        InjuryEffectTemplate,
+        CounterTemplate,
+        ReminderTemplate,
     }
 }

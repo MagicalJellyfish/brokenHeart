@@ -2,7 +2,6 @@
 using brokenHeart.Database.DAO.Abilities.Abilities;
 using brokenHeart.Database.DAO.Characters;
 using brokenHeart.Database.DAO.Counters;
-using brokenHeart.Database.DAO.Modifiers.Effects;
 using brokenHeart.Database.DAO.RoundReminders;
 using brokenHeart.Database.DAO.Stats;
 
@@ -54,7 +53,7 @@ namespace brokenHeart.Database.DAO.Modifiers.Effects.Injuries
             InjuryLevel = injuryLevel;
         }
 
-        public InjuryLevel InjuryLevel { get; set; }
+        public InjuryLevel InjuryLevel { get; set; } = InjuryLevel.None;
 
         public int BodypartId { get; set; }
         public Bodypart Bodypart { get; set; }

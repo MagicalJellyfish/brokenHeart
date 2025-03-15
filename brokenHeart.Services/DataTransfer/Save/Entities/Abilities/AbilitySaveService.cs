@@ -1,10 +1,8 @@
 ﻿using brokenHeart.Database.DAO.Abilities.Abilities;
 using brokenHeart.DB;
-using brokenHeart.Models;
 using brokenHeart.Models.DataTransfer;
 using brokenHeart.Models.DataTransfer.Save;
 using brokenHeart.Services.DataTransfer.Save.Auxiliary;
-using brokenHeart.Services.DataTransfer.Save.Entities;
 using brokenHeart.Services.Utility;
 
 namespace brokenHeart.Services.DataTransfer.Save.Abilities
@@ -25,7 +23,7 @@ namespace brokenHeart.Services.DataTransfer.Save.Abilities
             _orderableSaveService = orderableSaveService;
         }
 
-        public ExecutionResult<int> CreateElement(ElementParentType parentType, int parentId)
+        public int CreateElement(ElementParentType parentType, int? parentId)
         {
             Ability ability = new Ability();
 
@@ -38,18 +36,13 @@ namespace brokenHeart.Services.DataTransfer.Save.Abilities
                     ability.ModifierId = parentId;
                     break;
                 default:
-                    return new ExecutionResult<int>()
-                    {
-                        Succeeded = false,
-                        Message = $"Parent type {parentType.ToString()} is invalid",
-                        StatusCode = System.Net.HttpStatusCode.BadRequest
-                    };
+                    throw new Exception($"Parent type {parentType.ToString()} is invalid");
             }
 
             _context.Abilities.Add(ability);
             _context.SaveChanges();
 
-            return new ExecutionResult<int>() { Value = ability.Id };
+            return ability.Id;
         }
 
         public void ReorderElements(List<ElementReorder> reorders)

@@ -2,7 +2,7 @@
 {
     public class ElementCreate
     {
-        public ElementParentType ParentType { get; set; }
-        public int ParentId { get; set; }
+        public ElementType? ParentType { get; set; }
+        public int? ParentId { get; set; }
     }
 }

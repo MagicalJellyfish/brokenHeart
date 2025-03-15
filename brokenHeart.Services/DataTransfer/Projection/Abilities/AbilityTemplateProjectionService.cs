@@ -6,37 +6,38 @@ using brokenHeart.Services.DataTransfer.Search;
 
 namespace brokenHeart.Services.DataTransfer.Projection.Abilities
 {
-    internal class AbilityProjectionService : IElementProjectionService
+    internal class AbilityTemplateProjectionService
+        : IElementProjectionService,
+            ITemplateProjectionService
     {
-        public ElementType ProjectionType => ElementType.Ability;
+        public ElementType ProjectionType => ElementType.AbilityTemplate;
 
         private readonly IDaoSearchService _daoSearchService;
 
-        public AbilityProjectionService(IDaoSearchService daoSearchService)
+        public AbilityTemplateProjectionService(IDaoSearchService daoSearchService)
         {
             _daoSearchService = daoSearchService;
         }
 
         public dynamic? GetElement(int id)
         {
-            IQueryable<Ability> abilities = _daoSearchService.GetSingleElement<Ability>(
-                new DaoSearch() { Id = id }
-            );
+            IQueryable<AbilityTemplate> abilityTemplates =
+                _daoSearchService.GetSingleElement<AbilityTemplate>(new DaoSearch() { Id = id });
 
-            return abilities
+            return abilityTemplates
                 .Select(x => new ElementView()
                 {
                     Texts = new()
                     {
                         new ElementView.Text()
                         {
-                            FieldId = nameof(Ability.Description),
+                            FieldId = nameof(AbilityTemplate.Description),
                             Title = "Description",
                             Content = x.Description
                         },
                         new ElementView.Text()
                         {
-                            FieldId = nameof(Ability.Abstract),
+                            FieldId = nameof(AbilityTemplate.Abstract),
                             Title = "Abstract",
                             Content = x.Abstract
                         }
@@ -51,14 +52,14 @@ namespace brokenHeart.Services.DataTransfer.Projection.Abilities
                         },
                         new ElementView.Field()
                         {
-                            FieldId = nameof(Ability.Name),
+                            FieldId = nameof(AbilityTemplate.Name),
                             Title = "Name",
                             Content = x.Name,
                             Type = ElementView.FieldType.String
                         },
                         new ElementView.Field()
                         {
-                            FieldId = nameof(Ability.TargetType),
+                            FieldId = nameof(AbilityTemplate.TargetType),
                             Title = "Target Type",
                             Content = new ElementView.Field.EnumContent()
                             {
@@ -69,68 +70,49 @@ namespace brokenHeart.Services.DataTransfer.Projection.Abilities
                         },
                         new ElementView.Field()
                         {
-                            FieldId = nameof(Ability.Shortcut),
+                            FieldId = nameof(AbilityTemplate.Shortcut),
                             Title = "Shortcut",
                             Content = x.Shortcut,
                             Type = ElementView.FieldType.String
                         },
                         new ElementView.Field()
                         {
-                            FieldId = nameof(Ability.Self),
+                            FieldId = nameof(AbilityTemplate.Rolls),
                             Title = "Roll",
                             Content = x.Self,
                             Type = ElementView.FieldType.String
                         },
                         new ElementView.Field()
                         {
-                            FieldId = nameof(Ability.Target),
+                            FieldId = nameof(AbilityTemplate.Target),
                             Title = "Target's Roll/DC",
                             Content = x.Target,
                             Type = ElementView.FieldType.String
                         },
                         new ElementView.Field()
                         {
-                            FieldId = nameof(Ability.Damage),
+                            FieldId = nameof(AbilityTemplate.Damage),
                             Title = "Damage",
                             Content = x.Damage,
                             Type = ElementView.FieldType.String
                         },
                         new ElementView.Field()
                         {
-                            FieldId = nameof(Ability.Range),
+                            FieldId = nameof(AbilityTemplate.Range),
                             Title = "Range",
                             Content = x.Range,
                             Type = ElementView.FieldType.String
                         },
                         new ElementView.Field()
                         {
-                            Title = "Uses",
-                            Content = new ElementView.Field.MultiField()
-                            {
-                                Separator = "/",
-                                Fields = new()
-                                {
-                                    new ElementView.Field()
-                                    {
-                                        FieldId = nameof(Ability.Uses),
-                                        Title = "Uses",
-                                        Content = x.Uses,
-                                        Type = ElementView.FieldType.Number
-                                    },
-                                    new ElementView.Field()
-                                    {
-                                        FieldId = nameof(Ability.MaxUses),
-                                        Title = "Maximum Uses",
-                                        Content = x.MaxUses,
-                                        Type = ElementView.FieldType.Number
-                                    }
-                                }
-                            },
-                            Type = ElementView.FieldType.Multi
+                            FieldId = nameof(AbilityTemplate.MaxUses),
+                            Title = "Maximum Uses",
+                            Content = x.MaxUses,
+                            Type = ElementView.FieldType.Number
                         },
                         new ElementView.Field()
                         {
-                            FieldId = nameof(Ability.ReplenishType),
+                            FieldId = nameof(AbilityTemplate.ReplenishType),
                             Title = "Replenish Type",
                             Content = new ElementView.Field.EnumContent()
                             {
@@ -172,6 +154,26 @@ namespace brokenHeart.Services.DataTransfer.Projection.Abilities
                     }
                 })
                 .SingleOrDefault();
+        }
+
+        public ElementList GetTemplateList()
+        {
+            return new ElementList()
+            {
+                Title = "Abilities",
+                Type = ElementType.AbilityTemplate,
+                ElementColumns = TemplateListModels.AbstractTemplateColumns,
+                Elements = _daoSearchService
+                    .GetElements<AbilityTemplate>()
+                    .Select(x => new TemplateListModels.AbstractTemplateModel()
+                    {
+                        Id = x.Id,
+                        Name = x.Name,
+                        Abstract = x.Abstract
+                    })
+                    .Cast<dynamic>()
+                    .ToList()
+            };
         }
     }
 }
