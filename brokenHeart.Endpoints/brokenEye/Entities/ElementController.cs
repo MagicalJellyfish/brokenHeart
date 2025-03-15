@@ -47,18 +47,29 @@ namespace brokenHeart.Endpoints.brokenEye.Entities
                 elementCreate.ParentId
             );
 
-            if (!result.Succeeded)
-            {
-                return StatusCode((int)result.StatusCode, result.Message);
-            }
-
-            return Ok(result.Value);
+            return Ok(result);
         }
 
         [HttpPut("reorder/{type}")]
         public ActionResult ReorderElements(ElementType type, List<ElementReorder> elementReorder)
-        {
+            {
             _elementSubmissionService.ReorderElements(type, elementReorder);
+
+            return Ok();
+            }
+
+        [HttpPut("rolls/{type}/{id}")]
+        public ActionResult UpdateRolls(ElementType type, int id, List<RollModel> rolls)
+        {
+            _elementSubmissionService.UpdateRolls(type, id, rolls);
+
+            return Ok();
+        }
+
+        [HttpPut("stats/{type}/{id}")]
+        public ActionResult UpdateRolls(ElementType type, int id, List<StatValueModel> stats)
+        {
+            _elementSubmissionService.UpdateStats(type, id, stats);
 
             return Ok();
         }

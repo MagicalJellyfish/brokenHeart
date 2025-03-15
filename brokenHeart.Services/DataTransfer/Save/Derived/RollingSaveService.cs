@@ -1,4 +1,5 @@
 ﻿using brokenHeart.Database.DAO.Abilities;
+using brokenHeart.Database.DAO.Abilities.Abilities;
 using brokenHeart.Database.Interfaces;
 using brokenHeart.DB;
 using brokenHeart.Models.DataTransfer;
@@ -26,8 +27,17 @@ namespace brokenHeart.Services.DataTransfer.Save.Auxiliary
                 Roll? rollableRoll = rollable.Rolls.SingleOrDefault(x => x.Id == roll.Id);
                 if (rollableRoll == null)
                 {
-                    rollableRoll = new Roll() { AbilityId = rollable.Id };
+                    rollableRoll = new Roll();
                     _context.Rolls.Add(rollableRoll);
+                }
+
+                if (typeof(Ability).IsAssignableFrom(typeof(T)))
+                {
+                    rollableRoll.AbilityId = id;
+                }
+                if (typeof(AbilityTemplate).IsAssignableFrom(typeof(T)))
+                {
+                    rollableRoll.AbilityTemplateId = id;
                 }
 
                 rollableRoll.Name = roll.Name;
