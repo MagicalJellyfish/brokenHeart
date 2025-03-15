@@ -18,44 +18,6 @@ namespace brokenHeart.Database.DAO
         [JsonConstructor]
         public Character() { }
 
-        public Character(
-            string name,
-            UserSimplified owner,
-            int? age = null,
-            string? defaultShortcut = null,
-            string description = "",
-            decimal? height = null,
-            int? weight = null,
-            decimal money = 0,
-            string notes = "",
-            string experience = "",
-            List<Variable>? variables = null,
-            List<Item>? inventory = null,
-            List<Trait>? traits = null,
-            List<Effect>? effects = null,
-            List<Ability>? abilities = null,
-            int? hp = null,
-            bool isNPC = false
-        )
-        {
-            Name = name;
-            DefaultShortcut = defaultShortcut;
-            Description = description;
-            Height = height;
-            Weight = weight;
-            Money = money;
-            Owner = owner;
-            Age = age;
-            Notes = notes;
-            Experience = experience;
-            IsNPC = isNPC;
-            Variables = variables ?? new List<Variable>();
-            Items = inventory ?? new List<Item>();
-            Traits = traits ?? new List<Trait>();
-            Effects = effects ?? new List<Effect>();
-            Abilities = abilities ?? new List<Ability>();
-        }
-
         public int Id { get; set; }
         public string Name { get; set; } = "New Character";
         public string? DefaultShortcut { get; set; }
@@ -90,35 +52,33 @@ namespace brokenHeart.Database.DAO
         public string Notes { get; set; } = "";
         public string Experience { get; set; } = "";
 
-        public virtual ICollection<StatValue> Stats { get; private set; } = new List<StatValue>();
-        public virtual ICollection<BodypartCondition> BodypartConditions { get; set; } =
+        public ICollection<StatValue> Stats { get; private set; } = new List<StatValue>();
+        public ICollection<BodypartCondition> BodypartConditions { get; set; } =
             new List<BodypartCondition>();
 
-        public virtual ICollection<Variable> Variables { get; set; } = new List<Variable>();
+        public ICollection<Variable> Variables { get; set; } = new List<Variable>();
 
-        public virtual ICollection<Ability> Abilities { get; set; } = new List<Ability>();
+        public ICollection<Ability> Abilities { get; set; } = new List<Ability>();
 
-        public virtual ICollection<Item> Items { get; set; } = new List<Item>();
+        public ICollection<Item> Items { get; set; } = new List<Item>();
 
-        public virtual ICollection<Trait> Traits { get; set; } = new List<Trait>();
+        public ICollection<Trait> Traits { get; set; } = new List<Trait>();
 
-        public virtual ICollection<Effect> Effects { get; set; } = new List<Effect>();
+        public ICollection<Effect> Effects { get; set; } = new List<Effect>();
 
-        public virtual ICollection<InjuryEffect> InjuryEffects { get; set; } =
-            new List<InjuryEffect>();
+        public ICollection<InjuryEffect> InjuryEffects { get; set; } = new List<InjuryEffect>();
 
-        public virtual ICollection<Counter> Counters { get; set; } = new List<Counter>();
+        public ICollection<Counter> Counters { get; set; } = new List<Counter>();
 
         public int? DeathCounterId { get; set; }
-        public virtual Counter? DeathCounter { get; set; }
+        public Counter? DeathCounter { get; set; }
 
-        public virtual ICollection<RoundReminder> RoundReminders { get; set; } =
-            new List<RoundReminder>();
+        public ICollection<RoundReminder> RoundReminders { get; set; } = new List<RoundReminder>();
 
         public bool IsNPC { get; set; }
 
         public int OwnerId { get; set; }
-        public virtual UserSimplified? Owner { get; set; }
+        public UserSimplified? Owner { get; set; }
 
         //Update any stat-derived changes
         public void Update()

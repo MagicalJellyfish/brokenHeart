@@ -11,14 +11,6 @@ namespace brokenHeart.Database.DAO.RoundReminders
         [JsonConstructor]
         public RoundReminder() { }
 
-        public RoundReminder(string reminder, bool reminding = true)
-        {
-            Reminding = reminding;
-            Reminder = reminder;
-
-            ViewPosition = 0;
-        }
-
         public int Id { get; set; }
         public bool Reminding { get; set; } = true;
         public string Reminder { get; set; } = "New Reminder";
@@ -27,14 +19,14 @@ namespace brokenHeart.Database.DAO.RoundReminders
 
         [ForeignKey("Character")]
         public int? CharacterId { get; set; }
-        public virtual Character? Character { get; set; }
+        public Character? Character { get; set; }
 
         [ForeignKey("Counter")]
         public int? CounterId { get; set; }
-        public virtual Counter? Counter { get; set; }
+        public Counter? Counter { get; set; }
 
         [ForeignKey("Modifier")]
         public int? ModifierId { get; set; }
-        public virtual Modifier? Modifier { get; set; }
+        public Modifier? Modifier { get; set; }
     }
 }

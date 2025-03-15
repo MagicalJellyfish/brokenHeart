@@ -15,24 +15,24 @@ namespace brokenHeart
     {
         public static class Stats
         {
-            public static readonly Stat Str = new Stat(1, "Strength");
-            public static readonly Stat Dex = new Stat(2, "Dexterity");
-            public static readonly Stat Con = new Stat(3, "Constitution");
-            public static readonly Stat Int = new Stat(4, "Intelligence");
-            public static readonly Stat Ins = new Stat(5, "Instincts");
-            public static readonly Stat Cha = new Stat(6, "Charisma");
+            public static readonly Stat Str = new Stat() { Id = 1, Name = "Strength" };
+            public static readonly Stat Dex = new Stat() { Id = 2, Name = "Dexterity" };
+            public static readonly Stat Con = new Stat() { Id = 3, Name = "Constitution" };
+            public static readonly Stat Int = new Stat() { Id = 4, Name = "Intelligence" };
+            public static readonly Stat Ins = new Stat() { Id = 5, Name = "Instincts" };
+            public static readonly Stat Cha = new Stat() { Id = 6, Name = "Charisma" };
 
             public static readonly List<Stat> stats = new() { Str, Dex, Con, Int, Ins, Cha };
         }
 
         public static class Bodyparts
         {
-            public static readonly Bodypart Head = new Bodypart(1, "Head");
-            public static readonly Bodypart Torso = new Bodypart(2, "Torso");
-            public static readonly Bodypart ArmR = new Bodypart(3, "Right Arm");
-            public static readonly Bodypart ArmL = new Bodypart(4, "Left Arm");
-            public static readonly Bodypart LegR = new Bodypart(5, "Right Leg");
-            public static readonly Bodypart LegL = new Bodypart(6, "Left Leg");
+            public static readonly Bodypart Head = new Bodypart() { Id = 1, Name = "Head" };
+            public static readonly Bodypart Torso = new Bodypart() { Id = 2, Name = "Torso" };
+            public static readonly Bodypart ArmR = new Bodypart() { Id = 3, Name = "Right Arm" };
+            public static readonly Bodypart ArmL = new Bodypart() { Id = 4, Name = "Left Arm" };
+            public static readonly Bodypart LegR = new Bodypart() { Id = 5, Name = "Right Leg" };
+            public static readonly Bodypart LegL = new Bodypart() { Id = 6, Name = "Left Leg" };
             public static readonly List<Bodypart> BaseBodyparts = new List<Bodypart>()
             {
                 Head,
@@ -44,256 +44,356 @@ namespace brokenHeart
             };
 
             //Injuries
-            public static readonly InjuryEffectTemplate HeadMinor = new InjuryEffectTemplate(
-                "Minor Injury: Head",
-                "Subtract 1 from ability checks and attack rolls.",
-                "Until treated",
-                Head.Id,
-                InjuryLevel.Minor,
-                "Minor damage to your head leaves you slightly confused and off balance.",
-                reminderTemplate: new RoundReminderTemplate("-1 on ability checks and attack rolls")
-            );
-            public static readonly InjuryEffectTemplate HeadMedium = new InjuryEffectTemplate(
-                "Medium Injury: Head",
-                "Roll and subtract 1d4 from Dexterity, Intelligence and Instinct checks.",
-                "Until treated",
-                Head.Id,
-                InjuryLevel.Medium,
-                "A slight concussion causes you to be unable to properly focus on motor skills and thoughts while your reaction time decreases.",
-                reminderTemplate: new RoundReminderTemplate("-1d4 on DEX, INT and INS")
-            );
-            public static readonly InjuryEffectTemplate HeadMajor = new InjuryEffectTemplate(
-                "Major Injury: Head",
-                "You fall prone, and roll a CON check DC 10 at the end of every turn, falling prone again on failure.",
-                "Until treated",
-                Head.Id,
-                InjuryLevel.Major,
-                "Major head trauma throws you way off balance.",
-                reminderTemplate: new RoundReminderTemplate(
-                    "Roll CON 10 or fall prone at the end of every turn"
-                )
-            );
+            public static readonly InjuryEffectTemplate HeadMinor = new InjuryEffectTemplate()
+            {
+                Name = "Minor Injury: Head",
+                Abstract = "Subtract 1 from ability checks and attack rolls.",
+                Duration = "Until treated",
+                BodypartId = Head.Id,
+                InjuryLevel = InjuryLevel.Minor,
+                Description =
+                    "Minor damage to your head leaves you slightly confused and off balance.",
+                RoundReminderTemplate = new RoundReminderTemplate()
+                {
+                    Reminder = "-1 on ability checks and attack rolls"
+                }
+            };
+            public static readonly InjuryEffectTemplate HeadMedium = new InjuryEffectTemplate()
+            {
+                Name = "Minor Injury: Medium",
+                Abstract =
+                    "Roll and subtract 1d4 from Dexterity, Intelligence and Instinct checks.",
+                Duration = "Until treated",
+                BodypartId = Head.Id,
+                InjuryLevel = InjuryLevel.Medium,
+                Description =
+                    "A slight concussion causes you to be unable to properly focus on motor skills and thoughts while your reaction time decreases.",
+                RoundReminderTemplate = new RoundReminderTemplate()
+                {
+                    Reminder = "-1d4 on DEX, INT and INS"
+                }
+            };
+            public static readonly InjuryEffectTemplate HeadMajor = new InjuryEffectTemplate()
+            {
+                Name = "Major Injury: Head",
+                Abstract =
+                    "You fall prone, and roll a CON check DC 10 at the end of every turn, falling prone again on failure.",
+                Duration = "Until treated",
+                BodypartId = Head.Id,
+                InjuryLevel = InjuryLevel.Major,
+                Description = "Major head trauma throws you way off balance.",
+                RoundReminderTemplate = new RoundReminderTemplate()
+                {
+                    Reminder = "Roll CON 10 or fall prone at the end of every turn"
+                }
+            };
 
-            public static readonly InjuryEffectTemplate TorsoMinor = new InjuryEffectTemplate(
-                "Minor Injury: Torso",
-                "Extensive movement requires a CON check DC 10.",
-                "Until treated",
-                Torso.Id,
-                InjuryLevel.Minor,
-                "Minor damage to your torso area causes you to require great effort to perform extensive actions, both physically and mentally.",
-                reminderTemplate: new RoundReminderTemplate("CON check 10 for extensive movement")
-            );
-            public static readonly InjuryEffectTemplate TorsoMedium = new InjuryEffectTemplate(
-                "Medium Injury: Torso",
-                "Extensive movement will deal 2d4 of damage",
-                "Until treated",
-                Torso.Id,
-                InjuryLevel.Medium,
-                "Stretching will cause already present injuries to rip even further.",
-                reminderTemplate: new RoundReminderTemplate("Extensive movement deals 2d4 damage")
-            );
-            public static readonly InjuryEffectTemplate TorsoMajor = new InjuryEffectTemplate(
-                "Major Injury: Torso",
-                "Extensive movement becomes impossible",
-                "Until treated",
-                Torso.Id,
-                InjuryLevel.Major,
-                "Due to massive pain and damage around your torso you are now unable to perform extensive movement, "
-                    + "especially without severely worsening your medical situation.",
-                reminderTemplate: new RoundReminderTemplate("No extensive movement")
-            );
-            public static readonly InjuryEffectTemplate TorsoDismember = new InjuryEffectTemplate(
-                "Dismemberment Injury: Torso",
-                "You take 2d8 of damage at the end of every turn while the wound is not cared for.",
-                "Until treated",
-                Torso.Id,
-                InjuryLevel.Dismember,
-                "Severe damage both internal and external has massive effects on your health, continuously dealing further damage",
-                reminderTemplate: new RoundReminderTemplate("Heavy Bleeding"),
-                hp: "-2d8"
-            );
+            public static readonly InjuryEffectTemplate TorsoMinor = new InjuryEffectTemplate()
+            {
+                Name = "Minor Injury: Torso",
+                Abstract = "Extensive movement requires a CON check DC 10.",
+                Duration = "Until treated",
+                BodypartId = Torso.Id,
+                InjuryLevel = InjuryLevel.Minor,
+                Description =
+                    "Minor damage to your torso area causes you to require great effort to perform extensive actions, both physically and mentally.",
+                RoundReminderTemplate = new RoundReminderTemplate()
+                {
+                    Reminder = "CON check 10 for extensive movement"
+                }
+            };
+            public static readonly InjuryEffectTemplate TorsoMedium = new InjuryEffectTemplate()
+            {
+                Name = "Medium Injury: Torso",
+                Abstract = "Extensive movement will deal 2d4 of damage",
+                Duration = "Until treated",
+                BodypartId = Torso.Id,
+                InjuryLevel = InjuryLevel.Medium,
+                Description = "Stretching will cause already present injuries to rip even further.",
+                RoundReminderTemplate = new RoundReminderTemplate()
+                {
+                    Reminder = "Extensive movement deals 2d4 damage"
+                }
+            };
+            public static readonly InjuryEffectTemplate TorsoMajor = new InjuryEffectTemplate()
+            {
+                Name = "Major Injury: Torso",
+                Abstract = "Extensive movement becomes impossible",
+                Duration = "Until treated",
+                BodypartId = Torso.Id,
+                InjuryLevel = InjuryLevel.Major,
+                Description =
+                    "Due to massive pain and damage around your torso you are now unable to perform extensive movement, especially without severely worsening your medical situation.",
+                RoundReminderTemplate = new RoundReminderTemplate()
+                {
+                    Reminder = "No extensive movement"
+                }
+            };
+            public static readonly InjuryEffectTemplate TorsoDismember = new InjuryEffectTemplate()
+            {
+                Name = "Dismemberment Injury: Torso",
+                Abstract =
+                    "You take 2d8 of damage at the end of every turn while the wound is not cared for.",
+                Duration = "Until treated",
+                BodypartId = Torso.Id,
+                InjuryLevel = InjuryLevel.Dismember,
+                Description =
+                    "Severe damage both internal and external has massive effects on your health, continuously dealing further damage",
+                Hp = "-2d8",
+                RoundReminderTemplate = new RoundReminderTemplate() { Reminder = "Heavy Bleeding" }
+            };
 
-            public static readonly InjuryEffectTemplate LeftLegMinor = new InjuryEffectTemplate(
-                "Minor Injury: Left Leg",
-                "Subtract 2 from ability checks when using the affected leg. Dashing requires a CON check DC 10, "
-                    + "failure results in halving dash distance.",
-                "Until treated",
-                LegL.Id,
-                InjuryLevel.Minor,
-                "The pain from a light injury or the effects of having been hit in an unfortunate spot makes straining actions difficult.",
-                reminderTemplate: new RoundReminderTemplate(
-                    "-2 on ability checks on this leg, CON check 10 for dash"
-                )
-            );
-            public static readonly InjuryEffectTemplate LeftLegMedium = new InjuryEffectTemplate(
-                "Medium Injury: Left Leg",
-                "Actions reliant on stability require a DEX check DC 10. Moving more than half your movement speed requires a CON check DC 10.",
-                "Until treated",
-                LegL.Id,
-                InjuryLevel.Medium,
-                "Large cuts or a chipped bone throw you slightly off balance and make heavy impact severly uncomfortable.",
-                reminderTemplate: new RoundReminderTemplate(
-                    "DEX check 10 for unstable actions, CON check 10 for moving more than half your speed"
-                )
-            );
-            public static readonly InjuryEffectTemplate LeftLegMajor = new InjuryEffectTemplate(
-                "Major Injury: Left Leg",
-                "Your movement speed is halved. A major injury on the other leg halves your speed again.",
-                "Until treated",
-                LegL.Id,
-                InjuryLevel.Major,
-                "A broken bone or profuse bleeding leaves your legs weak and unstable, making even walking difficult.",
-                reminderTemplate: new RoundReminderTemplate("Half movement speed per leg")
-            );
-            public static readonly InjuryEffectTemplate LeftLegDismember = new InjuryEffectTemplate(
-                "Dismemberment Injury: Left Leg",
-                "You lose the affected leg. You take 1d10 of damage at the end of every turn while the wound is not cared for.",
-                "Until treated",
-                LegL.Id,
-                InjuryLevel.Dismember,
-                "Your leg is battered beyond saving or removed outright. Additionally, the heavy damage sustained now causes further continuous damage.",
-                reminderTemplate: new RoundReminderTemplate("Missing affected leg, heavy bleeding"),
-                hp: "-1d10"
-            );
+            public static readonly InjuryEffectTemplate LeftLegMinor = new InjuryEffectTemplate()
+            {
+                Name = "Minor Injury: Left Leg",
+                Abstract =
+                    "Subtract 2 from ability checks when using the affected leg. Dashing requires a CON check DC 10, failure results in halving dash distance.",
+                Duration = "Until treated",
+                BodypartId = LegL.Id,
+                InjuryLevel = InjuryLevel.Minor,
+                Description =
+                    "The pain from a light injury or the effects of having been hit in an unfortunate spot makes straining actions difficult.",
+                RoundReminderTemplate = new RoundReminderTemplate()
+                {
+                    Reminder = "-2 on ability checks on this leg, CON check 10 for dash"
+                }
+            };
+            public static readonly InjuryEffectTemplate LeftLegMedium = new InjuryEffectTemplate()
+            {
+                Name = "Medium Injury: Left Leg",
+                Abstract =
+                    "Actions reliant on stability require a DEX check DC 10. Moving more than half your movement speed requires a CON check DC 10.",
+                Duration = "Until treated",
+                BodypartId = LegL.Id,
+                InjuryLevel = InjuryLevel.Medium,
+                Description =
+                    "Large cuts or a chipped bone throw you slightly off balance and make heavy impact severly uncomfortable.",
+                RoundReminderTemplate = new RoundReminderTemplate()
+                {
+                    Reminder =
+                        "DEX check 10 for unstable actions, CON check 10 for moving more than half your speed"
+                }
+            };
+            public static readonly InjuryEffectTemplate LeftLegMajor = new InjuryEffectTemplate()
+            {
+                Name = "Major Injury: Left Leg",
+                Abstract =
+                    "Your movement speed is halved. A major injury on the other leg halves your speed again.",
+                Duration = "Until treated",
+                BodypartId = LegL.Id,
+                InjuryLevel = InjuryLevel.Major,
+                Description =
+                    "A broken bone or profuse bleeding leaves your legs weak and unstable, making even walking difficult.",
+                RoundReminderTemplate = new RoundReminderTemplate()
+                {
+                    Reminder = "Half movement speed per leg"
+                }
+            };
+            public static readonly InjuryEffectTemplate LeftLegDismember =
+                new InjuryEffectTemplate()
+                {
+                    Name = "Dismemberment Injury: Left Leg",
+                    Abstract =
+                        "You lose the affected leg. You take 1d10 of damage at the end of every turn while the wound is not cared for.",
+                    Duration = "Until treated",
+                    BodypartId = LegL.Id,
+                    InjuryLevel = InjuryLevel.Dismember,
+                    Description =
+                        "Your leg is battered beyond saving or removed outright. Additionally, the heavy damage sustained now causes further continuous damage.",
+                    Hp = "-1d10",
+                    RoundReminderTemplate = new RoundReminderTemplate()
+                    {
+                        Reminder = "Missing affected leg, heavy bleeding"
+                    }
+                };
 
-            public static readonly InjuryEffectTemplate RightLegMinor = new InjuryEffectTemplate(
-                "Minor Injury: Right Leg",
-                "Subtract 2 from ability checks when using the affected leg. Dashing requires a CON check DC 10, "
-                    + "failure results in halving dash distance.",
-                "Until treated",
-                LegR.Id,
-                InjuryLevel.Minor,
-                "The pain from a light injury or the effects of having been hit in an unfortunate spot makes straining actions difficult.",
-                reminderTemplate: new RoundReminderTemplate(
-                    "-2 on ability checks on this leg, CON check 10 for dash"
-                )
-            );
-            public static readonly InjuryEffectTemplate RightLegMedium = new InjuryEffectTemplate(
-                "Medium Injury: Right Leg",
-                "Actions reliant on stability require a DEX check DC 10. Moving more than half your movement speed requires a CON check DC 10.",
-                "Until treated",
-                LegR.Id,
-                InjuryLevel.Medium,
-                "Large cuts or a chipped bone throw you slightly off balance and make heavy impact severly uncomfortable.",
-                reminderTemplate: new RoundReminderTemplate(
-                    "DEX check 10 for unstable actions, CON check 10 for moving more than half your speed"
-                )
-            );
-            public static readonly InjuryEffectTemplate RightLegMajor = new InjuryEffectTemplate(
-                "Major Injury: Right Leg",
-                "Your movement speed is halved. A major injury on the other leg halves your speed again.",
-                "Until treated",
-                LegR.Id,
-                InjuryLevel.Major,
-                "A broken bone or profuse bleeding leaves your legs weak and unstable, making even walking difficult.",
-                reminderTemplate: new RoundReminderTemplate("Half movement speed per leg")
-            );
+            public static readonly InjuryEffectTemplate RightLegMinor = new InjuryEffectTemplate()
+            {
+                Name = "Minor Injury: Right Leg",
+                Abstract =
+                    "Subtract 2 from ability checks when using the affected leg. Dashing requires a CON check DC 10, failure results in halving dash distance.",
+                Duration = "Until treated",
+                BodypartId = LegR.Id,
+                InjuryLevel = InjuryLevel.Minor,
+                Description =
+                    "The pain from a light injury or the effects of having been hit in an unfortunate spot makes straining actions difficult.",
+                RoundReminderTemplate = new RoundReminderTemplate()
+                {
+                    Reminder = "-2 on ability checks on this leg, CON check 10 for dash"
+                }
+            };
+            public static readonly InjuryEffectTemplate RightLegMedium = new InjuryEffectTemplate()
+            {
+                Name = "Medium Injury: Right Leg",
+                Abstract =
+                    "Actions reliant on stability require a DEX check DC 10. Moving more than half your movement speed requires a CON check DC 10.",
+                Duration = "Until treated",
+                BodypartId = LegR.Id,
+                InjuryLevel = InjuryLevel.Medium,
+                Description =
+                    "Large cuts or a chipped bone throw you slightly off balance and make heavy impact severly uncomfortable.",
+                RoundReminderTemplate = new RoundReminderTemplate()
+                {
+                    Reminder =
+                        "DEX check 10 for unstable actions, CON check 10 for moving more than half your speed"
+                }
+            };
+            public static readonly InjuryEffectTemplate RightLegMajor = new InjuryEffectTemplate()
+            {
+                Name = "Major Injury: Right Leg",
+                Abstract =
+                    "Your movement speed is halved. A major injury on the other leg halves your speed again.",
+                Duration = "Until treated",
+                BodypartId = LegR.Id,
+                InjuryLevel = InjuryLevel.Major,
+                Description =
+                    "A broken bone or profuse bleeding leaves your legs weak and unstable, making even walking difficult.",
+                RoundReminderTemplate = new RoundReminderTemplate()
+                {
+                    Reminder = "Half movement speed per leg"
+                }
+            };
             public static readonly InjuryEffectTemplate RightLegDismember =
-                new InjuryEffectTemplate(
-                    "Dismemberment Injury: Right Leg",
-                    "You lose the affected leg. You take 1d10 of damage at the end of every turn while the wound is not cared for.",
-                    "Until treated",
-                    LegR.Id,
-                    InjuryLevel.Dismember,
-                    "Your leg is battered beyond saving or removed outright. Additionally, the heavy damage sustained now causes further continuous damage.",
-                    reminderTemplate: new RoundReminderTemplate(
-                        "Missing affected leg, heavy bleeding"
-                    ),
-                    hp: "-1d10"
-                );
+                new InjuryEffectTemplate()
+                {
+                    Name = "Dismemberment Injury: Right Leg",
+                    Abstract =
+                        "You lose the affected leg. You take 1d10 of damage at the end of every turn while the wound is not cared for.",
+                    Duration = "Until treated",
+                    BodypartId = LegR.Id,
+                    InjuryLevel = InjuryLevel.Dismember,
+                    Description =
+                        "Your leg is battered beyond saving or removed outright. Additionally, the heavy damage sustained now causes further continuous damage.",
+                    Hp = "-1d10",
+                    RoundReminderTemplate = new RoundReminderTemplate()
+                    {
+                        Reminder = "Missing affected leg, heavy bleeding"
+                    }
+                };
 
-            public static readonly InjuryEffectTemplate LeftArmMinor = new InjuryEffectTemplate(
-                "Minor Injury: Left Arm",
-                "Subtract 2 from ability checks using the affected arm.",
-                "Until treated",
-                ArmL.Id,
-                InjuryLevel.Minor,
-                "You have received a bad bruise, a cut or a similar injury. The pain this causes or the location of the injury prevents you from using "
-                    + "your arm at full strength.",
-                reminderTemplate: new RoundReminderTemplate("-2 on ability checks on this arm.")
-            );
-            public static readonly InjuryEffectTemplate LeftArmMedium = new InjuryEffectTemplate(
-                "Medium Injury: Left Arm",
-                "Straining actions using the affected arm require a CON check DC 10.",
-                "Until treated",
-                ArmL.Id,
-                InjuryLevel.Medium,
-                "Pain and tissue damage causes you difficulty to complete actions heavily straining on the injured arm",
-                reminderTemplate: new RoundReminderTemplate(
-                    "Straining actions on this arm require CON check 10"
-                )
-            );
-            public static readonly InjuryEffectTemplate LeftArmMajor = new InjuryEffectTemplate(
-                "Major Injury: Left Arm",
-                "You cannot use the affected arm to perform straining actions.",
-                "Until treated",
-                ArmL.Id,
-                InjuryLevel.Major,
-                "Deep and heavy damage such as a broken bone prevents you from properly using your arm at all, especially without "
-                    + "worsening the damage yourself.",
-                reminderTemplate: new RoundReminderTemplate(
-                    "Straining actions on this arm are impossible"
-                )
-            );
-            public static readonly InjuryEffectTemplate LeftArmDismember = new InjuryEffectTemplate(
-                "Dismemberment Injury: Left Arm",
-                "You lose your arm. You also take 1d10 of damage at the end of every turn while the wound is not cared for.",
-                "Until treated",
-                ArmL.Id,
-                InjuryLevel.Dismember,
-                "Your Arm is lost or damaged beyond healing, with extensive bleeding causing continuous health damage",
-                hp: "-1d10",
-                reminderTemplate: new RoundReminderTemplate(
-                    "Missing affected arm, heavily bleeding"
-                )
-            );
+            public static readonly InjuryEffectTemplate LeftArmMinor = new InjuryEffectTemplate()
+            {
+                Name = "Minor Injury: Left Arm",
+                Abstract = "Subtract 2 from ability checks using the affected arm.",
+                Duration = "Until treated",
+                BodypartId = ArmL.Id,
+                InjuryLevel = InjuryLevel.Minor,
+                Description =
+                    "You have received a bad bruise, a cut or a similar injury. The pain this causes or the location of the injury prevents you from using your arm at full strength.",
+                RoundReminderTemplate = new RoundReminderTemplate()
+                {
+                    Reminder = "-2 on ability checks on this arm."
+                }
+            };
+            public static readonly InjuryEffectTemplate LeftArmMedium = new InjuryEffectTemplate()
+            {
+                Name = "Medium Injury: Left Arm",
+                Abstract = "Straining actions using the affected arm require a CON check DC 10.",
+                Duration = "Until treated",
+                BodypartId = ArmL.Id,
+                InjuryLevel = InjuryLevel.Medium,
+                Description =
+                    "Pain and tissue damage causes you difficulty to complete actions heavily straining on the injured arm",
+                RoundReminderTemplate = new RoundReminderTemplate()
+                {
+                    Reminder = "Straining actions on this arm require CON check 10"
+                }
+            };
+            public static readonly InjuryEffectTemplate LeftArmMajor = new InjuryEffectTemplate()
+            {
+                Name = "Major Injury: Left Arm",
+                Abstract = "You cannot use the affected arm to perform straining actions.",
+                Duration = "Until treated",
+                BodypartId = ArmL.Id,
+                InjuryLevel = InjuryLevel.Major,
+                Description =
+                    "Deep and heavy damage such as a broken bone prevents you from properly using your arm at all, especially without worsening the damage yourself.",
 
-            public static readonly InjuryEffectTemplate RightArmMinor = new InjuryEffectTemplate(
-                "Minor Injury: Right Arm",
-                "Subtract 2 from ability checks using the affected arm.",
-                "Until treated",
-                ArmR.Id,
-                InjuryLevel.Minor,
-                "You have received a bad bruise, a cut or a similar injury. The pain this causes or the location of the injury prevents you from using "
-                    + "your arm at full strength.",
-                reminderTemplate: new RoundReminderTemplate("-2 on ability checks on this arm.")
-            );
-            public static readonly InjuryEffectTemplate RightArmMedium = new InjuryEffectTemplate(
-                "Medium Injury: Right Arm",
-                "Straining actions using the affected arm require a CON check DC 10.",
-                "Until treated",
-                ArmR.Id,
-                InjuryLevel.Medium,
-                "Pain and tissue damage causes you difficulty to complete actions heavily straining on the injured arm",
-                reminderTemplate: new RoundReminderTemplate(
-                    "Straining actions on this arm require CON check 10"
-                )
-            );
-            public static readonly InjuryEffectTemplate RightArmMajor = new InjuryEffectTemplate(
-                "Major Injury: Right Arm",
-                "You cannot use the affected arm to perform straining actions.",
-                "Until treated",
-                ArmR.Id,
-                InjuryLevel.Major,
-                "Deep and heavy damage such as a broken bone prevents you from properly using your arm at all, especially without "
-                    + "worsening the damage yourself.",
-                reminderTemplate: new RoundReminderTemplate(
-                    "Straining actions on this arm are impossible"
-                )
-            );
+                RoundReminderTemplate = new RoundReminderTemplate()
+                {
+                    Reminder = "Straining actions on this arm are impossible"
+                }
+            };
+            public static readonly InjuryEffectTemplate LeftArmDismember =
+                new InjuryEffectTemplate()
+                {
+                    Name = "Dismemberment Injury: Left Arm",
+                    Abstract =
+                        "You lose your arm. You also take 1d10 of damage at the end of every turn while the wound is not cared for.",
+                    Duration = "Until treated",
+                    BodypartId = ArmL.Id,
+                    InjuryLevel = InjuryLevel.Dismember,
+                    Description =
+                        "Your Arm is lost or damaged beyond healing, with extensive bleeding causing continuous health damage",
+                    Hp = "-1d10",
+
+                    RoundReminderTemplate = new RoundReminderTemplate()
+                    {
+                        Reminder = "Missing affected arm, heavily bleeding"
+                    }
+                };
+
+            public static readonly InjuryEffectTemplate RightArmMinor = new InjuryEffectTemplate()
+            {
+                Name = "Minor Injury: Right Arm",
+                Abstract = "Subtract 2 from ability checks using the affected arm.",
+                Duration = "Until treated",
+                BodypartId = ArmR.Id,
+                InjuryLevel = InjuryLevel.Minor,
+                Description =
+                    "You have received a bad bruise, a cut or a similar injury. The pain this causes or the location of the injury prevents you from using your arm at full strength.",
+                RoundReminderTemplate = new RoundReminderTemplate()
+                {
+                    Reminder = "-2 on ability checks on this arm."
+                }
+            };
+            public static readonly InjuryEffectTemplate RightArmMedium = new InjuryEffectTemplate()
+            {
+                Name = "Medium Injury: Right Arm",
+                Abstract = "Straining actions using the affected arm require a CON check DC 10.",
+                Duration = "Until treated",
+                BodypartId = ArmR.Id,
+                InjuryLevel = InjuryLevel.Medium,
+                Description =
+                    "Pain and tissue damage causes you difficulty to complete actions heavily straining on the injured arm",
+                RoundReminderTemplate = new RoundReminderTemplate()
+                {
+                    Reminder = "Straining actions on this arm require CON check 10"
+                }
+            };
+            public static readonly InjuryEffectTemplate RightArmMajor = new InjuryEffectTemplate()
+            {
+                Name = "Major Injury: Right Arm",
+                Abstract = "You cannot use the affected arm to perform straining actions.",
+                Duration = "Until treated",
+                BodypartId = ArmR.Id,
+                InjuryLevel = InjuryLevel.Major,
+                Description =
+                    "Deep and heavy damage such as a broken bone prevents you from properly using your arm at all, especially without worsening the damage yourself.",
+
+                RoundReminderTemplate = new RoundReminderTemplate()
+                {
+                    Reminder = "Straining actions on this arm are impossible"
+                }
+            };
             public static readonly InjuryEffectTemplate RightArmDismember =
-                new InjuryEffectTemplate(
-                    "Dismemberment Injury: Right Arm",
-                    "You lose your arm. You also take 1d10 of damage at the end of every turn while the wound is not cared for.",
-                    "Until treated",
-                    ArmR.Id,
-                    InjuryLevel.Dismember,
-                    "Your Arm is lost or damaged beyond healing, with extensive bleeding causing continuous health damage",
-                    hp: "-1d10",
-                    reminderTemplate: new RoundReminderTemplate(
-                        "Missing affected arm, heavily bleeding"
-                    )
-                );
+                new InjuryEffectTemplate()
+                {
+                    Name = "Dismemberment Injury: Right Arm",
+                    Abstract =
+                        "You lose your arm. You also take 1d10 of damage at the end of every turn while the wound is not cared for.",
+                    Duration = "Until treated",
+                    BodypartId = ArmR.Id,
+                    InjuryLevel = InjuryLevel.Dismember,
+                    Description =
+                        "Your Arm is lost or damaged beyond healing, with extensive bleeding causing continuous health damage",
+                    Hp = "-1d10",
+
+                    RoundReminderTemplate = new RoundReminderTemplate()
+                    {
+                        Reminder = "Missing affected arm, heavily bleeding"
+                    }
+                };
 
             public static readonly List<InjuryEffectTemplate> InjuryEffects =
                 new List<InjuryEffectTemplate>()
@@ -324,12 +424,13 @@ namespace brokenHeart
                 };
         }
 
-        public static readonly CounterTemplate Dying = new CounterTemplate(
-            "Dying",
-            3,
-            "This counter indicates the number of rounds you are away from dying.",
-            false
-        );
+        public static readonly CounterTemplate Dying = new CounterTemplate()
+        {
+            Name = "Dying",
+            Max = 3,
+            Description = "This counter indicates the number of rounds you are away from dying.",
+            RoundBased = false
+        };
 
         public static async Task ValidateAsync(
             BrokenDbContext _dbContext,
@@ -374,7 +475,11 @@ namespace brokenHeart
                 )
                 {
                     _dbContext.UserSimplified.Add(
-                        new UserSimplified(user.Username, user.DiscordId)
+                        new UserSimplified()
+                        {
+                            Username = user.Username,
+                            DiscordId = user.DiscordId
+                        }
                     );
                 }
             }

@@ -9,20 +9,13 @@ namespace brokenHeart.Database.DAO.Characters
         [JsonConstructor]
         public Bodypart() { }
 
-        public Bodypart(int id, string name)
-        {
-            Id = id;
-            Name = name;
-        }
-
         public int Id { get; set; }
         public string Name { get; set; }
 
-        public virtual ICollection<BodypartCondition> BodypartConditions { get; set; } =
+        public ICollection<BodypartCondition> BodypartConditions { get; set; } =
             new List<BodypartCondition>();
-        public virtual ICollection<InjuryEffect> InjuryEffects { get; set; } =
-            new List<InjuryEffect>();
-        public virtual ICollection<InjuryEffectTemplate> InjuryEffectsTemplate { get; set; } =
+        public ICollection<InjuryEffect> InjuryEffects { get; set; } = new List<InjuryEffect>();
+        public ICollection<InjuryEffectTemplate> InjuryEffectsTemplate { get; set; } =
             new List<InjuryEffectTemplate>();
     }
 }
