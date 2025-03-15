@@ -392,12 +392,14 @@ namespace brokenHeart.Services.DataTransfer.Projection.Characters
                     Title = "Name",
                     Property = "name",
                     ColumnType = ElementList.ElementColumnType.Text,
+                    Searchable = true,
                 },
                 new ElementList.ElementColumn()
                 {
                     Title = "Abstract",
                     Property = "abstract",
                     ColumnType = ElementList.ElementColumnType.Text,
+                    Searchable = true,
                 },
                 new ElementList.ElementColumn()
                 {
@@ -423,12 +425,14 @@ namespace brokenHeart.Services.DataTransfer.Projection.Characters
                     Title = "Name",
                     Property = "name",
                     ColumnType = ElementList.ElementColumnType.Text,
+                    Searchable = true,
                 },
                 new ElementList.ElementColumn()
                 {
                     Title = "Abstract",
                     Property = "abstract",
                     ColumnType = ElementList.ElementColumnType.Text,
+                    Searchable = true,
                 },
                 new ElementList.ElementColumn()
                 {
@@ -447,12 +451,14 @@ namespace brokenHeart.Services.DataTransfer.Projection.Characters
                     Title = "Name",
                     Property = "name",
                     ColumnType = ElementList.ElementColumnType.Text,
+                    Searchable = true,
                 },
                 new ElementList.ElementColumn()
                 {
                     Title = "Abstract",
                     Property = "abstract",
                     ColumnType = ElementList.ElementColumnType.Text,
+                    Searchable = true,
                 },
                 new ElementList.ElementColumn()
                 {
@@ -478,12 +484,14 @@ namespace brokenHeart.Services.DataTransfer.Projection.Characters
                     Title = "Name",
                     Property = "name",
                     ColumnType = ElementList.ElementColumnType.Text,
+                    Searchable = true,
                 },
                 new ElementList.ElementColumn()
                 {
                     Title = "Abstract",
                     Property = "abstract",
                     ColumnType = ElementList.ElementColumnType.Text,
+                    Searchable = true,
                 }
             };
 
@@ -495,12 +503,14 @@ namespace brokenHeart.Services.DataTransfer.Projection.Characters
                     Title = "Name",
                     Property = "name",
                     ColumnType = ElementList.ElementColumnType.Text,
+                    Searchable = true,
                 },
                 new ElementList.ElementColumn()
                 {
                     Title = "Description",
                     Property = "description",
                     ColumnType = ElementList.ElementColumnType.Text,
+                    Searchable = true,
                 },
                 new ElementList.ElementColumn()
                 {
@@ -526,6 +536,7 @@ namespace brokenHeart.Services.DataTransfer.Projection.Characters
                     Title = "Reminder",
                     Property = "reminder",
                     ColumnType = ElementList.ElementColumnType.Text,
+                    Searchable = true,
                 },
                 new ElementList.ElementColumn()
                 {
@@ -550,6 +561,7 @@ namespace brokenHeart.Services.DataTransfer.Projection.Characters
                     Title = "Name",
                     Property = "name",
                     ColumnType = ElementList.ElementColumnType.Text,
+                    Searchable = true,
                 },
                 new ElementList.ElementColumn()
                 {
