@@ -7,7 +7,7 @@ using brokenHeart.Database.Interfaces;
 
 namespace brokenHeart.Database.DAO.Modifiers
 {
-    public abstract class Modifier : IDao, IOrderableElement
+    public abstract class Modifier : IDao, IOrderableElement, IStatValueElement
     {
         [JsonConstructor]
         public Modifier() { }
