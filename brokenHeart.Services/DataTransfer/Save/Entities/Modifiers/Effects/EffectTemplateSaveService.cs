@@ -4,6 +4,7 @@ using brokenHeart.Models.DataTransfer;
 using brokenHeart.Models.DataTransfer.Save;
 using brokenHeart.Services.DataTransfer.Save.Auxiliary;
 using brokenHeart.Services.Utility;
+using LinqKit;
 using Microsoft.EntityFrameworkCore;
 
 namespace brokenHeart.Services.DataTransfer.Save.Entities.Modifiers.Effects
@@ -112,6 +113,31 @@ namespace brokenHeart.Services.DataTransfer.Save.Entities.Modifiers.Effects
             _context.SaveChanges();
         }
 
+        public int InstantiateTemplate(int id, ElementParentType parentType, int parentId)
+        {
+            IQueryable<EffectTemplate> effectTemplate = _context.EffectTemplates.Where(x =>
+                x.Id == id
+            );
+
+            Effect effect = effectTemplate
+                .Select(x => Instantiation.InstantiateEffect.Invoke(x))
+                .Single();
+
+            switch (parentType)
+            {
+                case ElementParentType.Character:
+                    effect.CharacterId = parentId;
+                    break;
+                default:
+                    throw new Exception($"Parent type {parentType.ToString()} is invalid");
+            }
+
+            _context.Effects.Add(effect);
+            _context.SaveChanges();
+
+            return effect.Id;
+        }
+
         private void Assign(
             EffectTemplate effectTemplate,
             ElementParentType parentType,
@@ -128,6 +154,11 @@ namespace brokenHeart.Services.DataTransfer.Save.Entities.Modifiers.Effects
                 case ElementParentType.AbilityTemplate:
                     effectTemplate.ApplyingAbilityTemplates.Add(
                         _context.AbilityTemplates.Single(x => x.Id == parentId)
+                    );
+                    break;
+                case ElementParentType.Ability:
+                    effectTemplate.ApplyingAbilities.Add(
+                        _context.Abilities.Single(x => x.Id == parentId)
                     );
                     break;
                 default:

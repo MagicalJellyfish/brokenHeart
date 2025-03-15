@@ -3,6 +3,7 @@ using brokenHeart.DB;
 using brokenHeart.Models.DataTransfer;
 using brokenHeart.Models.DataTransfer.Save;
 using brokenHeart.Services.DataTransfer.Save.Auxiliary;
+using LinqKit;
 
 namespace brokenHeart.Services.DataTransfer.Save.Entities.RoundReminders
 {
@@ -110,6 +111,37 @@ namespace brokenHeart.Services.DataTransfer.Save.Entities.RoundReminders
             }
 
             _context.SaveChanges();
+        }
+
+        public int InstantiateTemplate(int id, ElementParentType parentType, int parentId)
+        {
+            IQueryable<RoundReminderTemplate> roundReminderTemplate =
+                _context.RoundReminderTemplates.Where(x => x.Id == id);
+
+            RoundReminder roundReminder = roundReminderTemplate
+                .Select(x => Instantiation.InstantiateRoundReminder.Invoke(x)!)
+                .Single();
+
+            switch (parentType)
+            {
+                case ElementParentType.Character:
+                    roundReminder.CharacterId = parentId;
+                    break;
+                case ElementParentType.Modifier:
+                    roundReminder.ModifierId = parentId;
+                    break;
+                case ElementParentType.Counter:
+                    roundReminder.CounterId = parentId;
+                    break;
+
+                default:
+                    throw new Exception($"Parent type {parentType.ToString()} is invalid");
+            }
+
+            _context.RoundReminders.Add(roundReminder);
+            _context.SaveChanges();
+
+            return roundReminder.Id;
         }
 
         private void Assign(

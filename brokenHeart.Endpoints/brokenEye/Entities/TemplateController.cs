@@ -41,7 +41,7 @@ namespace brokenHeart.Endpoints.brokenEye.Entities
         }
 
         [HttpPatch("{type}/{id}/relate/{parentType}/{parentId}")]
-        public ActionResult<int> RelateTemplate(
+        public ActionResult RelateTemplate(
             ElementType type,
             int id,
             ElementType parentType,
@@ -54,7 +54,7 @@ namespace brokenHeart.Endpoints.brokenEye.Entities
         }
 
         [HttpPatch("{type}/{id}/unrelate/{parentType}/{parentId}")]
-        public ActionResult<int> UnrelateTemplate(
+        public ActionResult UnrelateTemplate(
             ElementType type,
             int id,
             ElementType parentType,
@@ -64,6 +64,19 @@ namespace brokenHeart.Endpoints.brokenEye.Entities
             _elementSubmissionService.UnrelateTemplate(type, id, parentType, parentId);
 
             return Ok();
+        }
+
+        [HttpPost("{type}/{id}/instantiate/{parentType}/{parentId}")]
+        public ActionResult<int> InstantiateTemplate(
+            ElementType type,
+            int id,
+            ElementType parentType,
+            int parentId
+        )
+        {
+            return Ok(
+                _elementSubmissionService.InstantiateTemplate(type, id, parentType, parentId)
+            );
         }
     }
 }

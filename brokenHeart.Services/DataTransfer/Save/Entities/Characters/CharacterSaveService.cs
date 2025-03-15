@@ -1,11 +1,14 @@
 ﻿using brokenHeart.Database.DAO;
 using brokenHeart.Database.DAO.Characters;
 using brokenHeart.Database.DAO.Counters;
+using brokenHeart.Database.DAO.Modifiers.Effects.Injuries;
 using brokenHeart.Database.DAO.Stats;
 using brokenHeart.DB;
 using brokenHeart.Models;
 using brokenHeart.Models.DataTransfer.Save;
+using brokenHeart.Services.DataTransfer.Save.Entities;
 using brokenHeart.Services.Utility;
+using LinqKit;
 using Microsoft.EntityFrameworkCore;
 
 namespace brokenHeart.Services.DataTransfer.Save.Characters
@@ -39,12 +42,14 @@ namespace brokenHeart.Services.DataTransfer.Save.Characters
 
             c.Owner = requester;
 
-            c.DeathCounter = new Counter(
-                "Dying",
-                3,
-                "This counter indicates the number of rounds you are away from dying.",
-                false
-            );
+            c.DeathCounter = new Counter()
+            {
+                Name = "Dying",
+                Max = 3,
+                Description =
+                    "This counter indicates the number of rounds you are away from dying.",
+                RoundBased = false
+            };
 
             foreach (Bodypart bodypart in _context.Bodyparts)
             {
@@ -56,6 +61,13 @@ namespace brokenHeart.Services.DataTransfer.Save.Characters
             foreach (Stat stat in _context.Stats)
             {
                 c.Stats.Add(new StatValue() { Stat = stat, Value = 0 });
+            }
+
+            foreach (InjuryEffectTemplate injuryEffectTemplate in _context.InjuryEffectTemplates)
+            {
+                c.InjuryEffects.Add(
+                    Instantiation.InstantiateInjuryEffect.Invoke(injuryEffectTemplate)
+                );
             }
 
             _context.Characters.Add(c);
@@ -85,7 +97,7 @@ namespace brokenHeart.Services.DataTransfer.Save.Characters
             foreach (InjuryModel injury in injuries)
             {
                 BodypartCondition targetCondition = c.BodypartConditions.Single(x =>
-                    x.Id == injury.Bodypart
+                    x.BodypartId == injury.Bodypart
                 );
 
                 if (targetCondition.InjuryLevel != injury.InjuryLevel)

@@ -25,5 +25,12 @@ namespace brokenHeart.Services.DataTransfer.Save
             ElementType parentType,
             int parentId
         );
+
+        public int InstantiateTemplate(
+            ElementType type,
+            int id,
+            ElementType parentType,
+            int parentId
+        );
     }
 }

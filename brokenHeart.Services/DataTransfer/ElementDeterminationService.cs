@@ -24,6 +24,8 @@ namespace brokenHeart.Services.DataTransfer
             {
                 case null:
                     return ElementParentType.None;
+                case ElementType.Character:
+                    return ElementParentType.Character;
                 case ElementType.Ability:
                     return ElementParentType.Ability;
                 case ElementType.Trait:
