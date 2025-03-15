@@ -9,23 +9,10 @@ namespace brokenHeart.Database.DAO.Counters
         [JsonConstructor]
         public EffectCounter() { }
 
-        public EffectCounter(
-            string name,
-            int value,
-            int max,
-            string description,
-            bool roundBased,
-            bool endEffect = true
-        )
-            : base(name, max, description, roundBased)
-        {
-            EndEffect = endEffect;
-        }
-
         public bool EndEffect { get; set; } = true;
 
         [ForeignKey("Effect")]
         public int EffectId { get; set; }
-        public virtual Effect? Effect { get; set; }
+        public Effect? Effect { get; set; }
     }
 }

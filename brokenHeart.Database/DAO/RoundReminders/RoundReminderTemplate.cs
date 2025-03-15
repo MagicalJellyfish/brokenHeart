@@ -11,28 +11,17 @@ namespace brokenHeart.Database.DAO.RoundReminders
         [JsonConstructor]
         public RoundReminderTemplate() { }
 
-        public RoundReminderTemplate(string reminder, bool reminding = true)
-        {
-            Reminder = reminder;
-            Reminding = reminding;
-        }
-
         public int Id { get; set; }
         public bool Reminding { get; set; } = true;
         public string Reminder { get; set; } = "New Reminder Template";
 
-        public virtual ICollection<CounterTemplate> CounterTemplates { get; set; } =
+        public ICollection<CounterTemplate> CounterTemplates { get; set; } =
             new List<CounterTemplate>();
 
-        public virtual ICollection<ModifierTemplate> ModifierTemplates { get; set; } =
+        public ICollection<ModifierTemplate> ModifierTemplates { get; set; } =
             new List<ModifierTemplate>();
 
-        public virtual ICollection<CharacterTemplate> CharacterTemplates { get; set; } =
+        public ICollection<CharacterTemplate> CharacterTemplates { get; set; } =
             new List<CharacterTemplate>();
-
-        public RoundReminder Instantiate()
-        {
-            return new RoundReminder(Reminder, Reminding);
-        }
     }
 }

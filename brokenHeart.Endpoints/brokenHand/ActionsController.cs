@@ -353,7 +353,7 @@ namespace brokenHeart.Controllers
                                 }
                                 foreach (EffectTemplate template in ability.AppliedEffectTemplates)
                                 {
-                                    target.Effects.Add(template.Instantiate());
+                                    //TODO: target.Effects.Add(template.Instantiate());
                                     message.Description += $"\"{template.Name}\" ";
                                 }
                             }
@@ -405,7 +405,7 @@ namespace brokenHeart.Controllers
                         message.Title += $"\"{template.Name}\" ";
                         foreach (Character target in targetChars)
                         {
-                            target.Effects.Add(template.Instantiate());
+                            //TODO: target.Effects.Add(template.Instantiate());
                         }
                     }
 

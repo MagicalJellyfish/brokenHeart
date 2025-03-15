@@ -8,12 +8,6 @@ namespace brokenHeart.Database.DAO
         [JsonConstructor]
         public UserSimplified() { }
 
-        public UserSimplified(string username, ulong discordId)
-        {
-            Username = username;
-            DiscordId = discordId;
-        }
-
         public int Id { get; set; }
         public string Username { get; set; }
         public ulong DiscordId { get; set; }
@@ -21,7 +15,7 @@ namespace brokenHeart.Database.DAO
         public string? DefaultAbilityString { get; set; }
         public string? DefaultTargetString { get; set; }
 
-        public virtual Character? ActiveCharacter { get; set; }
-        public virtual ICollection<Character> Characters { get; set; } = new List<Character>();
+        public Character? ActiveCharacter { get; set; }
+        public ICollection<Character> Characters { get; set; } = new List<Character>();
     }
 }

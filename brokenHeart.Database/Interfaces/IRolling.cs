@@ -4,6 +4,6 @@ namespace brokenHeart.Database.Interfaces
 {
     public interface IRolling : IDao
     {
-        public ICollection<Roll>? Rolls { get; set; }
+        public ICollection<Roll> Rolls { get; set; }
     }
 }

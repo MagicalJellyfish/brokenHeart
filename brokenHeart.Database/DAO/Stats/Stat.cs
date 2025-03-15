@@ -8,15 +8,9 @@ namespace brokenHeart.Database.DAO.Stats
         [JsonConstructor]
         public Stat() { }
 
-        public Stat(int id, string name)
-        {
-            Id = id;
-            Name = name;
-        }
-
         public int Id { get; set; }
         public string Name { get; set; }
 
-        public virtual ICollection<StatValue> StatValues { get; set; } = new List<StatValue>();
+        public ICollection<StatValue> StatValues { get; set; } = new List<StatValue>();
     }
 }

@@ -10,24 +10,6 @@ namespace brokenHeart.Database.DAO.Counters
         [JsonConstructor]
         public Counter() { }
 
-        public Counter(
-            string name,
-            int max,
-            string description,
-            bool roundBased = true,
-            RoundReminder? reminder = null
-        )
-        {
-            Name = name;
-            Max = max;
-            Description = description;
-            RoundBased = roundBased;
-            RoundReminder = reminder;
-
-            Value = 0;
-            ViewPosition = 0;
-        }
-
         public int Id { get; set; }
         public string Name { get; set; } = "New Counter";
         public string Description { get; set; } = "";
@@ -35,16 +17,16 @@ namespace brokenHeart.Database.DAO.Counters
         public int Max { get; set; } = 0;
         public bool RoundBased { get; set; } = false;
 
-        public virtual RoundReminder? RoundReminder { get; set; }
+        public RoundReminder? RoundReminder { get; set; }
 
         public int ViewPosition { get; set; }
 
         public int? DeathCountCharacterId { get; set; }
-        public virtual Character? DeathCountCharacter { get; set; }
+        public Character? DeathCountCharacter { get; set; }
 
         public int? CharacterId { get; set; }
-        public virtual Character? Character { get; set; }
+        public Character? Character { get; set; }
         public int? ModifierId { get; set; }
-        public virtual Modifier? Modifier { get; set; }
+        public Modifier? Modifier { get; set; }
     }
 }

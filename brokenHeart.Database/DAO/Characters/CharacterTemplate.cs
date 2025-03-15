@@ -14,31 +14,6 @@ namespace brokenHeart.Database.DAO.Characters
         [JsonConstructor]
         public CharacterTemplate() { }
 
-        public CharacterTemplate(
-            string name,
-            int age,
-            string description = "",
-            decimal height = 0,
-            int weight = 0,
-            decimal money = 0,
-            string notes = "",
-            string experience = "",
-            List<ItemTemplate>? inventory = null,
-            List<TraitTemplate>? traits = null
-        )
-        {
-            Name = name;
-            Description = description;
-            Height = height;
-            Weight = weight;
-            Money = money;
-            Age = age;
-            Notes = notes;
-            Experience = experience;
-            ItemTemplates = inventory ?? new List<ItemTemplate>();
-            TraitTemplates = traits ?? new List<TraitTemplate>();
-        }
-
         public int Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
@@ -79,27 +54,5 @@ namespace brokenHeart.Database.DAO.Characters
         public byte[]? Image { get; set; }
 
         public bool IsNPC { get; set; }
-
-        public Character Instantiate(UserSimplified owner)
-        {
-            return new Character(
-                Name,
-                owner,
-                Age,
-                null,
-                Description,
-                Height,
-                Weight,
-                Money,
-                Notes,
-                Experience,
-                Variables.Select(x => x.Instantiate()).ToList(),
-                ItemTemplates.Select(x => x.Instantiate()).ToList(),
-                TraitTemplates.Select(x => x.Instantiate()).ToList(),
-                EffectTemplates.Select(x => x.Instantiate()).ToList(),
-                AbilityTemplates.Select(x => x.Instantiate()).ToList(),
-                isNPC: IsNPC
-            );
-        }
     }
 }

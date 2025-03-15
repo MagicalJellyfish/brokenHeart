@@ -1,4 +1,7 @@
-﻿using brokenHeart.Authentication.DB;
+﻿using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Security.Cryptography;
+using brokenHeart.Authentication.DB;
 using brokenHeart.Authentication.Entities;
 using brokenHeart.Authentication.Models;
 using brokenHeart.Database.DAO;
@@ -7,9 +10,6 @@ using brokenHeart.Models;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Security.Cryptography;
 
 namespace brokenHeart.Authentication.Services
 {
@@ -125,7 +125,11 @@ namespace brokenHeart.Authentication.Services
             _authContext.SaveChanges();
 
             _brokenContext.UserSimplified.Add(
-                new UserSimplified(registrationModel.Username, registrationModel.DiscordId)
+                new UserSimplified()
+                {
+                    Username = registrationModel.Username,
+                    DiscordId = registrationModel.DiscordId
+                }
             );
             _brokenContext.SaveChanges();
 

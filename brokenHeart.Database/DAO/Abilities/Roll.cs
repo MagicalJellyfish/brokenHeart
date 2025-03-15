@@ -9,12 +9,6 @@ namespace brokenHeart.Database.DAO.Abilities
         [JsonConstructor]
         public Roll() { }
 
-        public Roll(string name, string instruction)
-        {
-            Name = name;
-            Instruction = instruction;
-        }
-
         public int Id { get; set; }
         public string Name { get; set; }
         public string Instruction { get; set; }
@@ -24,10 +18,5 @@ namespace brokenHeart.Database.DAO.Abilities
 
         public int? AbilityTemplateId { get; set; }
         public AbilityTemplate? AbilityTemplate { get; set; }
-
-        public Roll Instantiate()
-        {
-            return new Roll(Name, Instruction);
-        }
     }
 }

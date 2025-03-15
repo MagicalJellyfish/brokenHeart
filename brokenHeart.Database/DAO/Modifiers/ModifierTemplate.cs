@@ -12,33 +12,6 @@ namespace brokenHeart.Database.DAO.Modifiers
         [JsonConstructor]
         public ModifierTemplate() { }
 
-        public ModifierTemplate(
-            string name,
-            string description = "",
-            string @abstract = "",
-            int maxHp = 0,
-            int movementSpeed = 0,
-            int armor = 0,
-            int evasion = 0,
-            List<StatValue>? statIncrease = null,
-            List<AbilityTemplate>? abilityTemplates = null,
-            List<CounterTemplate>? counterTemplates = null,
-            RoundReminderTemplate? reminderTemplate = null
-        )
-        {
-            Name = name;
-            Description = description;
-            Abstract = @abstract;
-            MaxHp = maxHp;
-            MovementSpeed = movementSpeed;
-            Armor = armor;
-            Evasion = evasion;
-            StatIncreases = statIncrease ?? new List<StatValue>();
-            AbilityTemplates = abilityTemplates ?? new List<AbilityTemplate>();
-            CounterTemplates = counterTemplates ?? new List<CounterTemplate>();
-            RoundReminderTemplate = reminderTemplate;
-        }
-
         public int Id { get; set; }
         public string Name { get; set; } = "New Modifier Template";
         public string Description { get; set; } = "";
@@ -48,15 +21,15 @@ namespace brokenHeart.Database.DAO.Modifiers
         public int Armor { get; set; } = 0;
         public int Evasion { get; set; } = 0;
 
-        public virtual ICollection<StatValue> StatIncreases { get; set; } = new List<StatValue>();
+        public ICollection<StatValue> StatIncreases { get; set; } = new List<StatValue>();
 
-        public virtual ICollection<CounterTemplate> CounterTemplates { get; set; } =
+        public ICollection<CounterTemplate> CounterTemplates { get; set; } =
             new List<CounterTemplate>();
 
-        public virtual ICollection<AbilityTemplate> AbilityTemplates { get; set; } =
+        public ICollection<AbilityTemplate> AbilityTemplates { get; set; } =
             new List<AbilityTemplate>();
 
         public int? RoundReminderTemplateId { get; set; }
-        public virtual RoundReminderTemplate? RoundReminderTemplate { get; set; }
+        public RoundReminderTemplate? RoundReminderTemplate { get; set; }
     }
 }
