@@ -36,12 +36,14 @@
                     Title = "Name",
                     Property = "name",
                     ColumnType = ElementList.ElementColumnType.Text,
+                    Searchable = true,
                 },
                 new ElementList.ElementColumn()
                 {
                     Title = "Abstract",
                     Property = "abstract",
                     ColumnType = ElementList.ElementColumnType.Text,
+                    Searchable = true,
                 }
             };
 
@@ -59,12 +61,14 @@
                     Title = "Name",
                     Property = "name",
                     ColumnType = ElementList.ElementColumnType.Text,
+                    Searchable = true,
                 },
                 new ElementList.ElementColumn()
                 {
                     Title = "Description",
                     Property = "description",
                     ColumnType = ElementList.ElementColumnType.Text,
+                    Searchable = true,
                 }
             };
 
@@ -82,6 +86,7 @@
                     Title = "Reminder",
                     Property = "reminder",
                     ColumnType = ElementList.ElementColumnType.Text,
+                    Searchable = true,
                 }
             };
     }

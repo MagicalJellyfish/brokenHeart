@@ -15,6 +15,7 @@
             public string Property { get; set; }
             public string? PropertyOf { get; set; }
             public ElementColumnType ColumnType { get; set; } = ElementColumnType.Text;
+            public bool Searchable { get; set; } = false;
         }
 
         public enum ElementColumnType
