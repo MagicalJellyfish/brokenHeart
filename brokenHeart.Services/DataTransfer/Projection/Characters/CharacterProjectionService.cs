@@ -1,5 +1,4 @@
-﻿using System.Linq.Expressions;
-using brokenHeart.Database.DAO;
+﻿using brokenHeart.Database.DAO;
 using brokenHeart.Database.DAO.Abilities.Abilities;
 using brokenHeart.Database.DAO.Counters;
 using brokenHeart.Database.DAO.Modifiers.Items;
@@ -10,6 +9,7 @@ using brokenHeart.Models.DataTransfer.Projection;
 using brokenHeart.Models.DataTransfer.Search;
 using brokenHeart.Services.DataTransfer.Search;
 using LinqKit;
+using System.Linq.Expressions;
 
 namespace brokenHeart.Services.DataTransfer.Projection.Characters
 {
@@ -236,6 +236,7 @@ namespace brokenHeart.Services.DataTransfer.Projection.Characters
                     Stats = x
                         .Stats.Select(stat => new CharacterView.StatModel()
                         {
+                            StatId = stat.StatId,
                             Name = stat.Stat.Name,
                             Value = stat.Value
                         })

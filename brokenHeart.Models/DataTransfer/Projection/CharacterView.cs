@@ -51,6 +51,7 @@ namespace brokenHeart.Models.DataTransfer.Projection
 
         public class StatModel
         {
+            public int StatId { get; set; }
             public string Name { get; set; }
             public int Value { get; set; }
         }
