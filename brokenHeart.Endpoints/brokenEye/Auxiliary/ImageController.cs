@@ -11,6 +11,7 @@ namespace brokenHeart.Endpoints.brokenEye
     {
         public ImageController() { }
 
+        [AllowAnonymous]
         [HttpGet("character/{id}")]
         public ActionResult GetImage(int id)
         {
@@ -61,7 +62,7 @@ namespace brokenHeart.Endpoints.brokenEye
 
             foreach (string image in images)
             {
-                string[] targetFile = image.Split('\\').Last().Split('.');
+                string[] targetFile = image.Split(Path.DirectorySeparatorChar).Last().Split('.');
                 if (targetFile.First() == id.ToString())
                 {
                     string targetFileName = targetFile[0];
@@ -74,6 +75,7 @@ namespace brokenHeart.Endpoints.brokenEye
                     };
                 }
             }
+
             return null;
         }
 
