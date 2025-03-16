@@ -48,7 +48,7 @@ namespace brokenHeart.Services.SignalR
             }
 
             ulong? discordId = _authContext
-                .Users.Where(x => x.Username == requestUsername)
+                .Users.Where(x => x.Username.ToLower() == requestUsername.ToLower())
                 .SingleOrDefault()
                 ?.DiscordId;
 
