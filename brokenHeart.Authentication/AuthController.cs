@@ -84,7 +84,7 @@ namespace brokenHeart.Controllers
 
         [HttpGet("discord")]
         [Authorize]
-        public ActionResult<string> GetDiscordId()
+        public ActionResult<DiscordIdReturn> GetDiscordId()
         {
             var user = _context.Users.Single(x =>
                 x.Username.ToLower() == User.Identity.Name.ToLower()
@@ -95,7 +95,12 @@ namespace brokenHeart.Controllers
                 return NotFound("User not found!");
             }
 
-            return user.DiscordId.ToString();
+            return new DiscordIdReturn() { DiscordId = user.DiscordId.ToString() };
+        }
+
+        public struct DiscordIdReturn
+        {
+            public string DiscordId { get; set; }
         }
 
         [HttpPut("discord")]
