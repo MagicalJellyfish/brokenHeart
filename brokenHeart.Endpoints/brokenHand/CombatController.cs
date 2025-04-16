@@ -150,7 +150,8 @@ namespace brokenHeart.Controllers
                         .Stats.Single(x =>
                             x.Stat!.Id
                             == _context
-                                .Stats.Single(x =>
+                                .Stats.ToList()
+                                .Single(x =>
                                     x.Name.StartsWith("INS", StringComparison.OrdinalIgnoreCase)
                                 )
                                 .Id
