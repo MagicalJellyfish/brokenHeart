@@ -34,14 +34,12 @@ namespace brokenHeart.Controllers
             _elementSubmissionService = elementSubmissionService;
         }
 
-        [HttpGet("roll")]
-        public async Task<ActionResult<RollResult>> Roll(string rollString)
-        {
-            return _rollService.RollString(rollString);
-        }
-
         [HttpGet("rollChar/{id}")]
-        public async Task<ActionResult<RollResult>> RollChar(int id, string rollString)
+        public async Task<ActionResult<List<RollResult>>> RollChar(
+            int id,
+            string rollString,
+            int repeat
+        )
         {
             Character? c = GetBaseCharacters().SingleOrDefault(x => x.Id == id);
 
@@ -50,32 +48,29 @@ namespace brokenHeart.Controllers
                 return NotFound("No character found!");
             }
 
-            return _rollService.CharRollString(rollString, c);
+            return _rollService.CharRollString(rollString, c, repeat);
         }
 
         [HttpGet("rollActiveChar/{discordId}")]
-        public async Task<ActionResult<RollResult>> RollActiveChar(
+        public async Task<ActionResult<List<RollResult>>> RollActiveChar(
             ulong discordId,
-            string rollString
+            string rollString,
+            int repeat
         )
         {
             UserSimplified? user = _context
                 .UserSimplified.Include(x => x.ActiveCharacter)
                 .SingleOrDefault(x => x.DiscordId == discordId);
 
-            if (user == null)
+            if (user == null || user.ActiveCharacter == null)
             {
-                return NotFound("No user found!");
-            }
-
-            if (user.ActiveCharacter == null)
-            {
-                return NotFound("No active character!");
+                return _rollService.RollString(rollString, repeat: repeat);
             }
 
             return _rollService.CharRollString(
                 rollString,
-                GetBaseCharacters().Single(x => x.Id == user.ActiveCharacter.Id)
+                GetBaseCharacters().Single(x => x.Id == user.ActiveCharacter.Id),
+                repeat
             );
         }
 
