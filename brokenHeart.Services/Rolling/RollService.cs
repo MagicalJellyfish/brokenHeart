@@ -14,7 +14,27 @@ namespace brokenHeart.Services.Rolling
 
         public RollService() { }
 
+        public List<RollResult> CharRollString(string input, Character c, int repeat)
+        {
+            string replaced = ReplaceVariables(input, c);
+
+            List<RollResult> results = new List<RollResult>();
+            for (int i = 0; i < repeat; i++)
+            {
+                results.Add(RollString(replaced, input));
+            }
+
+            return results;
+        }
+
         public RollResult CharRollString(string input, Character c)
+        {
+            string replaced = ReplaceVariables(input, c);
+
+            return RollString(replaced, input);
+        }
+
+        private string ReplaceVariables(string input, Character c)
         {
             string output = "";
             for (int i = 0; i < input.Length; i++)
@@ -126,7 +146,18 @@ namespace brokenHeart.Services.Rolling
                 }
             }
 
-            return RollString(output, input);
+            return output;
+        }
+
+        public List<RollResult> RollString(string input, string? original = null, int repeat = 1)
+        {
+            List<RollResult> results = new List<RollResult>();
+            for (int i = 0; i < repeat; i++)
+            {
+                results.Add(RollString(input, original));
+            }
+
+            return results;
         }
 
         public RollResult RollString(string input, string? original = null)
@@ -479,6 +510,6 @@ namespace brokenHeart.Services.Rolling
     {
         Highest,
         Lowest,
-        None
+        None,
     }
 }
