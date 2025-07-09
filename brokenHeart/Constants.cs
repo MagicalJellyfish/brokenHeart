@@ -40,7 +40,7 @@ namespace brokenHeart
                 ArmR,
                 ArmL,
                 LegR,
-                LegL
+                LegL,
             };
 
             //Injuries
@@ -55,12 +55,12 @@ namespace brokenHeart
                     "Minor damage to your head leaves you slightly confused and off balance.",
                 RoundReminderTemplate = new RoundReminderTemplate()
                 {
-                    Reminder = "-1 on ability checks and attack rolls"
-                }
+                    Reminder = "-1 on ability checks and attack rolls",
+                },
             };
             public static readonly InjuryEffectTemplate HeadMedium = new InjuryEffectTemplate()
             {
-                Name = "Minor Injury: Medium",
+                Name = "Medium Injury: Head",
                 Abstract =
                     "Roll and subtract 1d4 from Dexterity, Intelligence and Instinct checks.",
                 Duration = "Until treated",
@@ -70,8 +70,8 @@ namespace brokenHeart
                     "A slight concussion causes you to be unable to properly focus on motor skills and thoughts while your reaction time decreases.",
                 RoundReminderTemplate = new RoundReminderTemplate()
                 {
-                    Reminder = "-1d4 on DEX, INT and INS"
-                }
+                    Reminder = "-1d4 on DEX, INT and INS",
+                },
             };
             public static readonly InjuryEffectTemplate HeadMajor = new InjuryEffectTemplate()
             {
@@ -84,8 +84,8 @@ namespace brokenHeart
                 Description = "Major head trauma throws you way off balance.",
                 RoundReminderTemplate = new RoundReminderTemplate()
                 {
-                    Reminder = "Roll CON 10 or fall prone at the end of every turn"
-                }
+                    Reminder = "Roll CON 10 or fall prone at the end of every turn",
+                },
             };
 
             public static readonly InjuryEffectTemplate TorsoMinor = new InjuryEffectTemplate()
@@ -99,8 +99,8 @@ namespace brokenHeart
                     "Minor damage to your torso area causes you to require great effort to perform extensive actions, both physically and mentally.",
                 RoundReminderTemplate = new RoundReminderTemplate()
                 {
-                    Reminder = "CON check 10 for extensive movement"
-                }
+                    Reminder = "CON check 10 for extensive movement",
+                },
             };
             public static readonly InjuryEffectTemplate TorsoMedium = new InjuryEffectTemplate()
             {
@@ -112,8 +112,8 @@ namespace brokenHeart
                 Description = "Stretching will cause already present injuries to rip even further.",
                 RoundReminderTemplate = new RoundReminderTemplate()
                 {
-                    Reminder = "Extensive movement deals 2d4 damage"
-                }
+                    Reminder = "Extensive movement deals 2d4 damage",
+                },
             };
             public static readonly InjuryEffectTemplate TorsoMajor = new InjuryEffectTemplate()
             {
@@ -126,8 +126,8 @@ namespace brokenHeart
                     "Due to massive pain and damage around your torso you are now unable to perform extensive movement, especially without severely worsening your medical situation.",
                 RoundReminderTemplate = new RoundReminderTemplate()
                 {
-                    Reminder = "No extensive movement"
-                }
+                    Reminder = "No extensive movement",
+                },
             };
             public static readonly InjuryEffectTemplate TorsoDismember = new InjuryEffectTemplate()
             {
@@ -140,7 +140,7 @@ namespace brokenHeart
                 Description =
                     "Severe damage both internal and external has massive effects on your health, continuously dealing further damage",
                 Hp = "-2d8",
-                RoundReminderTemplate = new RoundReminderTemplate() { Reminder = "Heavy Bleeding" }
+                RoundReminderTemplate = new RoundReminderTemplate() { Reminder = "Heavy Bleeding" },
             };
 
             public static readonly InjuryEffectTemplate LeftLegMinor = new InjuryEffectTemplate()
@@ -155,8 +155,8 @@ namespace brokenHeart
                     "The pain from a light injury or the effects of having been hit in an unfortunate spot makes straining actions difficult.",
                 RoundReminderTemplate = new RoundReminderTemplate()
                 {
-                    Reminder = "-2 on ability checks on this leg, CON check 10 for dash"
-                }
+                    Reminder = "-2 on ability checks on this leg, CON check 10 for dash",
+                },
             };
             public static readonly InjuryEffectTemplate LeftLegMedium = new InjuryEffectTemplate()
             {
@@ -171,8 +171,8 @@ namespace brokenHeart
                 RoundReminderTemplate = new RoundReminderTemplate()
                 {
                     Reminder =
-                        "DEX check 10 for unstable actions, CON check 10 for moving more than half your speed"
-                }
+                        "DEX check 10 for unstable actions, CON check 10 for moving more than half your speed",
+                },
             };
             public static readonly InjuryEffectTemplate LeftLegMajor = new InjuryEffectTemplate()
             {
@@ -186,8 +186,8 @@ namespace brokenHeart
                     "A broken bone or profuse bleeding leaves your legs weak and unstable, making even walking difficult.",
                 RoundReminderTemplate = new RoundReminderTemplate()
                 {
-                    Reminder = "Half movement speed per leg"
-                }
+                    Reminder = "Half movement speed per leg",
+                },
             };
             public static readonly InjuryEffectTemplate LeftLegDismember =
                 new InjuryEffectTemplate()
@@ -203,8 +203,8 @@ namespace brokenHeart
                     Hp = "-1d10",
                     RoundReminderTemplate = new RoundReminderTemplate()
                     {
-                        Reminder = "Missing affected leg, heavy bleeding"
-                    }
+                        Reminder = "Missing affected leg, heavy bleeding",
+                    },
                 };
 
             public static readonly InjuryEffectTemplate RightLegMinor = new InjuryEffectTemplate()
@@ -219,8 +219,8 @@ namespace brokenHeart
                     "The pain from a light injury or the effects of having been hit in an unfortunate spot makes straining actions difficult.",
                 RoundReminderTemplate = new RoundReminderTemplate()
                 {
-                    Reminder = "-2 on ability checks on this leg, CON check 10 for dash"
-                }
+                    Reminder = "-2 on ability checks on this leg, CON check 10 for dash",
+                },
             };
             public static readonly InjuryEffectTemplate RightLegMedium = new InjuryEffectTemplate()
             {
@@ -235,8 +235,8 @@ namespace brokenHeart
                 RoundReminderTemplate = new RoundReminderTemplate()
                 {
                     Reminder =
-                        "DEX check 10 for unstable actions, CON check 10 for moving more than half your speed"
-                }
+                        "DEX check 10 for unstable actions, CON check 10 for moving more than half your speed",
+                },
             };
             public static readonly InjuryEffectTemplate RightLegMajor = new InjuryEffectTemplate()
             {
@@ -250,8 +250,8 @@ namespace brokenHeart
                     "A broken bone or profuse bleeding leaves your legs weak and unstable, making even walking difficult.",
                 RoundReminderTemplate = new RoundReminderTemplate()
                 {
-                    Reminder = "Half movement speed per leg"
-                }
+                    Reminder = "Half movement speed per leg",
+                },
             };
             public static readonly InjuryEffectTemplate RightLegDismember =
                 new InjuryEffectTemplate()
@@ -267,8 +267,8 @@ namespace brokenHeart
                     Hp = "-1d10",
                     RoundReminderTemplate = new RoundReminderTemplate()
                     {
-                        Reminder = "Missing affected leg, heavy bleeding"
-                    }
+                        Reminder = "Missing affected leg, heavy bleeding",
+                    },
                 };
 
             public static readonly InjuryEffectTemplate LeftArmMinor = new InjuryEffectTemplate()
@@ -282,8 +282,8 @@ namespace brokenHeart
                     "You have received a bad bruise, a cut or a similar injury. The pain this causes or the location of the injury prevents you from using your arm at full strength.",
                 RoundReminderTemplate = new RoundReminderTemplate()
                 {
-                    Reminder = "-2 on ability checks on this arm."
-                }
+                    Reminder = "-2 on ability checks on this arm.",
+                },
             };
             public static readonly InjuryEffectTemplate LeftArmMedium = new InjuryEffectTemplate()
             {
@@ -296,8 +296,8 @@ namespace brokenHeart
                     "Pain and tissue damage causes you difficulty to complete actions heavily straining on the injured arm",
                 RoundReminderTemplate = new RoundReminderTemplate()
                 {
-                    Reminder = "Straining actions on this arm require CON check 10"
-                }
+                    Reminder = "Straining actions on this arm require CON check 10",
+                },
             };
             public static readonly InjuryEffectTemplate LeftArmMajor = new InjuryEffectTemplate()
             {
@@ -311,8 +311,8 @@ namespace brokenHeart
 
                 RoundReminderTemplate = new RoundReminderTemplate()
                 {
-                    Reminder = "Straining actions on this arm are impossible"
-                }
+                    Reminder = "Straining actions on this arm are impossible",
+                },
             };
             public static readonly InjuryEffectTemplate LeftArmDismember =
                 new InjuryEffectTemplate()
@@ -329,8 +329,8 @@ namespace brokenHeart
 
                     RoundReminderTemplate = new RoundReminderTemplate()
                     {
-                        Reminder = "Missing affected arm, heavily bleeding"
-                    }
+                        Reminder = "Missing affected arm, heavily bleeding",
+                    },
                 };
 
             public static readonly InjuryEffectTemplate RightArmMinor = new InjuryEffectTemplate()
@@ -344,8 +344,8 @@ namespace brokenHeart
                     "You have received a bad bruise, a cut or a similar injury. The pain this causes or the location of the injury prevents you from using your arm at full strength.",
                 RoundReminderTemplate = new RoundReminderTemplate()
                 {
-                    Reminder = "-2 on ability checks on this arm."
-                }
+                    Reminder = "-2 on ability checks on this arm.",
+                },
             };
             public static readonly InjuryEffectTemplate RightArmMedium = new InjuryEffectTemplate()
             {
@@ -358,8 +358,8 @@ namespace brokenHeart
                     "Pain and tissue damage causes you difficulty to complete actions heavily straining on the injured arm",
                 RoundReminderTemplate = new RoundReminderTemplate()
                 {
-                    Reminder = "Straining actions on this arm require CON check 10"
-                }
+                    Reminder = "Straining actions on this arm require CON check 10",
+                },
             };
             public static readonly InjuryEffectTemplate RightArmMajor = new InjuryEffectTemplate()
             {
@@ -373,8 +373,8 @@ namespace brokenHeart
 
                 RoundReminderTemplate = new RoundReminderTemplate()
                 {
-                    Reminder = "Straining actions on this arm are impossible"
-                }
+                    Reminder = "Straining actions on this arm are impossible",
+                },
             };
             public static readonly InjuryEffectTemplate RightArmDismember =
                 new InjuryEffectTemplate()
@@ -391,8 +391,8 @@ namespace brokenHeart
 
                     RoundReminderTemplate = new RoundReminderTemplate()
                     {
-                        Reminder = "Missing affected arm, heavily bleeding"
-                    }
+                        Reminder = "Missing affected arm, heavily bleeding",
+                    },
                 };
 
             public static readonly List<InjuryEffectTemplate> InjuryEffects =
@@ -420,7 +420,7 @@ namespace brokenHeart
                     RightArmMinor,
                     RightArmMedium,
                     RightArmMajor,
-                    RightArmDismember
+                    RightArmDismember,
                 };
         }
 
@@ -429,7 +429,7 @@ namespace brokenHeart
             Name = "Dying",
             Max = 3,
             Description = "This counter indicates the number of rounds you are away from dying.",
-            RoundBased = false
+            RoundBased = false,
         };
 
         public static async Task ValidateAsync(
@@ -478,7 +478,7 @@ namespace brokenHeart
                         new UserSimplified()
                         {
                             Username = user.Username,
-                            DiscordId = user.DiscordId
+                            DiscordId = user.DiscordId,
                         }
                     );
                 }
