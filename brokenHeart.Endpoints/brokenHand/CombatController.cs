@@ -168,7 +168,7 @@ namespace brokenHeart.Controllers
             {
                 character.Name,
                 ce.Shortcut,
-                ce.InitRoll
+                ce.InitRoll,
             };
         }
 
@@ -331,6 +331,7 @@ namespace brokenHeart.Controllers
                 }
 
                 string effects = "";
+                List<Effect> effectsToRemove = new();
                 foreach (Effect effect in character.Effects)
                 {
                     if (!string.IsNullOrEmpty(effect.Hp))
@@ -346,10 +347,11 @@ namespace brokenHeart.Controllers
                         if (effect.EffectCounter.Value >= effect.EffectCounter.Max)
                         {
                             effects += $"Your effect {effect.Name} has worn off!\n";
-                            character.Effects.Remove(effect);
+                            effectsToRemove.Add(effect);
                         }
                     }
                 }
+                effectsToRemove.ForEach(x => character.Effects.Remove(x));
 
                 List<RoundReminder?> reminderList = new List<RoundReminder?>();
 
