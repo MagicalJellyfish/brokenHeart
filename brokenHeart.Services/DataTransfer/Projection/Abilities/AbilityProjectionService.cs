@@ -32,14 +32,14 @@ namespace brokenHeart.Services.DataTransfer.Projection.Abilities
                         {
                             FieldId = nameof(Ability.Description),
                             Title = "Description",
-                            Content = x.Description
+                            Content = x.Description,
                         },
                         new ElementView.Text()
                         {
                             FieldId = nameof(Ability.Abstract),
                             Title = "Abstract",
-                            Content = x.Abstract
-                        }
+                            Content = x.Abstract,
+                        },
                     },
                     Fields = new()
                     {
@@ -47,14 +47,14 @@ namespace brokenHeart.Services.DataTransfer.Projection.Abilities
                         {
                             Title = "Id",
                             Content = x.Id,
-                            Type = ElementView.FieldType.Fixed
+                            Type = ElementView.FieldType.Fixed,
                         },
                         new ElementView.Field()
                         {
                             FieldId = nameof(Ability.Name),
                             Title = "Name",
                             Content = x.Name,
-                            Type = ElementView.FieldType.String
+                            Type = ElementView.FieldType.String,
                         },
                         new ElementView.Field()
                         {
@@ -63,48 +63,49 @@ namespace brokenHeart.Services.DataTransfer.Projection.Abilities
                             Content = new ElementView.Field.EnumContent()
                             {
                                 Type = ElementView.Field.EnumContent.EnumType.TargetType,
-                                Value = (int)x.TargetType
+                                Value = (int)x.TargetType,
                             },
-                            Type = ElementView.FieldType.Enum
+                            Type = ElementView.FieldType.Enum,
                         },
                         new ElementView.Field()
                         {
                             FieldId = nameof(Ability.Shortcut),
                             Title = "Shortcut",
                             Content = x.Shortcut,
-                            Type = ElementView.FieldType.String
+                            Type = ElementView.FieldType.String,
                         },
                         new ElementView.Field()
                         {
                             FieldId = nameof(Ability.Self),
                             Title = "Roll",
                             Content = x.Self,
-                            Type = ElementView.FieldType.String
+                            Type = ElementView.FieldType.String,
                         },
                         new ElementView.Field()
                         {
                             FieldId = nameof(Ability.Target),
                             Title = "Target's Roll/DC",
                             Content = x.Target,
-                            Type = ElementView.FieldType.String
+                            Type = ElementView.FieldType.String,
                         },
                         new ElementView.Field()
                         {
                             FieldId = nameof(Ability.Damage),
                             Title = "Damage",
                             Content = x.Damage,
-                            Type = ElementView.FieldType.String
+                            Type = ElementView.FieldType.String,
                         },
                         new ElementView.Field()
                         {
                             FieldId = nameof(Ability.Range),
                             Title = "Range",
                             Content = x.Range,
-                            Type = ElementView.FieldType.String
+                            Type = ElementView.FieldType.String,
                         },
                         new ElementView.Field()
                         {
                             Title = "Uses",
+                            Type = ElementView.FieldType.Multi,
                             Content = new ElementView.Field.MultiField()
                             {
                                 Separator = "/",
@@ -115,18 +116,17 @@ namespace brokenHeart.Services.DataTransfer.Projection.Abilities
                                         FieldId = nameof(Ability.Uses),
                                         Title = "Uses",
                                         Content = x.Uses,
-                                        Type = ElementView.FieldType.Number
+                                        Type = ElementView.FieldType.Number,
                                     },
                                     new ElementView.Field()
                                     {
                                         FieldId = nameof(Ability.MaxUses),
-                                        Title = "Maximum Uses",
+                                        Title = "Max Uses",
                                         Content = x.MaxUses,
-                                        Type = ElementView.FieldType.Number
-                                    }
-                                }
+                                        Type = ElementView.FieldType.Number,
+                                    },
+                                },
                             },
-                            Type = ElementView.FieldType.Multi
                         },
                         new ElementView.Field()
                         {
@@ -135,9 +135,9 @@ namespace brokenHeart.Services.DataTransfer.Projection.Abilities
                             Content = new ElementView.Field.EnumContent()
                             {
                                 Type = ElementView.Field.EnumContent.EnumType.ReplenishType,
-                                Value = (int)x.ReplenishType
+                                Value = (int)x.ReplenishType,
                             },
-                            Type = ElementView.FieldType.Enum
+                            Type = ElementView.FieldType.Enum,
                         },
                     },
                     Relations = new()
@@ -154,7 +154,7 @@ namespace brokenHeart.Services.DataTransfer.Projection.Abilities
                                         Name = effectTemplate.Name,
                                     }
                                 )
-                                .ToList()
+                                .ToList(),
                         },
                         new ElementView.Relation()
                         {
@@ -165,11 +165,11 @@ namespace brokenHeart.Services.DataTransfer.Projection.Abilities
                                 {
                                     Id = roll.Id,
                                     Name = roll.Name,
-                                    Roll = roll.Instruction
+                                    Roll = roll.Instruction,
                                 }
-                            )
-                        }
-                    }
+                            ),
+                        },
+                    },
                 })
                 .SingleOrDefault();
         }
