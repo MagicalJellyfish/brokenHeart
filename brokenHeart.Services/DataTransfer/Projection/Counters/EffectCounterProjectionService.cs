@@ -32,7 +32,7 @@ namespace brokenHeart.Services.DataTransfer.Projection.Counters
                         {
                             FieldId = nameof(EffectCounter.Description),
                             Title = "Description",
-                            Content = x.Description
+                            Content = x.Description,
                         },
                     },
                     Fields = new()
@@ -41,14 +41,14 @@ namespace brokenHeart.Services.DataTransfer.Projection.Counters
                         {
                             Title = "Id",
                             Content = x.Id,
-                            Type = ElementView.FieldType.Fixed
+                            Type = ElementView.FieldType.Fixed,
                         },
                         new ElementView.Field()
                         {
                             FieldId = nameof(EffectCounter.Name),
                             Title = "Name",
                             Content = x.Name,
-                            Type = ElementView.FieldType.String
+                            Type = ElementView.FieldType.String,
                         },
                         new ElementView.Field()
                         {
@@ -64,16 +64,16 @@ namespace brokenHeart.Services.DataTransfer.Projection.Counters
                                         FieldId = nameof(EffectCounter.Value),
                                         Title = "Value",
                                         Content = x.Value,
-                                        Type = ElementView.FieldType.Number
+                                        Type = ElementView.FieldType.Number,
                                     },
                                     new ElementView.Field()
                                     {
                                         FieldId = nameof(EffectCounter.Max),
-                                        Title = "Maximum Value",
+                                        Title = "Max Value",
                                         Content = x.Max,
-                                        Type = ElementView.FieldType.Number
-                                    }
-                                }
+                                        Type = ElementView.FieldType.Number,
+                                    },
+                                },
                             },
                         },
                         new ElementView.Field()
@@ -81,14 +81,14 @@ namespace brokenHeart.Services.DataTransfer.Projection.Counters
                             FieldId = nameof(EffectCounter.RoundBased),
                             Title = "Round-Based",
                             Content = x.RoundBased,
-                            Type = ElementView.FieldType.Boolean
+                            Type = ElementView.FieldType.Boolean,
                         },
                         new ElementView.Field()
                         {
                             FieldId = nameof(EffectCounter.EndEffect),
                             Title = "Ends Effect",
                             Content = x.EndEffect,
-                            Type = ElementView.FieldType.Boolean
+                            Type = ElementView.FieldType.Boolean,
                         },
                     },
                     Relations = new()
@@ -106,11 +106,11 @@ namespace brokenHeart.Services.DataTransfer.Projection.Counters
                                         {
                                             Id = x.RoundReminder.Id,
                                             Name = x.RoundReminder.Reminder,
-                                        }
+                                        },
                                     }
-                                    : new List<ElementView.Relation.ElementRelationItem>()
+                                    : new List<ElementView.Relation.ElementRelationItem>(),
                         },
-                    }
+                    },
                 })
                 .SingleOrDefault();
         }
