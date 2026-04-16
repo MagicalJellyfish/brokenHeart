@@ -116,7 +116,7 @@ namespace brokenHeart.DB
                     try
                     {
                         // csharpier-ignore
-                        Character c = Characters
+                        Character? c = Characters
                             .Include(x => x.Stats)
 
                             .Include(x => x.Items).ThenInclude(x => x.StatIncreases).ThenInclude(x => x.Stat)
@@ -125,12 +125,14 @@ namespace brokenHeart.DB
 
                             .Include(x => x.Effects).ThenInclude(x => x.StatIncreases).ThenInclude(x => x.Stat)
 
-                            .Single(x => x.Id == changedChar);
+                            .SingleOrDefault(x => x.Id == changedChar);
 
-                        c.Update();
+                        if (c != null)
+                            c.Update();
                         saveChanges += base.SaveChanges();
 
-                        _eventEmitter.EmitCharacterChange(changedChar);
+                        if (c != null)
+                            _eventEmitter.EmitCharacterChange(changedChar);
                     }
                     catch (Exception)
                     {
