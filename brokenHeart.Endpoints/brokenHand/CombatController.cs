@@ -164,11 +164,11 @@ namespace brokenHeart.Controllers
 
             _context.SaveChanges();
 
-            return new
+            return new AddParticipantMessage()
             {
-                character.Name,
-                ce.Shortcut,
-                ce.InitRoll,
+                Name = character.Name,
+                Shortcut = ce.Shortcut,
+                InitRoll = ce.InitRoll,
             };
         }
 
