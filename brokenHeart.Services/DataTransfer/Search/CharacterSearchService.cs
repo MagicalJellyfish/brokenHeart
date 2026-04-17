@@ -51,7 +51,7 @@ namespace brokenHeart.Services.DataTransfer.Search
 
             if (characters.Count() < 1 || characters.Count() > 1)
             {
-                throw new Exception("Found too many elements for search parameters!");
+                throw new Exception($"Found {characters.Count()} elements for search parameters!");
             }
 
             return characters;
