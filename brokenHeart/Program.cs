@@ -69,7 +69,7 @@ static void AddControllers(WebApplicationBuilder builder)
     builder
         .Services.AddControllers(options =>
         {
-            options.InputFormatters.Insert(0, JPIF.GetJsonPatchInputFormatter());
+            options.InputFormatters.Insert(0, JsonPatchInputFormatter.GetJsonPatchInputFormatter());
         })
         .AddJsonOptions(options =>
         {
