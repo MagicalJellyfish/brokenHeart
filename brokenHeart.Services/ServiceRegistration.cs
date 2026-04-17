@@ -27,7 +27,6 @@ using brokenHeart.Services.DataTransfer.Save.Modifiers.Items;
 using brokenHeart.Services.DataTransfer.Save.Modifiers.Traits;
 using brokenHeart.Services.DataTransfer.Save.RoundReminders;
 using brokenHeart.Services.DataTransfer.Search;
-using brokenHeart.Services.Endpoints;
 using brokenHeart.Services.Rolling;
 using brokenHeart.Services.SignalR;
 using Microsoft.Extensions.DependencyInjection;
@@ -40,7 +39,6 @@ namespace brokenHeart.Services
         public static void RegisterServices(IServiceCollection serviceCollection)
         {
             // Various
-            serviceCollection.AddScoped<IEndpointEntityService, EndpointEntityService>();
             serviceCollection.AddScoped<IRollService, RollService>();
 
             serviceCollection.AddScoped<IElementDeterminationService, ElementDeterminationService>();
