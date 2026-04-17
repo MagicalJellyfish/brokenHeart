@@ -5,7 +5,7 @@ using Microsoft.Extensions.Options;
 
 namespace brokenHeart.Endpoints.JSON;
 
-public static class JPIF
+public static class JsonPatchInputFormatter
 {
     public static NewtonsoftJsonPatchInputFormatter GetJsonPatchInputFormatter()
     {
