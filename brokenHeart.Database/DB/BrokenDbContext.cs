@@ -55,6 +55,7 @@ namespace brokenHeart.DB
 
         public DbSet<Combat> Combats { get; set; }
         public DbSet<CombatEntry> CombatEntries { get; set; }
+        public DbSet<Event> Events { get; set; }
 
         public DbSet<Roll> Rolls { get; set; }
         public DbSet<Ability> Abilities { get; set; }
@@ -295,7 +296,7 @@ namespace brokenHeart.DB
                     .HasForeignKey("CharacterId")
                     .OnDelete(DeleteBehavior.Cascade);
 
-                x.HasOne("brokenHeart.Database.DAO.Combat.Combat", null)
+                x.HasOne("brokenHeart.Database.DAO.Combat.Combat", "Combat")
                     .WithMany("Entries")
                     .HasForeignKey("CombatId")
                     .OnDelete(DeleteBehavior.Cascade);

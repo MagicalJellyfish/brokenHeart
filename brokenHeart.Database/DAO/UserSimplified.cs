@@ -15,6 +15,7 @@ namespace brokenHeart.Database.DAO
         public string? DefaultAbilityString { get; set; }
         public string? DefaultTargetString { get; set; }
 
+        public int? ActiveCharacterId { get; set; }
         public Character? ActiveCharacter { get; set; }
         public ICollection<Character> Characters { get; set; } = new List<Character>();
     }

@@ -1,8 +1,7 @@
 using brokenHeart.Database.DAO.Modifiers.Effects;
+using brokenHeart.DB;
 using brokenHeart.Models.DataTransfer;
 using brokenHeart.Models.DataTransfer.Projection;
-using brokenHeart.Models.DataTransfer.Search;
-using brokenHeart.Services.DataTransfer.Search;
 
 namespace brokenHeart.Services.DataTransfer.Projection.Abilities
 {
@@ -10,18 +9,16 @@ namespace brokenHeart.Services.DataTransfer.Projection.Abilities
     {
         public ElementType ProjectionType => ElementType.Effect;
 
-        private readonly IDaoSearchService _daoSearchService;
+        private readonly BrokenDbContext _context;
 
-        public EffectProjectionService(IDaoSearchService daoSearchService)
+        public EffectProjectionService(BrokenDbContext context)
         {
-            _daoSearchService = daoSearchService;
+            _context = context;
         }
 
         public dynamic? GetElement(int id)
         {
-            IQueryable<Effect> effects = _daoSearchService.GetSingleElement<Effect>(
-                new DaoSearch() { Id = id }
-            );
+            IQueryable<Effect> effects = _context.Effects.Where(x => x.Id == id);
 
             return effects
                 .Select(x => new ElementView()
@@ -32,14 +29,14 @@ namespace brokenHeart.Services.DataTransfer.Projection.Abilities
                         {
                             FieldId = nameof(Effect.Description),
                             Title = "Description",
-                            Content = x.Description
+                            Content = x.Description,
                         },
                         new ElementView.Text()
                         {
                             FieldId = nameof(Effect.Abstract),
                             Title = "Abstract",
-                            Content = x.Abstract
-                        }
+                            Content = x.Abstract,
+                        },
                     },
                     Fields = new()
                     {
@@ -47,63 +44,63 @@ namespace brokenHeart.Services.DataTransfer.Projection.Abilities
                         {
                             Title = "Id",
                             Content = x.Id,
-                            Type = ElementView.FieldType.Fixed
+                            Type = ElementView.FieldType.Fixed,
                         },
                         new ElementView.Field()
                         {
                             FieldId = nameof(Effect.Name),
                             Title = "Name",
                             Content = x.Name,
-                            Type = ElementView.FieldType.String
+                            Type = ElementView.FieldType.String,
                         },
                         new ElementView.Field()
                         {
                             FieldId = nameof(Effect.MaxHp),
                             Title = "Maximum HP Increase",
                             Content = x.MaxHp,
-                            Type = ElementView.FieldType.Number
+                            Type = ElementView.FieldType.Number,
                         },
                         new ElementView.Field()
                         {
                             FieldId = nameof(Effect.MovementSpeed),
                             Title = "Movement Speed Increase",
                             Content = x.MovementSpeed,
-                            Type = ElementView.FieldType.Number
+                            Type = ElementView.FieldType.Number,
                         },
                         new ElementView.Field()
                         {
                             FieldId = nameof(Effect.Evasion),
                             Title = "Evasion",
                             Content = x.Evasion,
-                            Type = ElementView.FieldType.Number
+                            Type = ElementView.FieldType.Number,
                         },
                         new ElementView.Field()
                         {
                             FieldId = nameof(Effect.Armor),
                             Title = "Armor",
                             Content = x.Armor,
-                            Type = ElementView.FieldType.Number
+                            Type = ElementView.FieldType.Number,
                         },
                         new ElementView.Field()
                         {
                             FieldId = nameof(Effect.Hp),
                             Title = "HP healed per round",
                             Content = x.Hp,
-                            Type = ElementView.FieldType.String
+                            Type = ElementView.FieldType.String,
                         },
                         new ElementView.Field()
                         {
                             FieldId = nameof(Effect.MaxTempHp),
                             Title = "Temporary HP",
                             Content = x.MaxTempHp,
-                            Type = ElementView.FieldType.Number
+                            Type = ElementView.FieldType.Number,
                         },
                         new ElementView.Field()
                         {
                             FieldId = nameof(Effect.Duration),
                             Title = "Duration",
                             Content = x.Duration,
-                            Type = ElementView.FieldType.String
+                            Type = ElementView.FieldType.String,
                         },
                     },
                     Relations = new()
@@ -120,7 +117,7 @@ namespace brokenHeart.Services.DataTransfer.Projection.Abilities
                                         Name = ability.Name,
                                     }
                                 )
-                                .ToList()
+                                .ToList(),
                         },
                         new ElementView.Relation()
                         {
@@ -134,7 +131,7 @@ namespace brokenHeart.Services.DataTransfer.Projection.Abilities
                                         Name = counter.Name,
                                     }
                                 )
-                                .ToList()
+                                .ToList(),
                         },
                         new ElementView.Relation()
                         {
@@ -149,9 +146,9 @@ namespace brokenHeart.Services.DataTransfer.Projection.Abilities
                                         {
                                             Id = x.EffectCounter.Id,
                                             Name = x.EffectCounter.Name,
-                                        }
+                                        },
                                     }
-                                    : new List<ElementView.Relation.ElementRelationItem>()
+                                    : new List<ElementView.Relation.ElementRelationItem>(),
                         },
                         new ElementView.Relation()
                         {
@@ -166,9 +163,9 @@ namespace brokenHeart.Services.DataTransfer.Projection.Abilities
                                         {
                                             Id = x.RoundReminder.Id,
                                             Name = x.RoundReminder.Reminder,
-                                        }
+                                        },
                                     }
-                                    : new List<ElementView.Relation.ElementRelationItem>()
+                                    : new List<ElementView.Relation.ElementRelationItem>(),
                         },
                         new ElementView.Relation()
                         {
@@ -180,11 +177,11 @@ namespace brokenHeart.Services.DataTransfer.Projection.Abilities
                                     Id = statIncrease.Id,
                                     StatId = statIncrease.Stat.Id,
                                     Name = statIncrease.Stat.Name,
-                                    Value = statIncrease.Value
+                                    Value = statIncrease.Value,
                                 }
-                            )
+                            ),
                         },
-                    }
+                    },
                 })
                 .SingleOrDefault();
         }

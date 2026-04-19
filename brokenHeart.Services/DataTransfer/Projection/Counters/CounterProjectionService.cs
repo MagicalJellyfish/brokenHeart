@@ -1,8 +1,7 @@
 ﻿using brokenHeart.Database.DAO.Counters;
+using brokenHeart.DB;
 using brokenHeart.Models.DataTransfer;
 using brokenHeart.Models.DataTransfer.Projection;
-using brokenHeart.Models.DataTransfer.Search;
-using brokenHeart.Services.DataTransfer.Search;
 
 namespace brokenHeart.Services.DataTransfer.Projection.Abilities
 {
@@ -10,18 +9,16 @@ namespace brokenHeart.Services.DataTransfer.Projection.Abilities
     {
         public ElementType ProjectionType => ElementType.Counter;
 
-        private readonly IDaoSearchService _daoSearchService;
+        private readonly BrokenDbContext _context;
 
-        public CounterProjectionService(IDaoSearchService daoSearchService)
+        public CounterProjectionService(BrokenDbContext context)
         {
-            _daoSearchService = daoSearchService;
+            _context = context;
         }
 
         public dynamic? GetElement(int id)
         {
-            IQueryable<Counter> counters = _daoSearchService.GetSingleElement<Counter>(
-                new DaoSearch() { Id = id }
-            );
+            IQueryable<Counter> counters = _context.Counters.Where(x => x.Id == id);
 
             return counters
                 .Select(x => new ElementView()

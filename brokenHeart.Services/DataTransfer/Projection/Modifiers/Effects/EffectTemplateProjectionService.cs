@@ -1,9 +1,8 @@
 ﻿using brokenHeart.Database.DAO.Modifiers.Effects;
 using brokenHeart.Database.DAO.Modifiers.Effects.Injuries;
+using brokenHeart.DB;
 using brokenHeart.Models.DataTransfer;
 using brokenHeart.Models.DataTransfer.Projection;
-using brokenHeart.Models.DataTransfer.Search;
-using brokenHeart.Services.DataTransfer.Search;
 
 namespace brokenHeart.Services.DataTransfer.Projection.Modifiers.Effects
 {
@@ -13,18 +12,16 @@ namespace brokenHeart.Services.DataTransfer.Projection.Modifiers.Effects
     {
         public ElementType ProjectionType => ElementType.EffectTemplate;
 
-        private readonly IDaoSearchService _daoSearchService;
+        private BrokenDbContext _context;
 
-        public EffectTemplateProjectionService(IDaoSearchService daoSearchService)
+        public EffectTemplateProjectionService(BrokenDbContext context)
         {
-            _daoSearchService = daoSearchService;
+            _context = context;
         }
 
         public dynamic? GetElement(int id)
         {
-            IQueryable<EffectTemplate> effects = _daoSearchService.GetSingleElement<EffectTemplate>(
-                new DaoSearch() { Id = id }
-            );
+            IQueryable<EffectTemplate> effects = _context.EffectTemplates.Where(x => x.Id == id);
 
             return effects
                 .Select(x => new ElementView()
@@ -35,14 +32,14 @@ namespace brokenHeart.Services.DataTransfer.Projection.Modifiers.Effects
                         {
                             FieldId = nameof(EffectTemplate.Description),
                             Title = "Description",
-                            Content = x.Description
+                            Content = x.Description,
                         },
                         new ElementView.Text()
                         {
                             FieldId = nameof(EffectTemplate.Abstract),
                             Title = "Abstract",
-                            Content = x.Abstract
-                        }
+                            Content = x.Abstract,
+                        },
                     },
                     Fields = new()
                     {
@@ -50,63 +47,63 @@ namespace brokenHeart.Services.DataTransfer.Projection.Modifiers.Effects
                         {
                             Title = "Id",
                             Content = x.Id,
-                            Type = ElementView.FieldType.Fixed
+                            Type = ElementView.FieldType.Fixed,
                         },
                         new ElementView.Field()
                         {
                             FieldId = nameof(EffectTemplate.Name),
                             Title = "Name",
                             Content = x.Name,
-                            Type = ElementView.FieldType.String
+                            Type = ElementView.FieldType.String,
                         },
                         new ElementView.Field()
                         {
                             FieldId = nameof(EffectTemplate.MaxHp),
                             Title = "Maximum HP Increase",
                             Content = x.MaxHp,
-                            Type = ElementView.FieldType.Number
+                            Type = ElementView.FieldType.Number,
                         },
                         new ElementView.Field()
                         {
                             FieldId = nameof(EffectTemplate.MovementSpeed),
                             Title = "Movement Speed Increase",
                             Content = x.MovementSpeed,
-                            Type = ElementView.FieldType.Number
+                            Type = ElementView.FieldType.Number,
                         },
                         new ElementView.Field()
                         {
                             FieldId = nameof(EffectTemplate.Evasion),
                             Title = "Evasion",
                             Content = x.Evasion,
-                            Type = ElementView.FieldType.Number
+                            Type = ElementView.FieldType.Number,
                         },
                         new ElementView.Field()
                         {
                             FieldId = nameof(EffectTemplate.Armor),
                             Title = "Armor",
                             Content = x.Armor,
-                            Type = ElementView.FieldType.Number
+                            Type = ElementView.FieldType.Number,
                         },
                         new ElementView.Field()
                         {
                             FieldId = nameof(EffectTemplate.Hp),
                             Title = "HP healed per round",
                             Content = x.Hp,
-                            Type = ElementView.FieldType.String
+                            Type = ElementView.FieldType.String,
                         },
                         new ElementView.Field()
                         {
                             FieldId = nameof(EffectTemplate.MaxTempHp),
                             Title = "Temporary HP",
                             Content = x.MaxTempHp,
-                            Type = ElementView.FieldType.Number
+                            Type = ElementView.FieldType.Number,
                         },
                         new ElementView.Field()
                         {
                             FieldId = nameof(EffectTemplate.Duration),
                             Title = "Duration",
                             Content = x.Duration,
-                            Type = ElementView.FieldType.String
+                            Type = ElementView.FieldType.String,
                         },
                     },
                     Relations = new()
@@ -124,7 +121,7 @@ namespace brokenHeart.Services.DataTransfer.Projection.Modifiers.Effects
                                         Name = ability.Name,
                                     }
                                 )
-                                .ToList()
+                                .ToList(),
                         },
                         new ElementView.Relation()
                         {
@@ -139,7 +136,7 @@ namespace brokenHeart.Services.DataTransfer.Projection.Modifiers.Effects
                                         Name = counter.Name,
                                     }
                                 )
-                                .ToList()
+                                .ToList(),
                         },
                         new ElementView.Relation()
                         {
@@ -154,9 +151,9 @@ namespace brokenHeart.Services.DataTransfer.Projection.Modifiers.Effects
                                         {
                                             Id = x.EffectCounterTemplate.Id,
                                             Name = x.EffectCounterTemplate.Name,
-                                        }
+                                        },
                                     }
-                                    : new List<ElementView.Relation.ElementRelationItem>()
+                                    : new List<ElementView.Relation.ElementRelationItem>(),
                         },
                         new ElementView.Relation()
                         {
@@ -171,9 +168,9 @@ namespace brokenHeart.Services.DataTransfer.Projection.Modifiers.Effects
                                         {
                                             Id = x.RoundReminderTemplate.Id,
                                             Name = x.RoundReminderTemplate.Reminder,
-                                        }
+                                        },
                                     }
-                                    : new List<ElementView.Relation.ElementRelationItem>()
+                                    : new List<ElementView.Relation.ElementRelationItem>(),
                         },
                         new ElementView.Relation()
                         {
@@ -185,11 +182,11 @@ namespace brokenHeart.Services.DataTransfer.Projection.Modifiers.Effects
                                     Id = statIncrease.Id,
                                     StatId = statIncrease.Stat.Id,
                                     Name = statIncrease.Stat.Name,
-                                    Value = statIncrease.Value
+                                    Value = statIncrease.Value,
                                 }
-                            )
+                            ),
                         },
-                    }
+                    },
                 })
                 .SingleOrDefault();
         }
@@ -201,17 +198,16 @@ namespace brokenHeart.Services.DataTransfer.Projection.Modifiers.Effects
                 Title = "Effects",
                 Type = ElementType.EffectTemplate,
                 ElementColumns = TemplateListModels.AbstractTemplateColumns,
-                Elements = _daoSearchService
-                    .GetElements<EffectTemplate>()
-                    .Where(x => !(x is InjuryEffectTemplate))
+                Elements = _context
+                    .EffectTemplates.Where(x => !(x is InjuryEffectTemplate))
                     .Select(x => new TemplateListModels.AbstractTemplateModel()
                     {
                         Id = x.Id,
                         Name = x.Name,
-                        Abstract = x.Abstract
+                        Abstract = x.Abstract,
                     })
                     .Cast<dynamic>()
-                    .ToList()
+                    .ToList(),
             };
         }
     }

@@ -16,6 +16,6 @@ namespace brokenHeart.Database.DAO.Combat
         public int CurrentTurn { get; set; }
         public bool Active { get; set; }
 
-        public virtual ICollection<CombatEntry> Entries { get; set; } = new List<CombatEntry>();
+        public ICollection<CombatEntry> Entries { get; set; } = new List<CombatEntry>();
     }
 }

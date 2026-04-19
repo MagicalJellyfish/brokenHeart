@@ -1,8 +1,7 @@
 ﻿using brokenHeart.Database.DAO.Characters;
+using brokenHeart.DB;
 using brokenHeart.Models.DataTransfer;
 using brokenHeart.Models.DataTransfer.Projection;
-using brokenHeart.Models.DataTransfer.Search;
-using brokenHeart.Services.DataTransfer.Search;
 
 namespace brokenHeart.Services.DataTransfer.Projection.Characters
 {
@@ -10,18 +9,16 @@ namespace brokenHeart.Services.DataTransfer.Projection.Characters
     {
         public ElementType ProjectionType => ElementType.Variable;
 
-        private readonly IDaoSearchService _daoSearchService;
+        private readonly BrokenDbContext _context;
 
-        public VariableProjectionService(IDaoSearchService daoSearchService)
+        public VariableProjectionService(BrokenDbContext context)
         {
-            _daoSearchService = daoSearchService;
+            _context = context;
         }
 
         public dynamic? GetElement(int id)
         {
-            IQueryable<Variable> variables = _daoSearchService.GetSingleElement<Variable>(
-                new DaoSearch() { Id = id }
-            );
+            IQueryable<Variable> variables = _context.Variables.Where(x => x.Id == id);
 
             return variables
                 .Select(x => new ElementView()
@@ -33,24 +30,24 @@ namespace brokenHeart.Services.DataTransfer.Projection.Characters
                         {
                             Title = "Id",
                             Content = x.Id,
-                            Type = ElementView.FieldType.Fixed
+                            Type = ElementView.FieldType.Fixed,
                         },
                         new ElementView.Field()
                         {
                             FieldId = nameof(Variable.Name),
                             Title = "Name",
                             Content = x.Name,
-                            Type = ElementView.FieldType.String
+                            Type = ElementView.FieldType.String,
                         },
                         new ElementView.Field()
                         {
                             FieldId = nameof(Variable.Value),
                             Title = "Value",
                             Content = x.Value,
-                            Type = ElementView.FieldType.Number
+                            Type = ElementView.FieldType.Number,
                         },
                     },
-                    Relations = new() { }
+                    Relations = new() { },
                 })
                 .SingleOrDefault();
         }

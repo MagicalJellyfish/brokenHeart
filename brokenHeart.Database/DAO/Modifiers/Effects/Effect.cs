@@ -15,6 +15,7 @@ namespace brokenHeart.Database.DAO.Modifiers.Effects
         public int MaxTempHp { get; set; } = 0;
         public string Duration { get; set; } = "";
 
+        public int? EffectCounterId { get; set; }
         public EffectCounter? EffectCounter { get; set; }
 
         public int? CharacterId { get; set; }

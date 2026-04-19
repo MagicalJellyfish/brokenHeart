@@ -1,8 +1,7 @@
 ﻿using brokenHeart.Database.DAO.Modifiers.Traits;
+using brokenHeart.DB;
 using brokenHeart.Models.DataTransfer;
 using brokenHeart.Models.DataTransfer.Projection;
-using brokenHeart.Models.DataTransfer.Search;
-using brokenHeart.Services.DataTransfer.Search;
 
 namespace brokenHeart.Services.DataTransfer.Projection.Modifiers.Traits
 {
@@ -12,18 +11,16 @@ namespace brokenHeart.Services.DataTransfer.Projection.Modifiers.Traits
     {
         public ElementType ProjectionType => ElementType.TraitTemplate;
 
-        private readonly IDaoSearchService _daoSearchService;
+        private readonly BrokenDbContext _context;
 
-        public TraitTemplateProjectionService(IDaoSearchService daoSearchService)
+        public TraitTemplateProjectionService(BrokenDbContext context)
         {
-            _daoSearchService = daoSearchService;
+            _context = context;
         }
 
         public dynamic? GetElement(int id)
         {
-            IQueryable<TraitTemplate> traits = _daoSearchService.GetSingleElement<TraitTemplate>(
-                new DaoSearch() { Id = id }
-            );
+            IQueryable<TraitTemplate> traits = _context.TraitTemplates.Where(x => x.Id == id);
 
             return traits
                 .Select(x => new ElementView()
@@ -34,14 +31,14 @@ namespace brokenHeart.Services.DataTransfer.Projection.Modifiers.Traits
                         {
                             FieldId = nameof(TraitTemplate.Description),
                             Title = "Description",
-                            Content = x.Description
+                            Content = x.Description,
                         },
                         new ElementView.Text()
                         {
                             FieldId = nameof(TraitTemplate.Abstract),
                             Title = "Abstract",
-                            Content = x.Abstract
-                        }
+                            Content = x.Abstract,
+                        },
                     },
                     Fields = new()
                     {
@@ -49,42 +46,42 @@ namespace brokenHeart.Services.DataTransfer.Projection.Modifiers.Traits
                         {
                             Title = "Id",
                             Content = x.Id,
-                            Type = ElementView.FieldType.Fixed
+                            Type = ElementView.FieldType.Fixed,
                         },
                         new ElementView.Field()
                         {
                             FieldId = nameof(TraitTemplate.Name),
                             Title = "Name",
                             Content = x.Name,
-                            Type = ElementView.FieldType.String
+                            Type = ElementView.FieldType.String,
                         },
                         new ElementView.Field()
                         {
                             FieldId = nameof(TraitTemplate.MaxHp),
                             Title = "Maximum HP Increase",
                             Content = x.MaxHp,
-                            Type = ElementView.FieldType.Number
+                            Type = ElementView.FieldType.Number,
                         },
                         new ElementView.Field()
                         {
                             FieldId = nameof(TraitTemplate.MovementSpeed),
                             Title = "Movement Speed Increase",
                             Content = x.MovementSpeed,
-                            Type = ElementView.FieldType.Number
+                            Type = ElementView.FieldType.Number,
                         },
                         new ElementView.Field()
                         {
                             FieldId = nameof(TraitTemplate.Evasion),
                             Title = "Evasion",
                             Content = x.Evasion,
-                            Type = ElementView.FieldType.Number
+                            Type = ElementView.FieldType.Number,
                         },
                         new ElementView.Field()
                         {
                             FieldId = nameof(TraitTemplate.Armor),
                             Title = "Armor",
                             Content = x.Armor,
-                            Type = ElementView.FieldType.Number
+                            Type = ElementView.FieldType.Number,
                         },
                     },
                     Relations = new()
@@ -102,7 +99,7 @@ namespace brokenHeart.Services.DataTransfer.Projection.Modifiers.Traits
                                         Name = ability.Name,
                                     }
                                 )
-                                .ToList()
+                                .ToList(),
                         },
                         new ElementView.Relation()
                         {
@@ -117,7 +114,7 @@ namespace brokenHeart.Services.DataTransfer.Projection.Modifiers.Traits
                                         Name = counter.Name,
                                     }
                                 )
-                                .ToList()
+                                .ToList(),
                         },
                         new ElementView.Relation()
                         {
@@ -132,9 +129,9 @@ namespace brokenHeart.Services.DataTransfer.Projection.Modifiers.Traits
                                         {
                                             Id = x.RoundReminderTemplate.Id,
                                             Name = x.RoundReminderTemplate.Reminder,
-                                        }
+                                        },
                                     }
-                                    : new List<ElementView.Relation.ElementRelationItem>()
+                                    : new List<ElementView.Relation.ElementRelationItem>(),
                         },
                         new ElementView.Relation()
                         {
@@ -146,11 +143,11 @@ namespace brokenHeart.Services.DataTransfer.Projection.Modifiers.Traits
                                     Id = statIncrease.Id,
                                     StatId = statIncrease.Stat.Id,
                                     Name = statIncrease.Stat.Name,
-                                    Value = statIncrease.Value
+                                    Value = statIncrease.Value,
                                 }
-                            )
+                            ),
                         },
-                    }
+                    },
                 })
                 .SingleOrDefault();
         }
@@ -162,16 +159,15 @@ namespace brokenHeart.Services.DataTransfer.Projection.Modifiers.Traits
                 Title = "Traits",
                 Type = ElementType.TraitTemplate,
                 ElementColumns = TemplateListModels.AbstractTemplateColumns,
-                Elements = _daoSearchService
-                    .GetElements<TraitTemplate>()
-                    .Select(x => new TemplateListModels.AbstractTemplateModel()
+                Elements = _context
+                    .TraitTemplates.Select(x => new TemplateListModels.AbstractTemplateModel()
                     {
                         Id = x.Id,
                         Name = x.Name,
-                        Abstract = x.Abstract
+                        Abstract = x.Abstract,
                     })
                     .Cast<dynamic>()
-                    .ToList()
+                    .ToList(),
             };
         }
     }

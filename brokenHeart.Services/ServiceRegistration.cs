@@ -15,6 +15,7 @@ using brokenHeart.Services.DataTransfer.Save.Auxiliary;
 using brokenHeart.Services.DataTransfer.Save.Characters;
 using brokenHeart.Services.DataTransfer.Save.Counters;
 using brokenHeart.Services.DataTransfer.Save.Derived;
+using brokenHeart.Services.DataTransfer.Save.Entities;
 using brokenHeart.Services.DataTransfer.Save.Entities.Counters;
 using brokenHeart.Services.DataTransfer.Save.Entities.Modifiers;
 using brokenHeart.Services.DataTransfer.Save.Entities.Modifiers.Effects;
@@ -26,7 +27,8 @@ using brokenHeart.Services.DataTransfer.Save.Modifiers.Effects;
 using brokenHeart.Services.DataTransfer.Save.Modifiers.Items;
 using brokenHeart.Services.DataTransfer.Save.Modifiers.Traits;
 using brokenHeart.Services.DataTransfer.Save.RoundReminders;
-using brokenHeart.Services.DataTransfer.Search;
+using brokenHeart.Services.Logic.AbilityExecution;
+using brokenHeart.Services.Logic.CombatTracking;
 using brokenHeart.Services.Rolling;
 using brokenHeart.Services.SignalR;
 using Microsoft.Extensions.DependencyInjection;
@@ -40,6 +42,10 @@ namespace brokenHeart.Services
         {
             // Various
             serviceCollection.AddScoped<IRollService, RollService>();
+            serviceCollection.AddScoped<ICharacterRollService, CharacterRollService>();
+
+            serviceCollection.AddScoped<IAbilityExecutionService, AbilityExecutionService>();
+            serviceCollection.AddScoped<ITurnAdvancementService, TurnAdvancementService>();
 
             serviceCollection.AddScoped<IElementDeterminationService, ElementDeterminationService>();
 
@@ -52,14 +58,12 @@ namespace brokenHeart.Services
             serviceCollection.AddScoped<IOrderableSaveService, OrderableSaveService>();
             serviceCollection.AddScoped<IStatValueElementSaveService, StatValueElementSaveService>();
 
+            serviceCollection.AddScoped<IUserSimplifiedSaveService, UserSimplifiedSaveService>();
+
             // Projections
             serviceCollection.AddScoped<ICharacterProjectionService, CharacterProjectionService>();
             serviceCollection.AddScoped<IStatProjectionService, StatProjectionService>();
             serviceCollection.AddScoped<ITemplateListProjectionService, TemplateListProjectionService>();
-
-            // Search
-            serviceCollection.AddScoped<IDaoSearchService, DaoSearchService>();
-            serviceCollection.AddScoped<ICharacterSearchService, CharacterSearchService>();
 
             // Element Retrieval
             serviceCollection.AddScoped<IElementRetrievalService, ElementRetrievalService>();
