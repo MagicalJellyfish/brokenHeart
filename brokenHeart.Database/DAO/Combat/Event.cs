@@ -22,6 +22,7 @@ namespace brokenHeart.Database.DAO.Combat
         public int Init { get; set; }
         public bool Secret { get; set; }
 
-        public virtual CombatEntry? CombatEntry { get; set; }
+        public int? CombatEntryId { get; set; }
+        public CombatEntry? CombatEntry { get; set; }
     }
 }

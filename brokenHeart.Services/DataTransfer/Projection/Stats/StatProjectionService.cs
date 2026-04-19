@@ -1,24 +1,23 @@
 ﻿using brokenHeart.Database.DAO.Stats;
+using brokenHeart.DB;
 using brokenHeart.Models.DataTransfer.Projection;
-using brokenHeart.Models.DataTransfer.Search;
-using brokenHeart.Services.DataTransfer.Search;
 
 namespace brokenHeart.Services.DataTransfer.Projection.Stats
 {
     internal class StatProjectionService : IStatProjectionService
     {
-        private readonly IDaoSearchService _daoSearchService;
+        private readonly BrokenDbContext _context;
 
-        public StatProjectionService(IDaoSearchService daoSearchService)
+        public StatProjectionService(BrokenDbContext context)
         {
-            _daoSearchService = daoSearchService;
+            _context = context;
         }
 
-        public List<StatModel> GetStats(DaoSearch? search)
+        public List<StatModel> GetStats(int? id = null)
         {
-            IQueryable<Stat> stats = _daoSearchService.GetElements<Stat>(search);
+            IQueryable<Stat> stats = _context.Stats.Where(x => x.Id == id);
 
-            return stats.Select(x => new StatModel() { Id = x.Id, Name = x.Name, }).ToList();
+            return stats.Select(x => new StatModel() { Id = x.Id, Name = x.Name }).ToList();
         }
     }
 }

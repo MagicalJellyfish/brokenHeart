@@ -1,12 +1,8 @@
-﻿using brokenHeart.Database.DAO;
-using brokenHeart.Database.DAO.Abilities.Abilities;
-using brokenHeart.Database.DAO.Combat;
-using brokenHeart.Database.DAO.Modifiers.Effects;
-using brokenHeart.Database.DAO.RoundReminders;
+﻿using brokenHeart.Database.DAO.Combat;
 using brokenHeart.DB;
 using brokenHeart.Models.brokenHand;
-using brokenHeart.Models.Rolling;
-using brokenHeart.Services.Endpoints;
+using brokenHeart.Services;
+using brokenHeart.Services.Logic.CombatTracking;
 using brokenHeart.Services.Rolling;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -19,48 +15,30 @@ namespace brokenHeart.Controllers
     public class CombatController : ControllerBase
     {
         private readonly BrokenDbContext _context;
-        private readonly IRollService _rollService;
+        private readonly ICharacterRollService _charRollService;
+        private readonly ITurnAdvancementService _turnAdvancementService;
 
-        public CombatController(BrokenDbContext brokenDbContext, IRollService rollService)
+        public CombatController(
+            BrokenDbContext brokenDbContext,
+            ICharacterRollService charRollService,
+            ITurnAdvancementService turnAdvancementService
+        )
         {
             _context = brokenDbContext;
-            _rollService = rollService;
-        }
-
-        [HttpGet]
-        public async Task<ActionResult<List<Combat>>> GetCombats()
-        {
-            if (_context.Combats == null || _context.Combats.Count() == 0)
-            {
-                return NotFound();
-            }
-
-            return FullCombats().ToList();
-        }
-
-        [HttpGet("active")]
-        public async Task<ActionResult<Combat>> GetActiveCombat()
-        {
-            Combat activeCombat = ActiveCombat();
-
-            if (activeCombat == null)
-            {
-                return NotFound();
-            }
-
-            return activeCombat;
+            _charRollService = charRollService;
+            _turnAdvancementService = turnAdvancementService;
         }
 
         [HttpPost]
         public async Task<ActionResult<int>> StartCombat()
         {
-            Combat combat = new Combat();
-            _context.Combats.Add(combat);
-
             foreach (Combat otherCombat in _context.Combats)
             {
                 otherCombat.Active = false;
             }
+
+            Combat combat = new Combat();
+            _context.Combats.Add(combat);
 
             _context.SaveChanges();
 
@@ -70,7 +48,7 @@ namespace brokenHeart.Controllers
         [HttpDelete]
         public async Task<IActionResult> EndCombat()
         {
-            Combat? activeCombat = ActiveCombat();
+            Combat? activeCombat = _context.Combats.SingleOrDefault(x => x.Active);
             if (activeCombat == null)
             {
                 return NotFound();
@@ -107,9 +85,13 @@ namespace brokenHeart.Controllers
             int? initRoll = null
         )
         {
-            Character? character = _context
-                .Characters.Include(x => x.Stats)
-                .ThenInclude(x => x.Stat)
+            var character = _context
+                .Characters.Select(x => new
+                {
+                    x.Id,
+                    x.Name,
+                    x.DefaultShortcut,
+                })
                 .SingleOrDefault(x => x.Id == id);
 
             if (character == null)
@@ -131,36 +113,38 @@ namespace brokenHeart.Controllers
                 }
             }
 
-            Combat? activeCombat = ActiveCombat();
+            Combat? activeCombat = _context.Combats.SingleOrDefault(x => x.Active);
             if (activeCombat == null)
             {
                 return BadRequest("No combat active");
             }
 
-            if (activeCombat.Entries.Any(x => x.Shortcut == shortcut))
+            if (
+                _context
+                    .Combats.Where(x => x.Id == activeCombat.Id)
+                    .SelectMany(x => x.Entries)
+                    .Any(x => x.Shortcut == shortcut)
+            )
             {
                 return BadRequest("Another participant already has this shortcut");
             }
 
             if (initRoll == null)
             {
-                initRoll =
-                    _rollService.Roll(1, 20).Result
-                    + character
-                        .Stats.Single(x =>
-                            x.Stat!.Id
-                            == _context
-                                .Stats.ToList()
-                                .Single(x =>
-                                    x.Name.StartsWith("INS", StringComparison.OrdinalIgnoreCase)
-                                )
-                                .Id
-                        )
-                        .Value;
+                initRoll = _charRollService.CharRollString("1d20+INS", character.Id).Result;
             }
 
-            CombatEntry ce = new CombatEntry(character, (int)initRoll, shortcut);
-            activeCombat.Entries.Add(ce);
+            CombatEntry ce = new CombatEntry(
+                activeCombat.Id,
+                character.Id,
+                (int)initRoll,
+                _context
+                    .Characters.Where(x => x.Id == character.Id)
+                    .Select(x => x.Stats.Single(x => x.Stat.Name.ToLower().StartsWith("ins")).Value)
+                    .Single(),
+                shortcut
+            );
+            _context.CombatEntries.Add(ce);
 
             _context.SaveChanges();
 
@@ -175,14 +159,14 @@ namespace brokenHeart.Controllers
         [HttpPost("add-event")]
         public async Task<IActionResult> AddEvent(Event @event)
         {
-            Combat? activeCombat = ActiveCombat();
+            Combat? activeCombat = _context.Combats.SingleOrDefault(x => x.Active);
             if (activeCombat == null)
             {
                 return BadRequest("No combat active");
             }
 
-            CombatEntry ce = new CombatEntry(@event, @event.Init, @event.Name);
-            activeCombat.Entries.Add(ce);
+            CombatEntry ce = new CombatEntry(activeCombat.Id, @event, @event.Init, @event.Name);
+            _context.CombatEntries.Add(ce);
 
             _context.SaveChanges();
 
@@ -193,227 +177,29 @@ namespace brokenHeart.Controllers
         public async Task<ActionResult<List<Message>>> NextTurn()
         {
             List<Message> returnMessages = new List<Message>();
-            Combat? combat = ActiveCombat();
+            Combat? combat = _context.Combats.SingleOrDefault(x => x.Active);
             if (combat == null)
             {
                 return NotFound();
             }
 
-            combat.Entries = combat.Entries.OrderByDescending(x => x.InitRoll).ToList();
+            List<CombatEntry> orderedEntries = SortEntries(
+                _context.CombatEntries.Where(x => x.CombatId == combat.Id).ToList()
+            );
 
-            if (combat.CurrentTurn == combat.Entries.Count - 1)
-            {
-                combat.CurrentTurn = -1;
-                combat.Round += 1;
-
-                returnMessages.Add(
-                    new Message("New Round!", "Current round is " + combat.Round + "!")
-                );
-            }
-            else
-            {
-                returnMessages = BuildTurnMessage(combat);
-            }
+            returnMessages = _turnAdvancementService.AdvanceTurn(combat, orderedEntries);
 
             _context.SaveChanges();
 
             return Ok(returnMessages);
         }
 
-        private List<Message> BuildTurnMessage(Combat combat)
-        {
-            List<Message> turnMessages = new List<Message>();
-            if (combat.CurrentTurn != combat.Entries.Count - 1)
-            {
-                combat.CurrentTurn += 1;
-            }
-            else
-            {
-                combat.CurrentTurn = -1;
-                combat.Round += 1;
-
-                turnMessages.Add(
-                    new Message("New Round!", "Current round is " + combat.Round + "!")
-                );
-                return turnMessages;
-            }
-
-            if (combat.Entries.ElementAt(combat.CurrentTurn).Event != null)
-            {
-                Event @event = combat.Entries.ElementAt(combat.CurrentTurn).Event;
-
-                if (@event.Round == combat.Round)
-                {
-                    turnMessages.Add(
-                        new Message(
-                            "Event " + @event.Name + " is happening!",
-                            "Round: " + combat.Round
-                        )
-                    );
-                }
-                else
-                {
-                    if (!@event.Secret && @event.Round > combat.Round)
-                    {
-                        turnMessages.Add(
-                            new Message(
-                                "Event "
-                                    + @event.Name
-                                    + " is advancing! It triggers in "
-                                    + (@event.Round - combat.Round).ToString()
-                                    + " rounds!",
-                                "Round: " + combat.Round
-                            )
-                        );
-                    }
-                    turnMessages.AddRange(BuildTurnMessage(combat));
-                }
-
-                return turnMessages;
-            }
-
-            if (combat.Entries.ElementAt(combat.CurrentTurn).Character != null)
-            {
-                string round = "Round: " + combat.Round + "\n";
-                string reminders = "Reminders: \n";
-                // csharpier-ignore
-                Character character = _context.Characters
-                    .Include(x => x.Abilities)
-
-                    .Include(x => x.RoundReminders)
-
-                    .Include(x => x.Counters)
-                    .ThenInclude(x => x.RoundReminder)
-
-                    .Include(x => x.Items).ThenInclude(x => x.RoundReminder)
-                    .Include(x => x.Items).ThenInclude(x => x.Abilities)
-                    .Include(x => x.Items).ThenInclude(x => x.Counters).ThenInclude(x => x.RoundReminder)
-
-                    .Include(x => x.Effects).ThenInclude(x => x.RoundReminder)
-                    .Include(x => x.Effects).ThenInclude(x => x.Abilities)
-                    .Include(x => x.Effects).ThenInclude(x => x.Counters).ThenInclude(x => x.RoundReminder)
-                    .Include(x => x.Effects).ThenInclude(x => x.EffectCounter).ThenInclude(x => x.RoundReminder)
-
-                    .Include(x => x.Traits).ThenInclude(x => x.RoundReminder)
-                    .Include(x => x.Traits).ThenInclude(x => x.Abilities)
-                    .Include(x => x.Traits).ThenInclude(x => x.Counters).ThenInclude(x => x.RoundReminder)
-                    .SingleOrDefault(x =>
-                        x.Id == combat.Entries.ElementAt(combat.CurrentTurn).Character.Id
-                    )!;
-
-                string title = "It is " + character.Name + "'s turn! \n";
-
-                List<Ability> abilities = character
-                    .Abilities.Concat(character.Items.SelectMany(x => x.Abilities))
-                    .Concat(character.Effects.SelectMany(x => x.Abilities))
-                    .Concat(character.Traits.SelectMany(x => x.Abilities))
-                    .ToList();
-                foreach (Ability ability in abilities)
-                {
-                    if (ability.ReplenishType == ReplenishType.CombatRound)
-                    {
-                        ability.Uses = ability.MaxUses;
-                    }
-                }
-
-                string counters = "";
-                foreach (var counter in character.GetAllCounters())
-                {
-                    if (counter.RoundBased)
-                    {
-                        counter.Value += 1;
-                        if (counter.Value == counter.Max)
-                        {
-                            counters +=
-                                $"Your counter \"{counter.Name}\" has reached the maximum!\n";
-                        }
-                    }
-                }
-
-                string effects = "";
-                List<Effect> effectsToRemove = new();
-                foreach (Effect effect in character.Effects)
-                {
-                    if (!string.IsNullOrEmpty(effect.Hp))
-                    {
-                        RollResult result = _rollService.CharRollString(effect.Hp, character);
-                        effects +=
-                            $"Your HP is changed by ({result.Detail}) {result.Result} from Effect \"{effect.Name}\"!\n";
-                        character.Hp += result.Result;
-                    }
-
-                    if (effect.EffectCounter != null)
-                    {
-                        if (effect.EffectCounter.Value >= effect.EffectCounter.Max)
-                        {
-                            effects += $"Your effect {effect.Name} has worn off!\n";
-                            effectsToRemove.Add(effect);
-                        }
-                    }
-                }
-                effectsToRemove.ForEach(x => character.Effects.Remove(x));
-
-                List<RoundReminder?> reminderList = new List<RoundReminder?>();
-
-                reminderList.AddRange(character.RoundReminders);
-                reminderList.AddRange(character.Counters.Select(x => x.RoundReminder));
-
-                reminderList.AddRange(character.Items.Select(x => x.RoundReminder));
-                reminderList.AddRange(
-                    character.Items.SelectMany(x => x.Counters.Select(x => x.RoundReminder))
-                );
-
-                reminderList.AddRange(character.Effects.Select(x => x.RoundReminder));
-                reminderList.AddRange(
-                    character.Effects.SelectMany(x => x.Counters.Select(x => x.RoundReminder))
-                );
-                reminderList.AddRange(
-                    character.Effects.Select(x =>
-                    {
-                        if (x.EffectCounter != null)
-                        {
-                            return x.EffectCounter.RoundReminder;
-                        }
-                        else
-                        {
-                            return null;
-                        }
-                    })
-                );
-
-                reminderList.AddRange(character.Traits.Select(x => x.RoundReminder));
-                reminderList.AddRange(
-                    character.Traits.SelectMany(x => x.Counters.Select(x => x.RoundReminder))
-                );
-
-                if (reminderList.Count == 0 || reminderList.All(x => x == null))
-                {
-                    turnMessages.Add(new Message(title, round));
-                    return turnMessages;
-                }
-
-                foreach (var reminder in reminderList)
-                {
-                    if (reminder != null)
-                    {
-                        if (reminder.Reminding)
-                        {
-                            reminders += reminder.Reminder + "\n";
-                        }
-                    }
-                }
-
-                turnMessages.Add(new Message(title, round + counters + effects + reminders));
-                return turnMessages;
-            }
-
-            return turnMessages;
-        }
-
         [HttpDelete("remove-participant")]
         public async Task<IActionResult> RemoveParticipant(string shortcut)
         {
-            Combat? activeCombat = ActiveCombat();
+            Combat? activeCombat = _context
+                .Combats.Include(x => x.Entries)
+                .SingleOrDefault(x => x.Active);
             if (activeCombat == null)
             {
                 return BadRequest("No combat active");
@@ -426,7 +212,7 @@ namespace brokenHeart.Controllers
             }
 
             if (
-                activeCombat.Entries.ToList().FindIndex(x => x.Shortcut == shortcut)
+                SortEntries(activeCombat.Entries).FindIndex(x => x.Shortcut == shortcut)
                 <= activeCombat.CurrentTurn
             )
             {
@@ -440,25 +226,14 @@ namespace brokenHeart.Controllers
             return NoContent();
         }
 
-        private Combat? ActiveCombat()
+        private List<CombatEntry> SortEntries(ICollection<CombatEntry> entries)
         {
-            if (_context.Counters == null || _context.Counters.Count() == 0)
-            {
-                return null;
-            }
-
-            Combat? combat = FullCombats().SingleOrDefault(x => x.Active == true);
-
-            return combat;
-        }
-
-        private IQueryable<Combat> FullCombats()
-        {
-            return _context
-                .Combats.Include(x => x.Entries)
-                .ThenInclude(x => x.Character)
-                .Include(x => x.Entries)
-                .ThenInclude(x => x.Event);
+            return entries
+                .OrderByDescending(x => x.InitRoll)
+                .ThenByDescending(x => x.InitStat)
+                .ThenByDescending(x => x.CharacterId)
+                .ThenByDescending(x => x.EventId)
+                .ToList();
         }
     }
 }

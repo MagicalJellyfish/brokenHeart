@@ -1,8 +1,7 @@
 ﻿using brokenHeart.Database.DAO.Modifiers.Traits;
+using brokenHeart.DB;
 using brokenHeart.Models.DataTransfer;
 using brokenHeart.Models.DataTransfer.Projection;
-using brokenHeart.Models.DataTransfer.Search;
-using brokenHeart.Services.DataTransfer.Search;
 
 namespace brokenHeart.Services.DataTransfer.Projection.Abilities
 {
@@ -10,18 +9,16 @@ namespace brokenHeart.Services.DataTransfer.Projection.Abilities
     {
         public ElementType ProjectionType => ElementType.Trait;
 
-        private readonly IDaoSearchService _daoSearchService;
+        private readonly BrokenDbContext _context;
 
-        public TraitProjectionService(IDaoSearchService daoSearchService)
+        public TraitProjectionService(BrokenDbContext context)
         {
-            _daoSearchService = daoSearchService;
+            _context = context;
         }
 
         public dynamic? GetElement(int id)
         {
-            IQueryable<Trait> traits = _daoSearchService.GetSingleElement<Trait>(
-                new DaoSearch() { Id = id }
-            );
+            IQueryable<Trait> traits = _context.Traits.Where(x => x.Id == id);
 
             return traits
                 .Select(x => new ElementView()
@@ -32,14 +29,14 @@ namespace brokenHeart.Services.DataTransfer.Projection.Abilities
                         {
                             FieldId = nameof(Trait.Description),
                             Title = "Description",
-                            Content = x.Description
+                            Content = x.Description,
                         },
                         new ElementView.Text()
                         {
                             FieldId = nameof(Trait.Abstract),
                             Title = "Abstract",
-                            Content = x.Abstract
-                        }
+                            Content = x.Abstract,
+                        },
                     },
                     Fields = new()
                     {
@@ -47,49 +44,49 @@ namespace brokenHeart.Services.DataTransfer.Projection.Abilities
                         {
                             Title = "Id",
                             Content = x.Id,
-                            Type = ElementView.FieldType.Fixed
+                            Type = ElementView.FieldType.Fixed,
                         },
                         new ElementView.Field()
                         {
                             FieldId = nameof(Trait.Name),
                             Title = "Name",
                             Content = x.Name,
-                            Type = ElementView.FieldType.String
+                            Type = ElementView.FieldType.String,
                         },
                         new ElementView.Field()
                         {
                             FieldId = nameof(Trait.MaxHp),
                             Title = "Maximum HP Increase",
                             Content = x.MaxHp,
-                            Type = ElementView.FieldType.Number
+                            Type = ElementView.FieldType.Number,
                         },
                         new ElementView.Field()
                         {
                             FieldId = nameof(Trait.MovementSpeed),
                             Title = "Movement Speed Increase",
                             Content = x.MovementSpeed,
-                            Type = ElementView.FieldType.Number
+                            Type = ElementView.FieldType.Number,
                         },
                         new ElementView.Field()
                         {
                             FieldId = nameof(Trait.Evasion),
                             Title = "Evasion",
                             Content = x.Evasion,
-                            Type = ElementView.FieldType.Number
+                            Type = ElementView.FieldType.Number,
                         },
                         new ElementView.Field()
                         {
                             FieldId = nameof(Trait.Armor),
                             Title = "Armor",
                             Content = x.Armor,
-                            Type = ElementView.FieldType.Number
+                            Type = ElementView.FieldType.Number,
                         },
                         new ElementView.Field()
                         {
                             FieldId = nameof(Trait.Active),
                             Title = "Active",
                             Content = x.Active,
-                            Type = ElementView.FieldType.Boolean
+                            Type = ElementView.FieldType.Boolean,
                         },
                     },
                     Relations = new()
@@ -106,7 +103,7 @@ namespace brokenHeart.Services.DataTransfer.Projection.Abilities
                                         Name = ability.Name,
                                     }
                                 )
-                                .ToList()
+                                .ToList(),
                         },
                         new ElementView.Relation()
                         {
@@ -120,7 +117,7 @@ namespace brokenHeart.Services.DataTransfer.Projection.Abilities
                                         Name = counter.Name,
                                     }
                                 )
-                                .ToList()
+                                .ToList(),
                         },
                         new ElementView.Relation()
                         {
@@ -135,9 +132,9 @@ namespace brokenHeart.Services.DataTransfer.Projection.Abilities
                                         {
                                             Id = x.RoundReminder.Id,
                                             Name = x.RoundReminder.Reminder,
-                                        }
+                                        },
                                     }
-                                    : new List<ElementView.Relation.ElementRelationItem>()
+                                    : new List<ElementView.Relation.ElementRelationItem>(),
                         },
                         new ElementView.Relation()
                         {
@@ -149,11 +146,11 @@ namespace brokenHeart.Services.DataTransfer.Projection.Abilities
                                     Id = statIncrease.Id,
                                     StatId = statIncrease.Stat.Id,
                                     Name = statIncrease.Stat.Name,
-                                    Value = statIncrease.Value
+                                    Value = statIncrease.Value,
                                 }
-                            )
+                            ),
                         },
-                    }
+                    },
                 })
                 .SingleOrDefault();
         }

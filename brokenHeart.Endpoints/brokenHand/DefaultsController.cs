@@ -1,8 +1,6 @@
-﻿using brokenHeart.Database.DAO;
-using brokenHeart.DB;
-using brokenHeart.Services.Endpoints;
+﻿using brokenHeart.Services;
+using brokenHeart.Services.DataTransfer.Save.Entities;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace brokenHeart.Controllers
 {
@@ -10,51 +8,30 @@ namespace brokenHeart.Controllers
     [ApiController]
     public class DefaultsController : ControllerBase
     {
-        private readonly BrokenDbContext _context;
+        private readonly IUserSimplifiedSaveService _userSimplifiedSaveService;
 
-        public DefaultsController(BrokenDbContext context)
+        public DefaultsController(IUserSimplifiedSaveService userSimplifiedSaveService)
         {
-            _context = context;
+            _userSimplifiedSaveService = userSimplifiedSaveService;
         }
 
         [HttpPatch("character")]
         [Localhost]
         public async Task<ActionResult<string>> DefaultCharacter(ulong discordId, int charId)
         {
-            UserSimplified? user = _context
-                .UserSimplified.Include(x => x.ActiveCharacter)
-                .SingleOrDefault(x => x.DiscordId == discordId);
-            if (user == null)
-            {
-                return NotFound();
-            }
+            string characterName = _userSimplifiedSaveService.UpdateDefaultCharacterAndReturnName(
+                discordId,
+                charId
+            );
 
-            Character character = _context.Characters.SingleOrDefault(x => x.Id == charId);
-
-            if (character == null)
-            {
-                return NotFound();
-            }
-
-            user.ActiveCharacter = character;
-            _context.SaveChanges();
-            return character.Name;
+            return characterName;
         }
 
         [HttpPatch("ability")]
         [Localhost]
         public async Task<ActionResult> DefaultAbility(ulong discordId, string shortcut)
         {
-            UserSimplified? user = _context.UserSimplified.SingleOrDefault(x =>
-                x.DiscordId == discordId
-            );
-            if (user == null)
-            {
-                return NotFound();
-            }
-
-            user.DefaultAbilityString = shortcut;
-            _context.SaveChanges();
+            _userSimplifiedSaveService.UpdateDefaultAbility(discordId, shortcut);
             return Ok();
         }
 
@@ -62,16 +39,7 @@ namespace brokenHeart.Controllers
         [Localhost]
         public async Task<ActionResult<string>> DefaultTarget(ulong discordId, string targets)
         {
-            UserSimplified? user = _context.UserSimplified.SingleOrDefault(x =>
-                x.DiscordId == discordId
-            );
-            if (user == null)
-            {
-                return NotFound();
-            }
-
-            user.DefaultTargetString = targets;
-            _context.SaveChanges();
+            _userSimplifiedSaveService.UpdateDefaultTarget(discordId, targets);
             return Ok();
         }
     }

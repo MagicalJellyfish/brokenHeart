@@ -1,7 +1,6 @@
 ﻿using brokenHeart.Models;
 using brokenHeart.Models.DataTransfer.Projection;
 using brokenHeart.Models.DataTransfer.Save;
-using brokenHeart.Models.DataTransfer.Search;
 using brokenHeart.Services.DataTransfer.Projection.Characters;
 using brokenHeart.Services.DataTransfer.Save.Characters;
 using Microsoft.AspNetCore.Authorization;
@@ -29,9 +28,7 @@ namespace brokenHeart.Endpoints.brokenEye.Entities.Characters
         [HttpGet("{id}")]
         public ActionResult<CharacterView> GetCharacterView(int id)
         {
-            CharacterView? characterView = _characterProjectionService.GetCharacterView(
-                new CharacterSearch() { Id = id }
-            );
+            CharacterView? characterView = _characterProjectionService.GetCharacterView(id);
 
             if (characterView == null)
             {

@@ -7,6 +7,6 @@ namespace brokenHeart.Services.DataTransfer.Projection.Characters
     {
         public List<SimpleCharacter> GetSimpleCharacters(CharacterSearch search);
 
-        public CharacterView? GetCharacterView(CharacterSearch search);
+        public CharacterView? GetCharacterView(int id);
     }
 }

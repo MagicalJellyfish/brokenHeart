@@ -1,8 +1,7 @@
 ﻿using brokenHeart.Database.DAO.Counters;
+using brokenHeart.DB;
 using brokenHeart.Models.DataTransfer;
 using brokenHeart.Models.DataTransfer.Projection;
-using brokenHeart.Models.DataTransfer.Search;
-using brokenHeart.Services.DataTransfer.Search;
 
 namespace brokenHeart.Services.DataTransfer.Projection.Counters
 {
@@ -12,17 +11,16 @@ namespace brokenHeart.Services.DataTransfer.Projection.Counters
     {
         public ElementType ProjectionType => ElementType.CounterTemplate;
 
-        private readonly IDaoSearchService _daoSearchService;
+        private readonly BrokenDbContext _context;
 
-        public CounterTemplateProjectionService(IDaoSearchService daoSearchService)
+        public CounterTemplateProjectionService(BrokenDbContext context)
         {
-            _daoSearchService = daoSearchService;
+            _context = context;
         }
 
         public dynamic? GetElement(int id)
         {
-            IQueryable<CounterTemplate> counters =
-                _daoSearchService.GetSingleElement<CounterTemplate>(new DaoSearch() { Id = id });
+            IQueryable<CounterTemplate> counters = _context.CounterTemplates.Where(x => x.Id == id);
 
             return counters
                 .Select(x => new ElementView()
@@ -33,7 +31,7 @@ namespace brokenHeart.Services.DataTransfer.Projection.Counters
                         {
                             FieldId = nameof(CounterTemplate.Description),
                             Title = "Description",
-                            Content = x.Description
+                            Content = x.Description,
                         },
                     },
                     Fields = new()
@@ -42,28 +40,28 @@ namespace brokenHeart.Services.DataTransfer.Projection.Counters
                         {
                             Title = "Id",
                             Content = x.Id,
-                            Type = ElementView.FieldType.Fixed
+                            Type = ElementView.FieldType.Fixed,
                         },
                         new ElementView.Field()
                         {
                             FieldId = nameof(CounterTemplate.Name),
                             Title = "Name",
                             Content = x.Name,
-                            Type = ElementView.FieldType.String
+                            Type = ElementView.FieldType.String,
                         },
                         new ElementView.Field()
                         {
                             FieldId = nameof(CounterTemplate.Max),
                             Title = "Maximum Value",
                             Content = x.Max,
-                            Type = ElementView.FieldType.Number
+                            Type = ElementView.FieldType.Number,
                         },
                         new ElementView.Field()
                         {
                             FieldId = nameof(Counter.RoundBased),
                             Title = "Round-Based",
                             Content = x.RoundBased,
-                            Type = ElementView.FieldType.Boolean
+                            Type = ElementView.FieldType.Boolean,
                         },
                     },
                     Relations = new()
@@ -81,11 +79,11 @@ namespace brokenHeart.Services.DataTransfer.Projection.Counters
                                         {
                                             Id = x.RoundReminderTemplate.Id,
                                             Name = x.RoundReminderTemplate.Reminder,
-                                        }
+                                        },
                                     }
-                                    : new List<ElementView.Relation.ElementRelationItem>()
+                                    : new List<ElementView.Relation.ElementRelationItem>(),
                         },
-                    }
+                    },
                 })
                 .SingleOrDefault();
         }
@@ -97,17 +95,16 @@ namespace brokenHeart.Services.DataTransfer.Projection.Counters
                 Title = "Counters",
                 Type = ElementType.CounterTemplate,
                 ElementColumns = TemplateListModels.CounterTemplateColumns,
-                Elements = _daoSearchService
-                    .GetElements<CounterTemplate>()
-                    .Where(x => x.Id != 1 && !(x is EffectCounterTemplate))
+                Elements = _context
+                    .CounterTemplates.Where(x => x.Id != 1 && !(x is EffectCounterTemplate))
                     .Select(x => new TemplateListModels.CounterTemplateModel()
                     {
                         Id = x.Id,
                         Name = x.Name,
-                        Description = x.Description
+                        Description = x.Description,
                     })
                     .Cast<dynamic>()
-                    .ToList()
+                    .ToList(),
             };
         }
     }

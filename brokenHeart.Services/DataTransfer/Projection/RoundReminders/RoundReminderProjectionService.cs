@@ -1,8 +1,7 @@
 ﻿using brokenHeart.Database.DAO.RoundReminders;
+using brokenHeart.DB;
 using brokenHeart.Models.DataTransfer;
 using brokenHeart.Models.DataTransfer.Projection;
-using brokenHeart.Models.DataTransfer.Search;
-using brokenHeart.Services.DataTransfer.Search;
 
 namespace brokenHeart.Services.DataTransfer.Projection.RoundReminders
 {
@@ -10,17 +9,18 @@ namespace brokenHeart.Services.DataTransfer.Projection.RoundReminders
     {
         public ElementType ProjectionType => ElementType.Reminder;
 
-        private readonly IDaoSearchService _daoSearchService;
+        private readonly BrokenDbContext _context;
 
-        public RoundReminderProjectionService(IDaoSearchService daoSearchService)
+        public RoundReminderProjectionService(BrokenDbContext context)
         {
-            _daoSearchService = daoSearchService;
+            _context = context;
         }
 
         public dynamic? GetElement(int id)
         {
-            IQueryable<RoundReminder> roundReminders =
-                _daoSearchService.GetSingleElement<RoundReminder>(new DaoSearch() { Id = id });
+            IQueryable<RoundReminder> roundReminders = _context.RoundReminders.Where(x =>
+                x.Id == id
+            );
 
             return roundReminders
                 .Select(x => new ElementView()
@@ -31,7 +31,7 @@ namespace brokenHeart.Services.DataTransfer.Projection.RoundReminders
                         {
                             FieldId = nameof(RoundReminder.Reminder),
                             Title = "Reminding Text",
-                            Content = x.Reminder
+                            Content = x.Reminder,
                         },
                     },
                     Fields = new()
@@ -40,17 +40,17 @@ namespace brokenHeart.Services.DataTransfer.Projection.RoundReminders
                         {
                             Title = "Id",
                             Content = x.Id,
-                            Type = ElementView.FieldType.Fixed
+                            Type = ElementView.FieldType.Fixed,
                         },
                         new ElementView.Field()
                         {
                             FieldId = nameof(RoundReminder.Reminding),
                             Title = "Reminding",
                             Content = x.Reminding,
-                            Type = ElementView.FieldType.Boolean
+                            Type = ElementView.FieldType.Boolean,
                         },
                     },
-                    Relations = new() { }
+                    Relations = new() { },
                 })
                 .SingleOrDefault();
         }

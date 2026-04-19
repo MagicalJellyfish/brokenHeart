@@ -8,15 +8,23 @@ namespace brokenHeart.Database.DAO.Combat
         [JsonConstructor]
         public CombatEntry() { }
 
-        public CombatEntry(Character character, int initRoll, string shortcut)
+        public CombatEntry(
+            int combatId,
+            int characterId,
+            int initRoll,
+            int initStat,
+            string shortcut
+        )
         {
-            Character = character;
+            CombatId = combatId;
+            CharacterId = characterId;
             InitRoll = initRoll;
             Shortcut = shortcut;
         }
 
-        public CombatEntry(Event @event, int initRoll, string shortcut)
+        public CombatEntry(int combatId, Event @event, int initRoll, string shortcut)
         {
+            CombatId = combatId;
             Event = @event;
             InitRoll = initRoll;
             Shortcut = shortcut;
@@ -24,7 +32,11 @@ namespace brokenHeart.Database.DAO.Combat
 
         public int Id { get; set; }
         public int InitRoll { get; set; }
+        public int InitStat { get; set; }
         public string Shortcut { get; set; }
+
+        public int? CombatId { get; set; }
+        public Combat? Combat { get; set; }
 
         public int? CharacterId { get; set; }
         public virtual Character? Character { get; set; }

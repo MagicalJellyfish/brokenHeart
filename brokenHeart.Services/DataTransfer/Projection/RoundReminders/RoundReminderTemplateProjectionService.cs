@@ -1,8 +1,7 @@
 ﻿using brokenHeart.Database.DAO.RoundReminders;
+using brokenHeart.DB;
 using brokenHeart.Models.DataTransfer;
 using brokenHeart.Models.DataTransfer.Projection;
-using brokenHeart.Models.DataTransfer.Search;
-using brokenHeart.Services.DataTransfer.Search;
 
 namespace brokenHeart.Services.DataTransfer.Projection.RoundReminders
 {
@@ -12,19 +11,17 @@ namespace brokenHeart.Services.DataTransfer.Projection.RoundReminders
     {
         public ElementType ProjectionType => ElementType.ReminderTemplate;
 
-        private readonly IDaoSearchService _daoSearchService;
+        private readonly BrokenDbContext _context;
 
-        public RoundReminderTemplateProjectionService(IDaoSearchService daoSearchService)
+        public RoundReminderTemplateProjectionService(BrokenDbContext context)
         {
-            _daoSearchService = daoSearchService;
+            _context = context;
         }
 
         public dynamic? GetElement(int id)
         {
             IQueryable<RoundReminderTemplate> roundReminders =
-                _daoSearchService.GetSingleElement<RoundReminderTemplate>(
-                    new DaoSearch() { Id = id }
-                );
+                _context.RoundReminderTemplates.Where(x => x.Id == id);
 
             return roundReminders
                 .Select(x => new ElementView()
@@ -35,7 +32,7 @@ namespace brokenHeart.Services.DataTransfer.Projection.RoundReminders
                         {
                             FieldId = nameof(RoundReminderTemplate.Reminder),
                             Title = "Reminding Text",
-                            Content = x.Reminder
+                            Content = x.Reminder,
                         },
                     },
                     Fields = new()
@@ -44,17 +41,17 @@ namespace brokenHeart.Services.DataTransfer.Projection.RoundReminders
                         {
                             Title = "Id",
                             Content = x.Id,
-                            Type = ElementView.FieldType.Fixed
+                            Type = ElementView.FieldType.Fixed,
                         },
                         new ElementView.Field()
                         {
                             FieldId = nameof(RoundReminderTemplate.Reminding),
                             Title = "Reminding",
                             Content = x.Reminding,
-                            Type = ElementView.FieldType.Boolean
+                            Type = ElementView.FieldType.Boolean,
                         },
                     },
-                    Relations = new() { }
+                    Relations = new() { },
                 })
                 .SingleOrDefault();
         }
@@ -66,16 +63,15 @@ namespace brokenHeart.Services.DataTransfer.Projection.RoundReminders
                 Title = "Reminders",
                 Type = ElementType.ReminderTemplate,
                 ElementColumns = TemplateListModels.RoundReminderTemplateColumns,
-                Elements = _daoSearchService
-                    .GetElements<RoundReminderTemplate>()
-                    .Where(x => x.Id > 23)
+                Elements = _context
+                    .RoundReminderTemplates.Where(x => x.Id > 23)
                     .Select(x => new TemplateListModels.RoundReminderTemplateModel()
                     {
                         Id = x.Id,
-                        Reminder = x.Reminder
+                        Reminder = x.Reminder,
                     })
                     .Cast<dynamic>()
-                    .ToList()
+                    .ToList(),
             };
         }
     }

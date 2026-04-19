@@ -1,37 +1,62 @@
-﻿using brokenHeart.Database.DAO;
+﻿using System.Linq.Expressions;
+using brokenHeart.Database.DAO;
 using brokenHeart.Database.DAO.Abilities.Abilities;
 using brokenHeart.Database.DAO.Counters;
 using brokenHeart.Database.DAO.Modifiers.Items;
 using brokenHeart.Database.DAO.Modifiers.Traits;
 using brokenHeart.Database.DAO.RoundReminders;
+using brokenHeart.DB;
 using brokenHeart.Models.DataTransfer;
 using brokenHeart.Models.DataTransfer.Projection;
 using brokenHeart.Models.DataTransfer.Search;
-using brokenHeart.Services.DataTransfer.Search;
 using LinqKit;
-using System.Linq.Expressions;
 
 namespace brokenHeart.Services.DataTransfer.Projection.Characters
 {
     internal class CharacterProjectionService : ICharacterProjectionService
     {
-        private readonly ICharacterSearchService _characterSearchService;
+        private readonly BrokenDbContext _context;
 
-        public CharacterProjectionService(ICharacterSearchService characterSearchService)
+        public CharacterProjectionService(BrokenDbContext context)
         {
-            _characterSearchService = characterSearchService;
+            _context = context;
         }
 
         public List<SimpleCharacter> GetSimpleCharacters(CharacterSearch search)
         {
-            IQueryable<Character> characters = _characterSearchService.GetCharacters(search);
+            IQueryable<Character> characters = _context.Characters;
+
+            if (search.Id != null)
+            {
+                characters = characters.Where(x => x.Id == search.Id);
+            }
+
+            if (search.Name != null)
+            {
+                characters = characters.Where(x => x.Name.Contains(search.Name));
+            }
+
+            if (search.IsNpc != null)
+            {
+                characters = characters.Where(x => x.IsNPC == search.IsNpc);
+            }
+
+            if (search.OwnedBy != null)
+            {
+                characters = characters.Where(x => x.Owner.Username == search.OwnedBy);
+            }
+
+            if (search.NotOwnedBy != null)
+            {
+                characters = characters.Where(x => x.Owner.Username != search.NotOwnedBy);
+            }
 
             return characters.Select(SimpleCharacter.Map).ToList();
         }
 
-        public CharacterView? GetCharacterView(CharacterSearch search)
+        public CharacterView? GetCharacterView(int id)
         {
-            IQueryable<Character> characters = _characterSearchService.GetSingleCharacter(search);
+            IQueryable<Character> characters = _context.Characters.Where(x => x.Id == id);
 
             List<CharacterView.AbilityModel> abilities = characters
                 .SelectMany(x =>
@@ -230,7 +255,7 @@ namespace brokenHeart.Services.DataTransfer.Projection.Characters
                         Id = x.DeathCounter.Id,
                         ValueFieldId = nameof(Counter.Value),
                         Max = x.DeathCounter.Max,
-                        Value = x.DeathCounter.Value
+                        Value = x.DeathCounter.Value,
                     },
 
                     Stats = x
@@ -238,7 +263,7 @@ namespace brokenHeart.Services.DataTransfer.Projection.Characters
                         {
                             StatId = stat.StatId,
                             Name = stat.Stat.Name,
-                            Value = stat.Value
+                            Value = stat.Value,
                         })
                         .ToList(),
 
@@ -247,7 +272,7 @@ namespace brokenHeart.Services.DataTransfer.Projection.Characters
                         .Select(effect => new CharacterView.HpImpactModel()
                         {
                             Name = effect.Name,
-                            Value = effect.Hp
+                            Value = effect.Hp,
                         })
                         .ToList(),
 
@@ -256,7 +281,7 @@ namespace brokenHeart.Services.DataTransfer.Projection.Characters
                             bodypartCondition => new CharacterView.InjuryModel()
                             {
                                 Bodypart = bodypartCondition.Bodypart.Id,
-                                InjuryLevel = bodypartCondition.InjuryLevel
+                                InjuryLevel = bodypartCondition.InjuryLevel,
                             }
                         )
                         .ToList(),
@@ -268,7 +293,7 @@ namespace brokenHeart.Services.DataTransfer.Projection.Characters
                             Title = "Abilities",
                             Type = ElementType.Ability,
                             ElementColumns = AbilityColumns,
-                            Elements = abilities.Cast<dynamic>().ToList()
+                            Elements = abilities.Cast<dynamic>().ToList(),
                         },
                         new ElementList()
                         {
@@ -282,11 +307,11 @@ namespace brokenHeart.Services.DataTransfer.Projection.Characters
                                     ViewPosition = trait.ViewPosition,
                                     Name = trait.Name,
                                     Abstract = trait.Abstract,
-                                    Active = trait.Active
+                                    Active = trait.Active,
                                 })
                                 .OrderBy(y => y.ViewPosition)
                                 .Cast<dynamic>()
-                                .ToList()
+                                .ToList(),
                         },
                         new ElementList()
                         {
@@ -301,11 +326,11 @@ namespace brokenHeart.Services.DataTransfer.Projection.Characters
                                     Name = item.Name,
                                     Abstract = item.Abstract,
                                     Equipped = item.Equipped,
-                                    Amount = item.Amount
+                                    Amount = item.Amount,
                                 })
                                 .OrderBy(y => y.ViewPosition)
                                 .Cast<dynamic>()
-                                .ToList()
+                                .ToList(),
                         },
                         new ElementList()
                         {
@@ -324,11 +349,11 @@ namespace brokenHeart.Services.DataTransfer.Projection.Characters
                                             Id = x.Id,
                                             Name = x.Name,
                                             ViewPosition = x.ViewPosition,
-                                            Abstract = x.Abstract
+                                            Abstract = x.Abstract,
                                         })
                                         .OrderBy(y => y.ViewPosition)
                                         .Cast<dynamic>()
-                                        .ToList()
+                                        .ToList(),
                                 },
                                 new ElementList()
                                 {
@@ -341,27 +366,27 @@ namespace brokenHeart.Services.DataTransfer.Projection.Characters
                                             Id = x.Id,
                                             ViewPosition = x.ViewPosition,
                                             Name = x.Name,
-                                            Abstract = x.Abstract
+                                            Abstract = x.Abstract,
                                         })
                                         .OrderBy(y => y.ViewPosition)
                                         .Cast<dynamic>()
-                                        .ToList()
+                                        .ToList(),
                                 },
-                            }
+                            },
                         },
                         new ElementList()
                         {
                             Title = "Counters",
                             Type = ElementType.Counter,
                             ElementColumns = CounterColumns,
-                            Elements = counters.Cast<dynamic>().ToList()
+                            Elements = counters.Cast<dynamic>().ToList(),
                         },
                         new ElementList()
                         {
                             Title = "Reminders",
                             Type = ElementType.Reminder,
                             ElementColumns = RoundReminderColumns,
-                            Elements = reminders.Cast<dynamic>().ToList()
+                            Elements = reminders.Cast<dynamic>().ToList(),
                         },
                         new ElementList()
                         {
@@ -374,11 +399,11 @@ namespace brokenHeart.Services.DataTransfer.Projection.Characters
                                     Id = x.Id,
                                     ViewPosition = x.ViewPosition,
                                     Name = x.Name,
-                                    Value = x.Value
+                                    Value = x.Value,
                                 })
                                 .OrderBy(y => y.ViewPosition)
                                 .Cast<dynamic>()
-                                .ToList()
+                                .ToList(),
                         },
                     },
                 })
@@ -415,7 +440,7 @@ namespace brokenHeart.Services.DataTransfer.Projection.Characters
                     Title = "Source",
                     Property = "source",
                     ColumnType = ElementList.ElementColumnType.Text,
-                }
+                },
             };
 
         public static List<ElementList.ElementColumn> TraitColumns =
@@ -441,7 +466,7 @@ namespace brokenHeart.Services.DataTransfer.Projection.Characters
                     FieldId = nameof(Trait.Active),
                     Property = "active",
                     ColumnType = ElementList.ElementColumnType.Checkbox,
-                }
+                },
             };
 
         public static List<ElementList.ElementColumn> ItemColumns =
@@ -474,7 +499,7 @@ namespace brokenHeart.Services.DataTransfer.Projection.Characters
                     FieldId = nameof(Item.Amount),
                     Property = "amount",
                     ColumnType = ElementList.ElementColumnType.Input,
-                }
+                },
             };
 
         public static List<ElementList.ElementColumn> EffectColumns =
@@ -493,7 +518,7 @@ namespace brokenHeart.Services.DataTransfer.Projection.Characters
                     Property = "abstract",
                     ColumnType = ElementList.ElementColumnType.Text,
                     Searchable = true,
-                }
+                },
             };
 
         public static List<ElementList.ElementColumn> CounterColumns =
@@ -526,7 +551,7 @@ namespace brokenHeart.Services.DataTransfer.Projection.Characters
                     Title = "Source",
                     Property = "source",
                     ColumnType = ElementList.ElementColumnType.Text,
-                }
+                },
             };
 
         public static List<ElementList.ElementColumn> RoundReminderColumns =
@@ -584,7 +609,7 @@ namespace brokenHeart.Services.DataTransfer.Projection.Characters
                 Abstract = ability.Abstract,
                 Uses = ability.Uses,
                 MaxUses = ability.MaxUses,
-                Source = source
+                Source = source,
             };
 
         public Expression<Func<Counter, string, CharacterView.CounterModel>> CounterProjection = (
@@ -599,7 +624,7 @@ namespace brokenHeart.Services.DataTransfer.Projection.Characters
                 Description = counter.Description,
                 Value = counter.Value,
                 Max = counter.Max,
-                Source = source
+                Source = source,
             };
 
         public Expression<
@@ -613,7 +638,7 @@ namespace brokenHeart.Services.DataTransfer.Projection.Characters
                     ViewPosition = reminder.ViewPosition,
                     Reminder = reminder.Reminder,
                     Reminding = reminder.Reminding,
-                    Source = source
+                    Source = source,
                 };
     }
 }

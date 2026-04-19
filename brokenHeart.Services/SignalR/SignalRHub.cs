@@ -14,18 +14,18 @@ namespace brokenHeart.Services.SignalR
     {
         private readonly BrokenDbContext _context;
         private readonly AuthDbContext _authContext;
-        private readonly IRollService _rollService;
+        private readonly ICharacterRollService _charRollService;
 
         public SignalRHub(
             BrokenDbContext context,
             AuthDbContext authContext,
-            IRollService rollService
+            ICharacterRollService charRollService
         )
             : base()
         {
             _context = context;
             _authContext = authContext;
-            _rollService = rollService;
+            _charRollService = charRollService;
         }
 
         public override Task OnConnectedAsync()
@@ -76,7 +76,7 @@ namespace brokenHeart.Services.SignalR
             }
 
             string roll = $"1d20+[{statName.ToUpper()}]";
-            RollResult result = _rollService.CharRollString(roll, c);
+            RollResult result = _charRollService.CharRollString(roll, charId);
 
             await Clients.Group("brokenHand").SendAsync("web/Roll", roll, result, discordId);
         }
