@@ -15,7 +15,10 @@ namespace brokenHeart.Services.DataTransfer.Projection.Stats
 
         public List<StatModel> GetStats(int? id = null)
         {
-            IQueryable<Stat> stats = _context.Stats.Where(x => x.Id == id);
+            IQueryable<Stat> stats = _context.Stats;
+
+            if (id != null)
+                stats = stats.Where(x => x.Id == id);
 
             return stats.Select(x => new StatModel() { Id = x.Id, Name = x.Name }).ToList();
         }
