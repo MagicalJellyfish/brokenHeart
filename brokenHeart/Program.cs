@@ -29,6 +29,9 @@ static void ConfigureBuilder(WebApplicationBuilder builder)
 
     AddControllers(builder);
 
+    builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+    builder.Services.AddProblemDetails();
+
     builder.Services.AddSignalR();
 
     AddDatabaseContexts(builder);
@@ -149,7 +152,7 @@ static void AddAuthentication(WebApplicationBuilder builder)
                                 "localhost",
                                 ClaimValueTypes.String,
                                 context.Options.ClaimsIssuer
-                            )
+                            ),
                         };
 
                         context.Principal = new ClaimsPrincipal(
@@ -179,17 +182,19 @@ static void AddAuthentication(WebApplicationBuilder builder)
                     });
 
                     return Task.CompletedTask;
-                }
+                },
             };
         });
 }
 
 static void ConfigureApp(WebApplication app)
 {
+    app.UseExceptionHandler();
+
     app.UseForwardedHeaders(
         new ForwardedHeadersOptions
         {
-            ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+            ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto,
         }
     );
 
