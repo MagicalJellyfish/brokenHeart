@@ -113,18 +113,16 @@ namespace brokenHeart.Controllers
                 }
             }
 
-            Combat? activeCombat = _context.Combats.SingleOrDefault(x => x.Active);
+            Combat? activeCombat = _context
+                .Combats.Include(x => x.Entries)
+                .SingleOrDefault(x => x.Active);
+
             if (activeCombat == null)
             {
                 return BadRequest("No combat active");
             }
 
-            if (
-                _context
-                    .Combats.Where(x => x.Id == activeCombat.Id)
-                    .SelectMany(x => x.Entries)
-                    .Any(x => x.Shortcut == shortcut)
-            )
+            if (activeCombat.Entries.Any(x => x.Shortcut == shortcut))
             {
                 return BadRequest("Another participant already has this shortcut");
             }
@@ -144,7 +142,7 @@ namespace brokenHeart.Controllers
                     .Single(),
                 shortcut
             );
-            _context.CombatEntries.Add(ce);
+            AddEntryToCombat(activeCombat, ce);
 
             _context.SaveChanges();
 
@@ -159,14 +157,17 @@ namespace brokenHeart.Controllers
         [HttpPost("add-event")]
         public async Task<IActionResult> AddEvent(Event @event)
         {
-            Combat? activeCombat = _context.Combats.SingleOrDefault(x => x.Active);
+            Combat? activeCombat = _context
+                .Combats.Include(x => x.Entries)
+                .SingleOrDefault(x => x.Active);
+
             if (activeCombat == null)
             {
                 return BadRequest("No combat active");
             }
 
             CombatEntry ce = new CombatEntry(activeCombat.Id, @event, @event.Init, @event.Name);
-            _context.CombatEntries.Add(ce);
+            AddEntryToCombat(activeCombat, ce);
 
             _context.SaveChanges();
 
@@ -224,6 +225,20 @@ namespace brokenHeart.Controllers
             _context.SaveChanges();
 
             return NoContent();
+        }
+
+        private void AddEntryToCombat(Combat activeCombat, CombatEntry combatEntry)
+        {
+            activeCombat.Entries.Add(combatEntry);
+
+            // If the new entry comes before the current turn, shift the current turn index up to stay on the correct turn
+            if (
+                SortEntries(activeCombat.Entries).FindIndex(x => x == combatEntry)
+                <= activeCombat.CurrentTurn
+            )
+            {
+                activeCombat.CurrentTurn += 1;
+            }
         }
 
         private List<CombatEntry> SortEntries(ICollection<CombatEntry> entries)

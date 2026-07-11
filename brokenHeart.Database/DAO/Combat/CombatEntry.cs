@@ -19,6 +19,7 @@ namespace brokenHeart.Database.DAO.Combat
             CombatId = combatId;
             CharacterId = characterId;
             InitRoll = initRoll;
+            InitStat = initStat;
             Shortcut = shortcut;
         }
 
