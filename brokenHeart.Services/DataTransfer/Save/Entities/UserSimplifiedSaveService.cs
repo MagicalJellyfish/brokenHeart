@@ -18,7 +18,7 @@ namespace brokenHeart.Services.DataTransfer.Save.Entities
 
             var character = _context
                 .Characters.Select(x => new { x.Id, x.Name })
-                .Single(x => x.Id == user.ActiveCharacterId);
+                .Single(x => x.Id == charId);
 
             user.ActiveCharacterId = character.Id;
             _context.SaveChanges();
