@@ -44,18 +44,12 @@ namespace brokenHeart.Services.DataTransfer.Save.Auxiliary
                 rollableRoll.Instruction = roll.Value;
             }
 
-            List<Roll> rollsToRemove = new List<Roll>();
-            foreach (Roll roll in rollable.Rolls)
+            foreach (Roll roll in rollable.Rolls.ToList())
             {
                 if (!rolls.Select(x => x.Id).Contains(roll.Id))
                 {
-                    rollsToRemove.Add(roll);
+                    _context.Rolls.Remove(roll);
                 }
-            }
-
-            foreach (Roll roll in rollsToRemove)
-            {
-                _context.Rolls.Remove(roll);
             }
 
             _context.SaveChanges();

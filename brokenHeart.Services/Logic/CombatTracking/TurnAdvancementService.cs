@@ -146,7 +146,7 @@ namespace brokenHeart.Services.Logic.CombatTracking
                 }
 
                 string effectStrings = "";
-                foreach (Effect effect in character.Effects)
+                foreach (Effect effect in character.Effects.ToList())
                 {
                     if (!string.IsNullOrEmpty(effect.Hp))
                     {
