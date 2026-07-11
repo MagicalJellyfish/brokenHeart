@@ -92,6 +92,7 @@ namespace brokenHeart.Services.DataTransfer.Save.Entities.Modifiers.Effects
             EffectTemplate effectTemplate = _context
                 .EffectTemplates.Include(x => x.CharacterTemplates)
                 .Include(x => x.ApplyingAbilityTemplates)
+                .Include(x => x.ApplyingAbilities)
                 .Single(x => x.Id == id);
 
             switch (parentType)
@@ -104,6 +105,11 @@ namespace brokenHeart.Services.DataTransfer.Save.Entities.Modifiers.Effects
                 case ElementParentType.AbilityTemplate:
                     effectTemplate.ApplyingAbilityTemplates.Remove(
                         _context.AbilityTemplates.Single(x => x.Id == parentId)
+                    );
+                    break;
+                case ElementParentType.Ability:
+                    effectTemplate.ApplyingAbilities.Remove(
+                        _context.Abilities.Single(x => x.Id == parentId)
                     );
                     break;
                 default:
