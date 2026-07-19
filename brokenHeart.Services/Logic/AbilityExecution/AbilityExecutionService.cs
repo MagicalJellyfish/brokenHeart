@@ -275,7 +275,7 @@ namespace brokenHeart.Services.Logic.AbilityExecution
                 if (damage != null)
                 {
                     Character selfCharacter = _context.Characters.Single(x => x.Id == charId);
-                    selfCharacter.Hp -= damage.Result;
+                    selfCharacter.DeductHp(damage.Result);
                     message.Description += $"\n\nDamage: {damage.Result}\n{damage.Detail}";
                 }
             }
@@ -326,7 +326,7 @@ namespace brokenHeart.Services.Logic.AbilityExecution
 
                     if (damage != null)
                     {
-                        target.Hp -= damage.Result;
+                        target.DeductHp(damage.Result);
                         message.Description += $"\n\nDamage: {damage.Result}\n{damage.Detail}";
                     }
 
@@ -383,7 +383,7 @@ namespace brokenHeart.Services.Logic.AbilityExecution
                 {
                     foreach (Character target in targetChars)
                     {
-                        target.Hp -= damage.Result;
+                        target.DeductHp(damage.Result);
                     }
                     message.Title += $"{damage.Result} Damage ";
                 }

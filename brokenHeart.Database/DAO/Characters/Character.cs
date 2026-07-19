@@ -164,5 +164,20 @@ namespace brokenHeart.Database.DAO
                 Stats.Single(x => statIncrease.StatId == x.StatId).Value += statIncrease.Value;
             }
         }
+
+        public void DeductHp(int amount)
+        {
+            // Healing
+            if (amount <= 0)
+            {
+                Hp = Math.Min(Hp - amount, MaxHp);
+                return;
+            }
+
+            // Damage
+            int fromTemp = Math.Min(TempHp, amount);
+            TempHp -= fromTemp;
+            Hp -= amount - fromTemp;
+        }
     }
 }
