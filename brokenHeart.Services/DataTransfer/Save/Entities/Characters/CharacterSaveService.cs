@@ -35,7 +35,7 @@ namespace brokenHeart.Services.DataTransfer.Save.Characters
                 {
                     Succeeded = false,
                     Message = $"User with username {username} could not be found.",
-                    StatusCode = System.Net.HttpStatusCode.InternalServerError
+                    StatusCode = System.Net.HttpStatusCode.InternalServerError,
                 };
             }
 
@@ -49,7 +49,7 @@ namespace brokenHeart.Services.DataTransfer.Save.Characters
                 Max = 3,
                 Description =
                     "This counter indicates the number of rounds you are away from dying.",
-                RoundBased = false
+                RoundBased = false,
             };
 
             foreach (Bodypart bodypart in _context.Bodyparts)
@@ -91,7 +91,7 @@ namespace brokenHeart.Services.DataTransfer.Save.Characters
                 {
                     Succeeded = false,
                     StatusCode = System.Net.HttpStatusCode.NotFound,
-                    Message = $"No character found for id {id}."
+                    Message = $"No character found for id {id}.",
                 };
             }
 
@@ -168,20 +168,20 @@ namespace brokenHeart.Services.DataTransfer.Save.Characters
                 .Concat(characterQueryable.SelectMany(x => x.Effects.SelectMany(y => y.Abilities)))
                 .ToList();
 
+            ReplenishType replenishedUpTo = restType switch
+            {
+                RestType.Short => ReplenishType.ShortRest,
+                RestType.Long => ReplenishType.LongRest,
+                _ => throw new ArgumentOutOfRangeException(nameof(restType)),
+            };
+
             foreach (Ability ability in abilities)
             {
-                if (
-                    ability.ReplenishType == ReplenishType.ShortRest
-                    || ability.ReplenishType == ReplenishType.CombatRound
-                )
-                {
-                    ability.Uses = ability.MaxUses;
-                }
+                if (ability.ReplenishType == ReplenishType.None)
+                    continue;
 
-                if (ability.ReplenishType <= ReplenishType.LongRest && restType == RestType.Long)
-                {
+                if (ability.ReplenishType <= replenishedUpTo)
                     ability.Uses = ability.MaxUses;
-                }
             }
 
             if (restType == RestType.Long)
@@ -212,7 +212,7 @@ namespace brokenHeart.Services.DataTransfer.Save.Characters
                 {
                     Succeeded = false,
                     StatusCode = System.Net.HttpStatusCode.NotFound,
-                    Message = $"No character found for id {id}."
+                    Message = $"No character found for id {id}.",
                 };
             }
 
