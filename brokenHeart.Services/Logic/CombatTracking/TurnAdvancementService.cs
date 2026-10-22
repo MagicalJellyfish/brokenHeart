@@ -45,10 +45,9 @@ namespace brokenHeart.Services.Logic.CombatTracking
             }
 
             CombatEntry entry = orderedEntries.ElementAt(combat.CurrentTurn);
-            if (entry.EventId != null)
+            Event? @event = _context.Events.SingleOrDefault(x => x.CombatEntryId == entry.Id);
+            if (@event != null)
             {
-                Event @event = _context.Events.Single(x => x.Id == entry.EventId);
-
                 if (@event.Round == combat.Round)
                 {
                     turnMessages.Add(
@@ -128,7 +127,7 @@ namespace brokenHeart.Services.Logic.CombatTracking
                     .Concat(character.Effects.SelectMany(x => x.Counters))
                     .Concat(
                         character
-                            .Effects.Where(x => x.EffectCounterId != null)
+                            .Effects.Where(x => x.EffectCounter != null)
                             .Select(x => x.EffectCounter!)
                     )
                     .ToList();

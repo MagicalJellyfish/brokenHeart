@@ -36,13 +36,12 @@ namespace brokenHeart.Database.DAO.Combat
         public int InitStat { get; set; }
         public string Shortcut { get; set; }
 
-        public int? CombatId { get; set; }
+        public int CombatId { get; set; }
         public Combat? Combat { get; set; }
 
         public int? CharacterId { get; set; }
         public virtual Character? Character { get; set; }
 
-        public int? EventId { get; set; }
         public virtual Event? Event { get; set; }
     }
 }

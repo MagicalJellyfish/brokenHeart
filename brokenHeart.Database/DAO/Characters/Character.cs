@@ -70,7 +70,6 @@ namespace brokenHeart.Database.DAO
 
         public ICollection<Counter> Counters { get; set; } = new List<Counter>();
 
-        public int? DeathCounterId { get; set; }
         public Counter? DeathCounter { get; set; }
 
         public ICollection<RoundReminder> RoundReminders { get; set; } = new List<RoundReminder>();

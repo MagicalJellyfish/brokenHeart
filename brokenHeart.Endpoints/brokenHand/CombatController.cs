@@ -247,7 +247,7 @@ namespace brokenHeart.Controllers
                 .OrderByDescending(x => x.InitRoll)
                 .ThenByDescending(x => x.InitStat)
                 .ThenByDescending(x => x.CharacterId)
-                .ThenByDescending(x => x.EventId)
+                .ThenByDescending(x => x.Id)
                 .ToList();
         }
     }
