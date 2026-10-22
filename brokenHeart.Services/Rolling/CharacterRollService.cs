@@ -1,4 +1,8 @@
-﻿using brokenHeart.DB;
+﻿using brokenHeart.Database.DAO.Counters;
+using brokenHeart.Database.DAO.Modifiers.Effects;
+using brokenHeart.Database.DAO.Modifiers.Items;
+using brokenHeart.Database.DAO.Modifiers.Traits;
+using brokenHeart.DB;
 using brokenHeart.Models.Rolling;
 
 namespace brokenHeart.Services.Rolling
@@ -55,12 +59,6 @@ namespace brokenHeart.Services.Rolling
                                     x.Value
                                 ))
                                 .ToList(),
-                            Counters = x
-                                .Counters.Select(c => new KeyValuePair<string, int>(
-                                    c.Name,
-                                    c.Value
-                                ))
-                                .ToList(),
                             Variables = x
                                 .Variables.Select(v => new KeyValuePair<string, int>(
                                     v.Name,
@@ -75,6 +73,17 @@ namespace brokenHeart.Services.Rolling
             {
                 throw new Exception($"No character found with id {charId}");
             }
+
+            character.Counters = _context
+                .Counters.Where(c =>
+                    c.CharacterId == charId
+                    || ((Trait)c.Modifier!).CharacterId == charId
+                    || ((Item)c.Modifier!).CharacterId == charId
+                    || ((Effect)c.Modifier!).CharacterId == charId
+                    || ((EffectCounter)c).Effect!.CharacterId == charId
+                )
+                .Select(c => new KeyValuePair<string, int>(c.Name, c.Value))
+                .ToList();
 
             return character;
         }
