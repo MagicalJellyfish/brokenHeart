@@ -2,6 +2,7 @@
 using brokenHeart.Models.DataTransfer.Save;
 using brokenHeart.Services.DataTransfer.Projection;
 using brokenHeart.Services.DataTransfer.Save;
+using brokenHeart.Services.DataTransfer.Save.Modifiers.Items;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -14,14 +15,17 @@ namespace brokenHeart.Endpoints.brokenEye.Entities
     {
         private readonly IElementRetrievalService _elementProjectionService;
         private readonly IElementSubmissionService _elementSubmissionService;
+        private readonly IItemTransferService _itemTransferService;
 
         public ElementController(
             IElementRetrievalService elementProjectionService,
-            IElementSubmissionService elementSubmissionService
+            IElementSubmissionService elementSubmissionService,
+            IItemTransferService itemTransferService
         )
         {
             _elementProjectionService = elementProjectionService;
             _elementSubmissionService = elementSubmissionService;
+            _itemTransferService = itemTransferService;
         }
 
         [HttpGet("{type}/{id}")]
@@ -83,6 +87,18 @@ namespace brokenHeart.Endpoints.brokenEye.Entities
             _elementSubmissionService.UpdateElement(type, id, elementUpdate);
 
             return Ok();
+        }
+
+        [HttpPost("item/{id}/transfer")]
+        public ActionResult<int> TransferItem(int id, ItemTransfer itemTransfer)
+        {
+            return Ok(
+                _itemTransferService.TransferItem(
+                    id,
+                    itemTransfer.CharacterId,
+                    itemTransfer.Amount
+                )
+            );
         }
 
         [HttpDelete("{type}/{id}")]
