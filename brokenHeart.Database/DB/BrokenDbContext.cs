@@ -303,7 +303,7 @@ namespace brokenHeart.DB
 
                 x.HasOne("brokenHeart.Database.DAO.Combat.Event", "Event")
                     .WithOne("CombatEntry")
-                    .HasForeignKey("brokenHeart.Database.DAO.Combat.CombatEntry", "EventId")
+                    .HasForeignKey("brokenHeart.Database.DAO.Combat.Event", "CombatEntryId")
                     .OnDelete(DeleteBehavior.Cascade);
             });
 
@@ -341,7 +341,8 @@ namespace brokenHeart.DB
                 .Entity<Character>()
                 .HasOne(x => x.DeathCounter)
                 .WithOne(y => y.DeathCountCharacter)
-                .HasForeignKey<Character>(x => x.DeathCounterId);
+                .HasForeignKey<Counter>(y => y.DeathCountCharacterId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder
                 .Entity<AbilityTemplate>()

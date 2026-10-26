@@ -121,6 +121,8 @@ namespace brokenHeart.Services
             serviceCollection.AddScoped<ITemplateSaveService, EffectCounterTemplateSaveService>();
             serviceCollection.AddScoped<ITemplateSaveService, RoundReminderTemplateSaveService>();
 
+            serviceCollection.AddScoped<IItemTransferService, ItemTransferService>();
+
             // SignalR
             serviceCollection.AddHostedService<SignalRMessagingService>();
         }

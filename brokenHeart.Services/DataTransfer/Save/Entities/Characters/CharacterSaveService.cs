@@ -197,6 +197,25 @@ namespace brokenHeart.Services.DataTransfer.Save.Characters
                         character.Hp += (character.MaxHp / 2);
                     }
                 }
+
+                //Heal injuries by one stage, dismemberment does not heal
+                List<InjuryModel> healedInjuries = characterQueryable
+                    .SelectMany(x => x.BodypartConditions)
+                    .Where(x =>
+                        x.InjuryLevel != InjuryLevel.None && x.InjuryLevel != InjuryLevel.Dismember
+                    )
+                    .ToList()
+                    .Select(x => new InjuryModel()
+                    {
+                        Bodypart = x.BodypartId,
+                        InjuryLevel = x.InjuryLevel - 1,
+                    })
+                    .ToList();
+
+                if (healedInjuries.Count > 0)
+                {
+                    UpdateInjuries(id, healedInjuries);
+                }
             }
 
             _context.SaveChanges();

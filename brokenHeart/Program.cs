@@ -3,7 +3,6 @@ using System.Text;
 using brokenHeart;
 using brokenHeart.Authentication.DB;
 using brokenHeart.DB;
-using brokenHeart.Endpoints.JSON;
 using brokenHeart.Services.SignalR;
 using LinqKit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -69,21 +68,7 @@ static void AddCors(WebApplicationBuilder builder)
 static void AddControllers(WebApplicationBuilder builder)
 {
     // Add services to the container.
-    builder
-        .Services.AddControllers(options =>
-        {
-            options.InputFormatters.Insert(0, JsonPatchInputFormatter.GetJsonPatchInputFormatter());
-        })
-        .AddJsonOptions(options =>
-        {
-            options.JsonSerializerOptions.ReferenceHandler = System
-                .Text
-                .Json
-                .Serialization
-                .ReferenceHandler
-                .IgnoreCycles;
-            options.JsonSerializerOptions.Converters.Add(new ByteArrayConverter());
-        });
+    builder.Services.AddControllers();
 }
 
 static void AddDatabaseContexts(WebApplicationBuilder builder)

@@ -47,7 +47,7 @@ namespace brokenHeart.Authentication.Services
                 {
                     Succeeded = false,
                     StatusCode = System.Net.HttpStatusCode.BadRequest,
-                    Message = "Invalid client request"
+                    Message = "Invalid client request",
                 };
             }
 
@@ -83,7 +83,7 @@ namespace brokenHeart.Authentication.Services
                 {
                     Succeeded = false,
                     StatusCode = System.Net.HttpStatusCode.Unauthorized,
-                    Message = "Registration token invalid"
+                    Message = "Registration token invalid",
                 };
             }
 
@@ -97,17 +97,16 @@ namespace brokenHeart.Authentication.Services
                 {
                     Succeeded = false,
                     StatusCode = System.Net.HttpStatusCode.BadRequest,
-                    Message = "User already exists"
+                    Message = "User already exists",
                 };
             }
 
-            User user =
-                new()
-                {
-                    Username = registrationModel.Username,
-                    DiscordId = registrationModel.DiscordId,
-                    Salt = Convert.ToBase64String(RandomNumberGenerator.GetBytes(128 / 8))
-                };
+            User user = new()
+            {
+                Username = registrationModel.Username,
+                DiscordId = registrationModel.DiscordId,
+                Salt = Convert.ToBase64String(RandomNumberGenerator.GetBytes(128 / 8)),
+            };
 
             ExecutionResult result = _passwordService.ValidatePasswordConstraints(
                 registrationModel.Password
@@ -128,7 +127,7 @@ namespace brokenHeart.Authentication.Services
                 new UserSimplified()
                 {
                     Username = registrationModel.Username,
-                    DiscordId = registrationModel.DiscordId
+                    DiscordId = registrationModel.DiscordId,
                 }
             );
             _brokenContext.SaveChanges();
@@ -146,7 +145,7 @@ namespace brokenHeart.Authentication.Services
                 {
                     Succeeded = false,
                     StatusCode = System.Net.HttpStatusCode.BadRequest,
-                    Message = "Invalid client request"
+                    Message = "Invalid client request",
                 };
             }
 
@@ -160,7 +159,7 @@ namespace brokenHeart.Authentication.Services
                 {
                     Succeeded = false,
                     StatusCode = System.Net.HttpStatusCode.Unauthorized,
-                    Message = "Invalid username"
+                    Message = "Invalid username",
                 };
             }
 
@@ -176,7 +175,7 @@ namespace brokenHeart.Authentication.Services
                 {
                     Succeeded = false,
                     StatusCode = System.Net.HttpStatusCode.Unauthorized,
-                    Message = "Invalid password"
+                    Message = "Invalid password",
                 };
             }
 
@@ -203,8 +202,8 @@ namespace brokenHeart.Authentication.Services
                     RefreshToken = tokenResult.Token.RefreshToken,
                     RefreshTokenExpiration = (
                         (DateTimeOffset)tokenResult.Token.RefreshTokenExpiryTime
-                    ).ToUnixTimeMilliseconds()
-                }
+                    ).ToUnixTimeMilliseconds(),
+                },
             };
         }
 
@@ -214,7 +213,11 @@ namespace brokenHeart.Authentication.Services
                 .Users.Include(x => x.Tokens)
                 .Single(x => x.Username.ToLower() == username);
 
-            Token dbToken = user.Tokens.Single(x => x.AccessToken == token);
+            Token? dbToken = user.Tokens.SingleOrDefault(x => x.AccessToken == token);
+            if (dbToken == null)
+            {
+                return;
+            }
 
             _authContext.Tokens.Remove(dbToken);
             _authContext.SaveChanges();
@@ -232,7 +235,7 @@ namespace brokenHeart.Authentication.Services
                 {
                     Succeeded = false,
                     StatusCode = System.Net.HttpStatusCode.BadRequest,
-                    Message = "Invalid client request"
+                    Message = "Invalid client request",
                 };
             }
 
@@ -246,7 +249,7 @@ namespace brokenHeart.Authentication.Services
                 {
                     Succeeded = false,
                     StatusCode = System.Net.HttpStatusCode.BadRequest,
-                    Message = "Invalid access token or refresh token"
+                    Message = "Invalid access token or refresh token",
                 };
             }
 
@@ -260,7 +263,7 @@ namespace brokenHeart.Authentication.Services
                 {
                     Succeeded = false,
                     StatusCode = System.Net.HttpStatusCode.BadRequest,
-                    Message = "Invalid access token"
+                    Message = "Invalid access token",
                 };
             }
 
@@ -272,7 +275,7 @@ namespace brokenHeart.Authentication.Services
                 {
                     Succeeded = false,
                     StatusCode = System.Net.HttpStatusCode.BadRequest,
-                    Message = "Invalid access token"
+                    Message = "Invalid access token",
                 };
             }
 
@@ -285,19 +288,20 @@ namespace brokenHeart.Authentication.Services
                 {
                     Succeeded = false,
                     StatusCode = System.Net.HttpStatusCode.BadRequest,
-                    Message = "Invalid refresh token"
+                    Message = "Invalid refresh token",
                 };
             }
 
-            if (dbToken.RefreshTokenExpiryTime <= DateTime.Now)
+            if (dbToken.RefreshTokenExpiryTime <= DateTime.UtcNow)
             {
                 _authContext.Tokens.Remove(dbToken);
+                _authContext.SaveChanges();
 
                 return new ExecutionResult<AuthenticationResult>()
                 {
                     Succeeded = false,
                     StatusCode = System.Net.HttpStatusCode.BadRequest,
-                    Message = "Refresh token expired"
+                    Message = "Refresh token expired",
                 };
             }
 
@@ -319,8 +323,8 @@ namespace brokenHeart.Authentication.Services
                     RefreshToken = tokenResult.Token.RefreshToken,
                     RefreshTokenExpiration = (
                         (DateTimeOffset)tokenResult.Token.RefreshTokenExpiryTime
-                    ).ToUnixTimeMilliseconds()
-                }
+                    ).ToUnixTimeMilliseconds(),
+                },
             };
         }
     }
